@@ -1,0 +1,64 @@
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.poetry]
+name = "genailab"
+version = "0.1.0"
+description = "Generative AI for Computational Biology: foundation models, VAE, diffusion, and counterfactual simulation"
+authors = ["Your Name <your.email@example.com>"]
+readme = "README.md"
+license = "MIT"
+packages = [{include = "genailab", from = "src"}]
+
+[tool.poetry.dependencies]
+python = ">=3.10,<3.13"
+torch = ">=2.1"
+numpy = ">=1.24"
+pandas = ">=2.0"
+scipy = ">=1.11"
+scikit-learn = ">=1.3"
+matplotlib = ">=3.8"
+seaborn = ">=0.13"
+tqdm = ">=4.66"
+pydantic = ">=2.6"
+hydra-core = ">=1.3"
+omegaconf = ">=2.3"
+
+[tool.poetry.group.bio.dependencies]
+scanpy = ">=1.9"
+anndata = ">=0.10"
+
+[tool.poetry.group.experiment.dependencies]
+tensorboard = ">=2.15"
+wandb = ">=0.16"
+
+[tool.poetry.group.dev.dependencies]
+ipykernel = ">=6.29"
+jupyter = ">=1.0"
+pytest = ">=8.0"
+black = ">=24.0"
+ruff = ">=0.3"
+mypy = ">=1.8"
+
+[tool.poetry.scripts]
+genailab-train = "genailab.workflows.train:main"
+genailab-simulate = "genailab.workflows.simulate:main"
+
+[tool.black]
+line-length = 100
+target-version = ['py310']
+
+[tool.ruff]
+line-length = 100
+target-version = "py310"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "W"]
+ignore = ["E501"]
+
+[tool.mypy]
+python_version = "3.10"
+warn_return_any = true
+warn_unused_configs = true
+ignore_missing_imports = true
