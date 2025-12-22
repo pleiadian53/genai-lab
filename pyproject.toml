@@ -28,6 +28,8 @@ omegaconf = ">=2.3"
 [tool.poetry.group.bio.dependencies]
 scanpy = ">=1.9"
 anndata = ">=0.10"
+GEOparse = ">=2.0"
+leidenalg = ">=0.10"  # for clustering in scanpy
 
 [tool.poetry.group.experiment.dependencies]
 tensorboard = ">=2.15"

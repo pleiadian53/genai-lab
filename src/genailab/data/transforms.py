@@ -17,29 +17,49 @@ def log1p_transform(x: np.ndarray | torch.Tensor) -> np.ndarray | torch.Tensor:
 
 def standardize(
     x: np.ndarray,
+    axis: int | None = 0,
     mean: np.ndarray | None = None,
     std: np.ndarray | None = None,
     eps: float = 1e-6,
-) -> tuple[np.ndarray, np.ndarray, np.ndarray]:
+    return_stats: bool = False,
+) -> np.ndarray | tuple[np.ndarray, np.ndarray, np.ndarray]:
     """
-    Standardize expression matrix (samples x genes) to zero mean, unit variance per gene.
+    Standardize array to zero mean, unit variance along specified axis.
 
     Args:
-        x: Expression matrix (samples x genes)
-        mean: Pre-computed mean per gene (for applying to new data)
-        std: Pre-computed std per gene (for applying to new data)
+        x: Input array (e.g., samples x genes)
+        axis: Axis along which to compute mean/std. Default 0 (per-gene for samples x genes).
+              Use None to standardize over all elements.
+        mean: Pre-computed mean (for applying to new data). If None, computed from x.
+        std: Pre-computed std (for applying to new data). If None, computed from x.
         eps: Small constant for numerical stability
+        return_stats: If True, return (standardized_x, mean, std). If False, return only standardized_x.
 
     Returns:
-        Tuple of (standardized_x, mean, std)
+        If return_stats=False: standardized array
+        If return_stats=True: tuple of (standardized_x, mean, std)
+
+    Examples:
+        # Simple standardization (per-gene, axis=0)
+        x_std = standardize(x)
+
+        # Fit on train, apply to test
+        x_train_std, mu, sigma = standardize(x_train, return_stats=True)
+        x_test_std = standardize(x_test, mean=mu, std=sigma)
+
+        # Per-sample standardization (axis=1)
+        x_std = standardize(x, axis=1)
     """
     if mean is None:
-        mean = x.mean(axis=0)
+        mean = x.mean(axis=axis, keepdims=True)
     if std is None:
-        std = x.std(axis=0)
+        std = x.std(axis=axis, keepdims=True)
 
     x_std = (x - mean) / (std + eps)
-    return x_std, mean, std
+
+    if return_stats:
+        return x_std, mean.squeeze(), std.squeeze()
+    return x_std
 
 
 def hvg_filter(

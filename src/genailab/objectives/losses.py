@@ -142,6 +142,80 @@ def zinb_loss(
     return -ll.mean()
 
 
+def elbo_loss_nb(
+    x: torch.Tensor,
+    mu: torch.Tensor,
+    theta: torch.Tensor,
+    enc_mu: torch.Tensor,
+    enc_logvar: torch.Tensor,
+    beta: float = 1.0,
+    eps: float = 1e-8,
+) -> tuple[torch.Tensor, dict[str, torch.Tensor]]:
+    """Compute ELBO loss for VAE with Negative Binomial decoder.
+
+    Loss = NB_NLL + beta * KL divergence
+
+    Args:
+        x: Original counts
+        mu: Predicted mean from NB decoder
+        theta: Predicted dispersion from NB decoder
+        enc_mu: Latent mean from encoder
+        enc_logvar: Latent log-variance from encoder
+        beta: KL weight (beta-VAE)
+        eps: Small constant for numerical stability
+
+    Returns:
+        Tuple of (total_loss, dict with 'recon' and 'kl')
+    """
+    # Reconstruction loss (NB negative log-likelihood)
+    recon = nb_loss(x, mu, theta, eps)
+
+    # KL divergence: KL(q(z|x,c) || N(0,I))
+    kl = -0.5 * torch.mean(1 + enc_logvar - enc_mu.pow(2) - enc_logvar.exp())
+
+    total = recon + beta * kl
+
+    return total, {"recon": recon.detach(), "kl": kl.detach()}
+
+
+def elbo_loss_zinb(
+    x: torch.Tensor,
+    mu: torch.Tensor,
+    theta: torch.Tensor,
+    pi: torch.Tensor,
+    enc_mu: torch.Tensor,
+    enc_logvar: torch.Tensor,
+    beta: float = 1.0,
+    eps: float = 1e-8,
+) -> tuple[torch.Tensor, dict[str, torch.Tensor]]:
+    """Compute ELBO loss for VAE with Zero-Inflated Negative Binomial decoder.
+
+    Loss = ZINB_NLL + beta * KL divergence
+
+    Args:
+        x: Original counts
+        mu: Predicted mean from ZINB decoder
+        theta: Predicted dispersion from ZINB decoder
+        pi: Predicted dropout probability from ZINB decoder
+        enc_mu: Latent mean from encoder
+        enc_logvar: Latent log-variance from encoder
+        beta: KL weight (beta-VAE)
+        eps: Small constant for numerical stability
+
+    Returns:
+        Tuple of (total_loss, dict with 'recon' and 'kl')
+    """
+    # Reconstruction loss (ZINB negative log-likelihood)
+    recon = zinb_loss(x, mu, theta, pi, eps)
+
+    # KL divergence: KL(q(z|x,c) || N(0,I))
+    kl = -0.5 * torch.mean(1 + enc_logvar - enc_mu.pow(2) - enc_logvar.exp())
+
+    total = recon + beta * kl
+
+    return total, {"recon": recon.detach(), "kl": kl.detach()}
+
+
 def kl_annealing_schedule(
     step: int,
     warmup_steps: int = 1000,

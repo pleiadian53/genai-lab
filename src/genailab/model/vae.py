@@ -2,11 +2,14 @@
 
 from __future__ import annotations
 
+from typing import Literal
+
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
 
 from genailab.model.conditioning import ConditionEncoder
+from genailab.model.decoders import GaussianDecoder, NegativeBinomialDecoder, ZINBDecoder
 
 
 class CVAE(nn.Module):
@@ -57,7 +60,7 @@ class CVAE(nn.Module):
         self.enc_mu = nn.Linear(hidden, z_dim)
         self.enc_logvar = nn.Linear(hidden, z_dim)
 
-        # Decoder p(x|z,c)
+        # Decoder p(x|z,c) - Gaussian (MSE) decoder
         dec_layers = []
         in_dim = z_dim + cond_dim
         for _ in range(n_layers):
@@ -70,6 +73,7 @@ class CVAE(nn.Module):
 
         dec_layers.append(nn.Linear(hidden, n_genes))
         self.dec = nn.Sequential(*dec_layers)
+        self.likelihood = "gaussian"
 
     def encode(
         self,
@@ -151,6 +155,246 @@ class CVAE(nn.Module):
         """
         z = torch.randn(n_samples, self.z_dim, device=device)
         return self.decode(z, cond)
+
+
+class CVAE_NB(nn.Module):
+    """Conditional VAE with Negative Binomial decoder for count data.
+
+    Uses NB likelihood for reconstruction, suitable for RNA-seq counts.
+
+    Args:
+        n_genes: Number of genes
+        z_dim: Latent dimension
+        cond_encoder: Condition encoder module
+        hidden: Hidden layer dimension
+        n_layers: Number of hidden layers
+        dropout: Dropout probability
+    """
+
+    def __init__(
+        self,
+        n_genes: int,
+        z_dim: int,
+        cond_encoder: ConditionEncoder,
+        hidden: int = 512,
+        n_layers: int = 2,
+        dropout: float = 0.1,
+    ):
+        super().__init__()
+        self.n_genes = n_genes
+        self.z_dim = z_dim
+        self.cond_encoder = cond_encoder
+        self.likelihood = "nb"
+
+        cond_dim = cond_encoder.spec.out_dim
+
+        # Encoder q(z|x,c) - same as Gaussian VAE
+        enc_layers = []
+        in_dim = n_genes + cond_dim
+        for _ in range(n_layers):
+            enc_layers.extend([
+                nn.Linear(in_dim, hidden),
+                nn.SiLU(),
+                nn.Dropout(dropout),
+            ])
+            in_dim = hidden
+
+        self.enc = nn.Sequential(*enc_layers)
+        self.enc_mu = nn.Linear(hidden, z_dim)
+        self.enc_logvar = nn.Linear(hidden, z_dim)
+
+        # Decoder p(x|z,c) - Negative Binomial
+        hidden_dims = [hidden] * n_layers
+        self.decoder = NegativeBinomialDecoder(
+            input_dim=z_dim + cond_dim,
+            hidden_dims=hidden_dims,
+            output_dim=n_genes,
+            dropout=dropout,
+        )
+
+    def encode(
+        self,
+        x: torch.Tensor,
+        cond: dict[str, torch.Tensor],
+    ) -> tuple[torch.Tensor, torch.Tensor]:
+        """Encode expression to latent distribution parameters."""
+        c = self.cond_encoder(cond)
+        h = self.enc(torch.cat([x, c], dim=-1))
+        mu = self.enc_mu(h)
+        logvar = self.enc_logvar(h).clamp(-12, 12)
+        return mu, logvar
+
+    def reparameterize(self, mu: torch.Tensor, logvar: torch.Tensor) -> torch.Tensor:
+        """Reparameterization trick: z = mu + std * eps."""
+        std = torch.exp(0.5 * logvar)
+        eps = torch.randn_like(std)
+        return mu + eps * std
+
+    def decode(
+        self,
+        z: torch.Tensor,
+        cond: dict[str, torch.Tensor],
+        library_size: torch.Tensor | None = None,
+    ) -> dict[str, torch.Tensor]:
+        """Decode latent to NB parameters.
+
+        Returns:
+            Dict with 'mu' (mean), 'theta' (dispersion), 'rho' (rate)
+        """
+        c = self.cond_encoder(cond)
+        return self.decoder(torch.cat([z, c], dim=-1), library_size)
+
+    def forward(
+        self,
+        x: torch.Tensor,
+        cond: dict[str, torch.Tensor],
+        library_size: torch.Tensor | None = None,
+    ) -> dict[str, torch.Tensor]:
+        """Forward pass: encode, sample, decode.
+
+        Returns:
+            Dict with 'mu', 'theta', 'rho', 'enc_mu', 'enc_logvar', 'z'
+        """
+        enc_mu, enc_logvar = self.encode(x, cond)
+        z = self.reparameterize(enc_mu, enc_logvar)
+        dec_out = self.decode(z, cond, library_size)
+        return {
+            **dec_out,
+            "enc_mu": enc_mu,
+            "enc_logvar": enc_logvar,
+            "z": z,
+        }
+
+    def sample(
+        self,
+        n_samples: int,
+        cond: dict[str, torch.Tensor],
+        library_size: torch.Tensor | None = None,
+        device: torch.device | str = "cpu",
+    ) -> dict[str, torch.Tensor]:
+        """Sample from the prior p(z) and decode."""
+        z = torch.randn(n_samples, self.z_dim, device=device)
+        return self.decode(z, cond, library_size)
+
+
+class CVAE_ZINB(nn.Module):
+    """Conditional VAE with Zero-Inflated Negative Binomial decoder.
+
+    Uses ZINB likelihood for reconstruction, suitable for sparse scRNA-seq.
+
+    Args:
+        n_genes: Number of genes
+        z_dim: Latent dimension
+        cond_encoder: Condition encoder module
+        hidden: Hidden layer dimension
+        n_layers: Number of hidden layers
+        dropout: Dropout probability
+    """
+
+    def __init__(
+        self,
+        n_genes: int,
+        z_dim: int,
+        cond_encoder: ConditionEncoder,
+        hidden: int = 512,
+        n_layers: int = 2,
+        dropout: float = 0.1,
+    ):
+        super().__init__()
+        self.n_genes = n_genes
+        self.z_dim = z_dim
+        self.cond_encoder = cond_encoder
+        self.likelihood = "zinb"
+
+        cond_dim = cond_encoder.spec.out_dim
+
+        # Encoder q(z|x,c) - same as Gaussian VAE
+        enc_layers = []
+        in_dim = n_genes + cond_dim
+        for _ in range(n_layers):
+            enc_layers.extend([
+                nn.Linear(in_dim, hidden),
+                nn.SiLU(),
+                nn.Dropout(dropout),
+            ])
+            in_dim = hidden
+
+        self.enc = nn.Sequential(*enc_layers)
+        self.enc_mu = nn.Linear(hidden, z_dim)
+        self.enc_logvar = nn.Linear(hidden, z_dim)
+
+        # Decoder p(x|z,c) - Zero-Inflated Negative Binomial
+        hidden_dims = [hidden] * n_layers
+        self.decoder = ZINBDecoder(
+            input_dim=z_dim + cond_dim,
+            hidden_dims=hidden_dims,
+            output_dim=n_genes,
+            dropout=dropout,
+        )
+
+    def encode(
+        self,
+        x: torch.Tensor,
+        cond: dict[str, torch.Tensor],
+    ) -> tuple[torch.Tensor, torch.Tensor]:
+        """Encode expression to latent distribution parameters."""
+        c = self.cond_encoder(cond)
+        h = self.enc(torch.cat([x, c], dim=-1))
+        mu = self.enc_mu(h)
+        logvar = self.enc_logvar(h).clamp(-12, 12)
+        return mu, logvar
+
+    def reparameterize(self, mu: torch.Tensor, logvar: torch.Tensor) -> torch.Tensor:
+        """Reparameterization trick: z = mu + std * eps."""
+        std = torch.exp(0.5 * logvar)
+        eps = torch.randn_like(std)
+        return mu + eps * std
+
+    def decode(
+        self,
+        z: torch.Tensor,
+        cond: dict[str, torch.Tensor],
+        library_size: torch.Tensor | None = None,
+    ) -> dict[str, torch.Tensor]:
+        """Decode latent to ZINB parameters.
+
+        Returns:
+            Dict with 'mu', 'theta', 'rho', 'pi' (dropout probability)
+        """
+        c = self.cond_encoder(cond)
+        return self.decoder(torch.cat([z, c], dim=-1), library_size)
+
+    def forward(
+        self,
+        x: torch.Tensor,
+        cond: dict[str, torch.Tensor],
+        library_size: torch.Tensor | None = None,
+    ) -> dict[str, torch.Tensor]:
+        """Forward pass: encode, sample, decode.
+
+        Returns:
+            Dict with 'mu', 'theta', 'rho', 'pi', 'enc_mu', 'enc_logvar', 'z'
+        """
+        enc_mu, enc_logvar = self.encode(x, cond)
+        z = self.reparameterize(enc_mu, enc_logvar)
+        dec_out = self.decode(z, cond, library_size)
+        return {
+            **dec_out,
+            "enc_mu": enc_mu,
+            "enc_logvar": enc_logvar,
+            "z": z,
+        }
+
+    def sample(
+        self,
+        n_samples: int,
+        cond: dict[str, torch.Tensor],
+        library_size: torch.Tensor | None = None,
+        device: torch.device | str = "cpu",
+    ) -> dict[str, torch.Tensor]:
+        """Sample from the prior p(z) and decode."""
+        z = torch.randn(n_samples, self.z_dim, device=device)
+        return self.decode(z, cond, library_size)
 
 
 def elbo_loss(
