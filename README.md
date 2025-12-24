@@ -25,16 +25,48 @@ See [docs/INDUSTRY_LANDSCAPE.md](docs/INDUSTRY_LANDSCAPE.md) for a comprehensive
 ```text
 genai-lab/
 ├── src/genailab/
-│   ├── data/           # Data loading, transforms, batch handling
-│   ├── model/          # Encoders, decoders, VAE, diffusion
+│   ├── data/           # Data loading, transforms, preprocessing
+│   │   ├── paths.py        # Standardized data path management
+│   │   ├── sc_preprocess.py    # scRNA-seq preprocessing (Scanpy)
+│   │   └── bulk_preprocess.py  # Bulk RNA-seq preprocessing
+│   ├── model/          # Encoders, decoders, VAE architectures
+│   │   ├── vae.py          # CVAE, CVAE_NB, CVAE_ZINB
+│   │   ├── encoders.py     # ConditionEncoder, etc.
+│   │   └── decoders.py     # Gaussian, NB, ZINB decoders
 │   ├── objectives/     # Loss functions, regularizers
+│   │   └── losses.py       # ELBO, NB, ZINB losses
 │   ├── eval/           # Metrics, diagnostics, plotting
 │   ├── workflows/      # Training, simulation, benchmarking
 │   └── utils/          # Config, reproducibility
+├── docs/               # Tutorial documents (see below)
+│   ├── VAE/            # VAE theory and derivations
+│   ├── EBM/            # Energy-based models
+│   ├── score_matching/ # Score matching and energy functions
+│   ├── beta-VAE/       # Disentanglement
+│   └── data/           # Data preparation guides
+├── examples/           # Jupyter notebooks with worked examples
+├── data/               # Local data storage (gitignored)
 ├── tests/
-├── examples/
-└── dev/                # Private notes, brainstorming (not shared)
+└── environment.yml     # Conda environment specification
 ```
+
+## Documentation
+
+Tutorial documents are available under `docs/<topic>/` covering theory, derivations, and practical guidance:
+
+| Topic | Description | Start Here |
+|-------|-------------|------------|
+| [VAE](docs/VAE/) | Variational Autoencoders (ELBO, inference, training) | [VAE-01-overview.md](docs/VAE/VAE-01-overview.md) |
+| [EBM](docs/EBM/) | Energy-Based Models (Boltzmann, partition functions) | [README.md](docs/EBM/README.md) |
+| [score_matching](docs/score_matching/) | Score functions, Fisher vs Stein scores | [README.md](docs/score_matching/README.md) |
+| [beta-VAE](docs/beta-VAE/) | Disentanglement and interpretability | [beta_vae.md](docs/beta-VAE/beta_vae.md) |
+| [data](docs/data/) | Data preparation for RNA-seq | [PBMC.md](docs/data/PBMC.md) |
+
+**How to use:**
+
+- Follow the [ROADMAP](docs/ROADMAP.md) for a structured learning path
+- See [docs/README.md](docs/README.md) for a complete index
+- Use docs as reference while working through `examples/` notebooks
 
 ## Installation
 
@@ -70,28 +102,49 @@ genailab-train --config configs/cvae_toy.yaml
 
 ## Milestones
 
-### Milestone A: Bulk Conditional VAE
+### Stage 1: Variational Autoencoders ✅
 
-- [ ] Implement cVAE with tissue/disease/batch conditioning
-- [ ] Train on toy synthetic data
-- [ ] Evaluate: DE agreement, pathway concordance, batch leakage
+- [x] Core CVAE implementation with condition encoding
+- [x] Gaussian decoder (MSE reconstruction)
+- [x] Negative Binomial decoder for count data (`CVAE_NB`)
+- [x] Zero-Inflated Negative Binomial decoder (`CVAE_ZINB`)
+- [x] ELBO loss with KL annealing support
+- [x] Comprehensive documentation (VAE-01 through VAE-09)
+- [x] Unit tests for all model variants
 
-### Milestone B: scRNA Conditional NB-VAE
+### Stage 2: Data Pipeline ✅
 
-- [ ] Negative Binomial likelihood for count data
-- [ ] Cell type + donor conditioning
-- [ ] Pseudobulk bridging evaluation
+- [x] Standardized data path management (`genailab.data.paths`)
+- [x] scRNA-seq preprocessing with Scanpy
+- [x] Bulk RNA-seq preprocessing (Python + R/recount3)
+- [x] Environment setup (conda/mamba + Poetry)
+- [x] Data preparation documentation
 
-### Milestone C: Counterfactual & Causal
+### Stage 3: Score Matching & Energy Functions 🔄
+
+- [x] Score matching overview documentation
+- [x] Energy functions deep dive (Boltzmann, partition function)
+- [ ] Langevin dynamics implementation
+- [ ] Denoising score matching loss
+
+### Stage 4: Diffusion Models (Planned)
+
+- [ ] Forward/reverse diffusion process
+- [ ] Time-conditional score network
+- [ ] Latent diffusion for gene expression
+- [ ] Conditional generation with guidance
+
+### Stage 5: Counterfactual & Causal (Planned)
 
 - [ ] Counterfactual generation pipeline
 - [ ] Deconfounding / SCM-flavored latent model
 - [ ] Causal regularization via invariance
 
-### Milestone D: Diffusion Models
+### Stage 6: Advanced Topics (Planned)
 
-- [ ] Latent diffusion for expression
-- [ ] Conditional score-based generation
+- [ ] JEPA-style representation learning
+- [ ] Contrastive methods for biology
+- [ ] Multi-modal integration
 
 ## Industry Landscape
 

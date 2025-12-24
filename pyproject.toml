@@ -30,6 +30,7 @@ scanpy = ">=1.9"
 anndata = ">=0.10"
 GEOparse = ">=2.0"
 leidenalg = ">=0.10"  # for clustering in scanpy
+umap-learn = ">=0.5"  # for latent space visualization
 
 [tool.poetry.group.experiment.dependencies]
 tensorboard = ">=2.15"

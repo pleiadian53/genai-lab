@@ -1,33 +1,50 @@
-"""Data path management for genai-lab.
+"""Data and results path management for genai-lab.
 
-This module provides standardized paths for expression datasets, ensuring
-consistency across the codebase. Similar to MetaSpliceAI's genomic_resources
-but simplified for expression data.
+This module provides standardized paths for:
+- Input data (expression datasets)
+- Output results (figures, models, logs, experiments)
 
 Directory Structure:
-    data/                           # Root data directory (not in git)
+    data/                           # Input data (gitignored, large files)
     ├── scrna/                      # scRNA-seq datasets
-    │   ├── pbmc3k/                 # PBMC 3k dataset
-    │   │   ├── raw/                # Raw downloaded files
-    │   │   └── processed/          # Preprocessed h5ad files
+    │   ├── pbmc3k/
+    │   │   ├── raw/
+    │   │   └── processed/
     │   ├── pbmc68k/
     │   └── tabula_sapiens/
     ├── bulk/                       # Bulk RNA-seq datasets
     │   ├── gtex/
     │   ├── recount3/
     │   └── tcga/
-    └── models/                     # Trained model checkpoints
+    └── models/                     # Trained model checkpoints (legacy)
+    
+    results/                        # Output artifacts (can be versioned)
+    ├── figures/                    # Plots from analysis
+    │   ├── exploration/            # Data exploration plots
+    │   ├── training/               # Training curves, diagnostics
+    │   └── evaluation/             # Model evaluation plots
+    ├── models/                     # Trained model checkpoints
+    ├── logs/                       # Training logs, metrics
+    └── experiments/                # Experiment-specific outputs
+        └── <experiment_name>/      # Each experiment gets a folder
 
 Environment Variables:
     GENAILAB_DATA_ROOT: Override default data root directory
+    GENAILAB_RESULTS_ROOT: Override default results root directory
     GENAILAB_SCRNA_ROOT: Override scRNA-seq data directory
     GENAILAB_BULK_ROOT: Override bulk RNA-seq data directory
 
 Usage:
-    from genailab.data.paths import get_data_paths, DataPaths
+    from genailab.data.paths import get_data_paths, get_results_paths
     
-    paths = get_data_paths()
-    pbmc3k_processed = paths.scrna_processed("pbmc3k")
+    # Data paths
+    data_paths = get_data_paths()
+    pbmc3k = data_paths.scrna_processed("pbmc3k")
+    
+    # Results paths
+    results = get_results_paths()
+    fig_path = results.figure("exploration", "sparsity_analysis.png")
+    model_path = results.model_checkpoint("vae_pbmc3k", "best.pt")
 """
 
 from __future__ import annotations
@@ -181,8 +198,207 @@ class DataPaths:
         )
 
 
-# Global singleton
+# =============================================================================
+# Results Path Management
+# =============================================================================
+
+@dataclass
+class ResultsPaths:
+    """Centralized results/output path management.
+    
+    Organizes all outputs (figures, models, logs, experiments) in a
+    structured way for reproducibility and documentation.
+    
+    Attributes:
+        root: Root results directory
+        figures_root: Figures directory
+        models_root: Model checkpoints directory
+        logs_root: Training logs directory
+        experiments_root: Experiment-specific outputs
+    """
+    root: Path
+    figures_root: Path = field(init=False)
+    models_root: Path = field(init=False)
+    logs_root: Path = field(init=False)
+    experiments_root: Path = field(init=False)
+    
+    def __post_init__(self):
+        self.root = Path(self.root)
+        self.figures_root = self.root / "figures"
+        self.models_root = self.root / "models"
+        self.logs_root = self.root / "logs"
+        self.experiments_root = self.root / "experiments"
+    
+    # =========================================================================
+    # Figure paths
+    # =========================================================================
+    
+    def figure(
+        self,
+        category: str,
+        filename: str,
+        create_dir: bool = True,
+    ) -> Path:
+        """Get path for a figure file.
+        
+        Args:
+            category: Figure category (e.g., "exploration", "training", "evaluation")
+            filename: Figure filename (e.g., "sparsity_analysis.png")
+            create_dir: If True, create the directory if it doesn't exist
+            
+        Returns:
+            Path to the figure file
+            
+        Example:
+            >>> results = get_results_paths()
+            >>> path = results.figure("exploration", "library_size.png")
+            >>> plt.savefig(path)
+        """
+        fig_dir = self.figures_root / category
+        if create_dir:
+            fig_dir.mkdir(parents=True, exist_ok=True)
+        return fig_dir / filename
+    
+    def figure_dir(self, category: str, create: bool = True) -> Path:
+        """Get directory for a figure category.
+        
+        Args:
+            category: Figure category
+            create: If True, create the directory
+        """
+        fig_dir = self.figures_root / category
+        if create:
+            fig_dir.mkdir(parents=True, exist_ok=True)
+        return fig_dir
+    
+    # =========================================================================
+    # Model paths
+    # =========================================================================
+    
+    def model_dir(self, model_name: str, create: bool = True) -> Path:
+        """Get directory for a trained model.
+        
+        Args:
+            model_name: Name of the model (e.g., "vae_pbmc3k_20241222")
+            create: If True, create the directory
+        """
+        model_dir = self.models_root / model_name
+        if create:
+            model_dir.mkdir(parents=True, exist_ok=True)
+        return model_dir
+    
+    def model_checkpoint(
+        self,
+        model_name: str,
+        checkpoint: str = "best.pt",
+        create_dir: bool = True,
+    ) -> Path:
+        """Get checkpoint path for a trained model.
+        
+        Args:
+            model_name: Name of the model
+            checkpoint: Checkpoint filename (default: best.pt)
+            create_dir: If True, create the model directory
+        """
+        return self.model_dir(model_name, create=create_dir) / checkpoint
+    
+    # =========================================================================
+    # Log paths
+    # =========================================================================
+    
+    def log_dir(self, experiment_name: str, create: bool = True) -> Path:
+        """Get log directory for an experiment.
+        
+        Args:
+            experiment_name: Name of the experiment
+            create: If True, create the directory
+        """
+        log_dir = self.logs_root / experiment_name
+        if create:
+            log_dir.mkdir(parents=True, exist_ok=True)
+        return log_dir
+    
+    def log_file(self, experiment_name: str, filename: str = "train.log") -> Path:
+        """Get log file path."""
+        return self.log_dir(experiment_name) / filename
+    
+    # =========================================================================
+    # Experiment paths
+    # =========================================================================
+    
+    def experiment_dir(self, experiment_name: str, create: bool = True) -> Path:
+        """Get directory for an experiment.
+        
+        Each experiment can have its own figures, models, and logs.
+        
+        Args:
+            experiment_name: Name of the experiment (e.g., "vae_pbmc3k_v1")
+            create: If True, create the directory structure
+        """
+        exp_dir = self.experiments_root / experiment_name
+        if create:
+            exp_dir.mkdir(parents=True, exist_ok=True)
+            (exp_dir / "figures").mkdir(exist_ok=True)
+            (exp_dir / "checkpoints").mkdir(exist_ok=True)
+            (exp_dir / "logs").mkdir(exist_ok=True)
+        return exp_dir
+    
+    def experiment_figure(self, experiment_name: str, filename: str) -> Path:
+        """Get figure path within an experiment."""
+        return self.experiment_dir(experiment_name) / "figures" / filename
+    
+    def experiment_checkpoint(self, experiment_name: str, filename: str = "best.pt") -> Path:
+        """Get checkpoint path within an experiment."""
+        return self.experiment_dir(experiment_name) / "checkpoints" / filename
+    
+    # =========================================================================
+    # Utility methods
+    # =========================================================================
+    
+    def setup(self) -> None:
+        """Create the standard results directory structure."""
+        self.root.mkdir(parents=True, exist_ok=True)
+        self.figures_root.mkdir(exist_ok=True)
+        self.models_root.mkdir(exist_ok=True)
+        self.logs_root.mkdir(exist_ok=True)
+        self.experiments_root.mkdir(exist_ok=True)
+        
+        # Create standard figure categories
+        for category in ["exploration", "training", "evaluation"]:
+            (self.figures_root / category).mkdir(exist_ok=True)
+        
+        # Create .gitignore (keep structure but ignore large files)
+        gitignore = self.root / ".gitignore"
+        if not gitignore.exists():
+            gitignore.write_text(
+                "# Ignore large model files\n"
+                "models/**/*.pt\n"
+                "models/**/*.pth\n"
+                "experiments/**/checkpoints/*.pt\n"
+                "experiments/**/checkpoints/*.pth\n"
+                "\n"
+                "# Keep directory structure\n"
+                "!.gitignore\n"
+                "!**/\n"
+            )
+        
+        print(f"Created results directory structure at: {self.root}")
+    
+    def __repr__(self) -> str:
+        return (
+            f"ResultsPaths(\n"
+            f"  root={self.root},\n"
+            f"  figures_root={self.figures_root},\n"
+            f"  models_root={self.models_root},\n"
+            f"  logs_root={self.logs_root},\n"
+            f"  experiments_root={self.experiments_root}\n"
+            f")"
+        )
+
+
+# Global singletons
 _data_paths: DataPaths | None = None
+_results_paths: ResultsPaths | None = None
 
 
 def get_data_paths(data_root: str | Path | None = None) -> DataPaths:
@@ -211,10 +427,42 @@ def get_data_paths(data_root: str | Path | None = None) -> DataPaths:
     return _data_paths
 
 
+def get_results_paths(results_root: str | Path | None = None) -> ResultsPaths:
+    """Get the global ResultsPaths instance.
+    
+    Args:
+        results_root: Override results root directory. If None, uses:
+            1. GENAILAB_RESULTS_ROOT environment variable
+            2. <project_root>/results/
+            
+    Returns:
+        ResultsPaths instance
+    """
+    global _results_paths
+    
+    if _results_paths is None or results_root is not None:
+        if results_root is None:
+            results_root = os.getenv("GENAILAB_RESULTS_ROOT")
+        
+        if results_root is None:
+            project_root = _find_project_root()
+            results_root = project_root / "results"
+        
+        _results_paths = ResultsPaths(root=Path(results_root))
+    
+    return _results_paths
+
+
 def reset_data_paths():
     """Reset the global DataPaths instance (useful for testing)."""
     global _data_paths
     _data_paths = None
+
+
+def reset_results_paths():
+    """Reset the global ResultsPaths instance (useful for testing)."""
+    global _results_paths
+    _results_paths = None
 
 
 # ============================================================================
