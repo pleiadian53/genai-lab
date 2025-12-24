@@ -182,12 +182,14 @@ $$
 
 ### Core Equations
 
-Forward:
+**Forward:**
+
 $$
 q(x_t | x_0) = \mathcal{N}(x_t; \sqrt{\bar{\alpha}_t} x_0, (1 - \bar{\alpha}_t) I)
 $$
 
-Reverse:
+**Reverse:**
+
 $$
 p_\theta(x_{t-1} | x_t) = \mathcal{N}(x_{t-1}; \mu_\theta(x_t, t), \sigma_t^2 I)
 $$
