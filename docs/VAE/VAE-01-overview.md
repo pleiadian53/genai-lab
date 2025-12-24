@@ -74,7 +74,7 @@ $$
 Usually:
 
 $$
-q_\phi(z \mid x) = \mathcal{N}(\mu(x), \operatorname{diag}(\sigma^2(x)))
+q_\phi(z \mid x) = \mathcal{N}(\mu(x), \text{diag}(\sigma^2(x)))
 $$
 
 This matters because:
