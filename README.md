@@ -201,6 +201,44 @@ Companies and platforms pioneering generative AI for drug discovery and biologic
 - [17 Companies Pioneering AI Foundation Models in Pharma](https://www.biopharmatrend.com/business-intelligence/14-companies-pioneering-ai-foundation-models-in-pharma-and-biotech/)
 - [NVIDIA BioNeMo Platform](https://blogs.nvidia.com/blog/drug-discovery-bionemo-generative-ai/)
 
+## Related Projects
+
+### [causal-bio-lab](../causal-bio-lab/) — Causal AI/ML for Computational Biology
+
+**Complementary Focus:** While `genai-lab` focuses on **modeling data-generating processes** through generative models, `causal-bio-lab` focuses on **uncovering causal structures** and **estimating causal effects** from observational and interventional data.
+
+**Synergy:**
+
+- **Generative models** (VAE, diffusion) can learn rich representations but may capture spurious correlations
+- **Causal methods** (probabilistic graphical models, causal discovery, structural equations) ensure models capture true mechanisms, not just statistical patterns
+- **Together:** Causal generative models combine the best of both worlds—realistic simulation with causal guarantees
+
+**Key Integration Points:**
+
+1. **Causal representation learning:** Learn disentangled latent spaces that respect causal structure (causal VAEs, identifiable VAEs)
+2. **Causal discovery for architecture:** Use learned causal graphs to constrain generative model structure
+3. **Counterfactual validation:** Use causal inference methods (do-calculus, structural equations) to validate generated predictions
+4. **Causal regularization:** Apply invariance principles and interventional consistency losses for better generalization
+
+**Example Workflow:**
+
+```text
+1. Train a CVAE on gene expression data (genai-lab)
+2. Discover causal gene regulatory network (causal-bio-lab)
+3. Constrain VAE latent space to respect causal structure
+4. Generate counterfactual perturbation responses with causal guarantees
+5. Estimate treatment effects using both generative and causal methods
+```
+
+**Why This Matters for Computational Biology:**
+
+- **Drug discovery:** Generate realistic molecular perturbations while ensuring causal mechanisms are preserved
+- **Treatment response:** Predict individual-level effects (counterfactuals) with uncertainty quantification
+- **Target identification:** Discover causal drivers, not just biomarkers
+- **Combination therapy:** Model synergistic effects through causal interaction terms
+
+See `causal-bio-lab` Milestone 0.5 (SCMs) and Milestone D (Causal Representation Learning) for integration work.
+
 ## License
 
 MIT
