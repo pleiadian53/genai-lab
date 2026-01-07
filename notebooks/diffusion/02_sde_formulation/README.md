@@ -165,7 +165,9 @@ These documents provide focused deep-dives into specific topics. Read them in or
     ├── 03_equivalent_parameterizations.md
     ├── 04_training_loss_and_denoising.md
     ├── 05_reverse_sde_and_probability_flow_ode.md
-    └── 06_fokker_planck_and_effective_drift.md
+    ├── 06_fokker_planck_and_effective_drift.md
+    ├── 07_fokker_planck_equation.md            ⭐ NEW
+    └── 08_dimensional_analysis.md              ⭐ NEW
 ```
 
 ### Suggested Reading Orders
@@ -177,17 +179,24 @@ These documents provide focused deep-dives into specific topics. Read them in or
 4. `supplements/03_equivalent_parameterizations.md`
 5. `supplements/04_training_loss_and_denoising.md`
 6. `supplements/05_reverse_sde_and_probability_flow_ode.md`
+7. `supplements/07_fokker_planck_equation.md` (optional: deeper PDE connection)
 
 #### **For Theorists** (focus on mathematics):
 1. `sde_formulation.md` (theory first)
 2. `sde_QA.md` (clarifications)
-3. All supplements in order (01 → 06)
+3. All supplements in order (01 → 08)
 4. `02_sde_formulation.ipynb` (see theory in action)
+
+#### **For Building Intuition**:
+- `supplements/08_dimensional_analysis.md` (anytime - powerful sanity checks)
+- `supplements/07_fokker_planck_equation.md` (understand probability evolution)
+- `supplements/02_brownian_motion_dimensionality.md` (clarify vector dimensions)
 
 #### **For Quick Reference**:
 - Jump to `sde_QA.md` for specific questions
 - Use supplements as needed for deep-dives
 - **Start with supplement 01** if confused about what's fixed vs learned
+- **Use supplement 08** for dimensional sanity checks
 
 ---
 

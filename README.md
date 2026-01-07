@@ -29,30 +29,39 @@ genai-lab/
 │   │   ├── paths.py        # Standardized data path management
 │   │   ├── sc_preprocess.py    # scRNA-seq preprocessing (Scanpy)
 │   │   └── bulk_preprocess.py  # Bulk RNA-seq preprocessing
-│   ├── model/          # Encoders, decoders, VAE architectures
+│   ├── model/          # Encoders, decoders, VAE, diffusion architectures
 │   │   ├── vae.py          # CVAE, CVAE_NB, CVAE_ZINB
 │   │   ├── encoders.py     # ConditionEncoder, etc.
-│   │   └── decoders.py     # Gaussian, NB, ZINB decoders
+│   │   ├── decoders.py     # Gaussian, NB, ZINB decoders
+│   │   └── diffusion/      # Diffusion models (DDPM, score networks)
 │   ├── objectives/     # Loss functions, regularizers
 │   │   └── losses.py       # ELBO, NB, ZINB losses
 │   ├── eval/           # Metrics, diagnostics, plotting
 │   ├── workflows/      # Training, simulation, benchmarking
 │   └── utils/          # Config, reproducibility
-├── docs/               # Tutorial documents (see below)
+├── docs/               # Theory documents and derivations
 │   ├── VAE/            # VAE theory and derivations
 │   ├── EBM/            # Energy-based models
 │   ├── score_matching/ # Score matching and energy functions
 │   ├── beta-VAE/       # Disentanglement
 │   └── data/           # Data preparation guides
-├── examples/           # Jupyter notebooks with worked examples
+├── notebooks/          # Educational tutorials (interactive learning)
+│   ├── diffusion/      # Diffusion models tutorials
+│   ├── vae/            # VAE tutorials
+│   └── foundations/    # Mathematical foundations
+├── examples/           # Production scripts (real-world applications)
+│   ├── perturbation/   # Drug response, perturbation prediction
+│   └── utils/          # Helper modules for examples
 ├── data/               # Local data storage (gitignored)
 ├── tests/
 └── environment.yml     # Conda environment specification
 ```
 
-## Documentation
+## Documentation & Learning Resources
 
-Tutorial documents are available under `docs/<topic>/` covering theory, derivations, and practical guidance:
+### Theory Documents (`docs/`)
+
+Detailed theory, derivations, and mathematical foundations:
 
 | Topic | Description | Start Here |
 |-------|-------------|------------|
@@ -62,11 +71,32 @@ Tutorial documents are available under `docs/<topic>/` covering theory, derivati
 | [beta-VAE](docs/beta-VAE/) | Disentanglement and interpretability | [beta_vae.md](docs/beta-VAE/beta_vae.md) |
 | [data](docs/data/) | Data preparation for RNA-seq | [PBMC.md](docs/data/PBMC.md) |
 
+### Interactive Tutorials (`notebooks/`)
+
+Educational Jupyter notebooks for hands-on learning:
+
+| Topic | Description | Start Here |
+|-------|-------------|------------|
+| [diffusion](notebooks/diffusion/) | Diffusion models (DDPM, score-based, flow matching) | [01_ddpm_basics.ipynb](notebooks/diffusion/01_ddpm_basics.ipynb) |
+| [vae](notebooks/vae/) | VAE tutorials (coming soon) | - |
+| [foundations](notebooks/foundations/) | Mathematical foundations (coming soon) | - |
+
+See [notebooks/README.md](notebooks/README.md) for learning paths and progression.
+
+### Production Examples (`examples/`)
+
+Ready-to-use Python scripts for real-world applications:
+
+- `01_bulk_cvae.ipynb` — Train CVAE on bulk RNA-seq
+- `02_pbmc3k_cvae_nb.ipynb` — Train CVAE with NB decoder on scRNA-seq
+- `perturbation/` — Drug response and perturbation prediction (coming soon)
+
 **How to use:**
 
-- Follow the [ROADMAP](docs/ROADMAP.md) for a structured learning path
-- See [docs/README.md](docs/README.md) for a complete index
-- Use docs as reference while working through `examples/` notebooks
+- **Learning**: Start with `notebooks/` for interactive tutorials
+- **Theory**: Reference `docs/` for detailed derivations
+- **Application**: Use `examples/` for production workflows
+- Follow the [ROADMAP](docs/ROADMAP.md) for structured progression
 
 ## Installation
 
