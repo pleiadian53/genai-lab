@@ -142,6 +142,57 @@ This directory contains the theoretical foundation for generating samples from n
 
 ---
 
+### **score_network/** — Score Network Architecture Components
+
+**Deep-dive into the architectural components of modern score networks**
+
+This directory explains how to build neural networks that estimate $\nabla_x \log p_t(x)$ across different noise levels—the core of diffusion models.
+
+#### **[score_network/advanced_architectures.md](./score_network/advanced_architectures.md)** — Architectures for Realistic Data
+
+**Advanced neural network architectures for complex, real-world data**
+
+**Topics covered**:
+- **U-Net**: Dominant architecture for images and medical imaging
+  - Multi-scale processing, skip connections
+  - Residual blocks with time conditioning
+  - Attention layers for long-range dependencies
+- **Vision Transformer (DiT)**: Scalable transformer-based architecture
+  - Adaptive Layer Normalization (AdaLN)
+  - When to use DiT vs U-Net
+- **Networks for Biological Data**: Gene expression, scRNA-seq
+  - Deep residual MLPs for tabular data
+  - Graph Neural Networks for pathway structure
+  - Handling sparsity in single-cell data
+
+**When to read**: When moving beyond toy examples to realistic data
+
+**Key insight**: Match the architecture's inductive biases to your data's structure.
+
+---
+
+#### **[score_network/time_embedding_and_film.md](./score_network/time_embedding_and_film.md)** — Time Conditioning Components
+
+**Deep-dive into time conditioning mechanisms used in score networks**
+
+**Topics covered**:
+- **Time Embedding**: Transform scalar $t$ to high-dimensional representation
+  - Sinusoidal embeddings (multiple frequencies)
+  - Why networks struggle with raw scalar inputs
+  - Connection to Fourier basis
+- **FiLM (Feature-wise Linear Modulation)**: Condition layers on time
+  - Affine transformations: $\gamma_{\text{scale}} \odot h + \gamma_{\text{shift}}$
+  - Why FiLM is more effective than concatenation
+  - Implementation patterns for MLPs and CNNs
+- **Comparison**: FiLM vs. concatenation vs. attention
+- **Advanced topics**: Adaptive Group Normalization, multi-scale embeddings
+
+**When to read**: When implementing score networks and needing to understand components
+
+**Key insight**: Time embedding provides multiple frequencies for the network to understand time at different scales, while FiLM allows layer-wise adaptation to noise levels.
+
+---
+
 ### **[forward_process_derivation.md](./forward_process_derivation.md)** — Forward SDE Solution
 
 **Deriving the forward diffusion process: from clean data to noise**
@@ -282,6 +333,29 @@ This directory contains the theoretical foundation for generating samples from n
    - Supplement 04: Score matching
    - Supplement 05: Reverse SDE implementation
 
+### For Implementing Score Networks
+
+1. **Architecture basics**: `dev/notebooks/diffusion/02_sde_formulation/score_network_architecture.md`
+   - Activation functions (SiLU)
+   - Basic MLP implementation
+   - Why `y.sum().backward()`
+
+2. **Advanced architectures**: `score_network/advanced_architectures.md` (this directory)
+   - U-Net for images and medical imaging
+   - Vision Transformer (DiT) for large-scale training
+   - Architectures for gene expression and scRNA-seq
+   - When to use which architecture
+
+3. **Component deep-dive**: `score_network/time_embedding_and_film.md` (this directory)
+   - Time embedding: sinusoidal representations
+   - FiLM: feature-wise linear modulation
+   - Implementation patterns and debugging tips
+
+4. **Practice**: `notebooks/diffusion/02_sde_formulation/02_sde_formulation.ipynb`
+   - Train a score network on toy 2D data
+   - See time conditioning in action
+   - Sample from the reverse SDE
+
 ---
 
 ## Related Resources
@@ -325,6 +399,9 @@ When adding new documents to this directory:
   - ✅ reverse_process_derivation.md: Full reverse SDE derivation
   - ✅ reverse_process_example.md: Worked 1D Gaussian example
   - ✅ fokker_planck_derivation.md: Probability evolution equation
+- ✅ **score_network/**: Architecture components directory
+  - ✅ advanced_architectures.md: U-Net, DiT, and architectures for realistic data
+  - ✅ time_embedding_and_film.md: Time embedding and FiLM conditioning components
 
 ### Supplement Documents
 - ✅ **noise_schedules.md**: Complete guide to noise schedules
