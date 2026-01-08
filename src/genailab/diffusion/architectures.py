@@ -282,6 +282,7 @@ class UNet2D(nn.Module):
         
         self.in_channels = in_channels
         self.out_channels = out_channels
+        self.num_resolutions = len(channel_multipliers)
         
         # Time embedding
         self.time_embed = nn.Sequential(
@@ -294,56 +295,63 @@ class UNet2D(nn.Module):
         # Input convolution
         self.input_conv = nn.Conv2d(in_channels, base_channels, 3, padding=1)
         
-        # Encoder (downsampling)
-        self.encoder_blocks = nn.ModuleList()
-        self.downsample_blocks = nn.ModuleList()
-        
+        # Build channel sequence for encoder
+        channels = [base_channels]
         ch = base_channels
+        for mult in channel_multipliers:
+            ch = base_channels * mult
+            channels.append(ch)
+        
+        # Encoder (downsampling path)
+        self.encoder = nn.ModuleList()
+        self.downsamplers = nn.ModuleList()
+        
+        in_ch = base_channels
         for i, mult in enumerate(channel_multipliers):
             out_ch = base_channels * mult
             
-            # Residual blocks
-            blocks = nn.ModuleList()
+            # Residual blocks at this resolution
             for _ in range(num_res_blocks):
-                blocks.append(ConvBlock2D(ch, out_ch, time_emb_dim))
-                ch = out_ch
-            self.encoder_blocks.append(blocks)
+                self.encoder.append(ConvBlock2D(in_ch, out_ch, time_emb_dim))
+                in_ch = out_ch
             
-            # Downsample (except last)
+            # Downsample (except at the last resolution)
             if i < len(channel_multipliers) - 1:
-                self.downsample_blocks.append(nn.Conv2d(ch, ch, 3, stride=2, padding=1))
+                self.downsamplers.append(nn.Conv2d(out_ch, out_ch, 3, stride=2, padding=1))
             else:
-                self.downsample_blocks.append(nn.Identity())
+                self.downsamplers.append(None)
         
         # Bottleneck
-        self.bottleneck = ConvBlock2D(ch, ch, time_emb_dim)
+        self.bottleneck1 = ConvBlock2D(in_ch, in_ch, time_emb_dim)
+        self.bottleneck2 = ConvBlock2D(in_ch, in_ch, time_emb_dim)
         
-        # Decoder (upsampling)
-        self.decoder_blocks = nn.ModuleList()
-        self.upsample_blocks = nn.ModuleList()
+        # Decoder (upsampling path)
+        self.decoder = nn.ModuleList()
+        self.upsamplers = nn.ModuleList()
         
-        for i, mult in enumerate(reversed(channel_multipliers)):
+        reversed_mults = list(reversed(channel_multipliers))
+        for i, mult in enumerate(reversed_mults):
             out_ch = base_channels * mult
             
-            # Residual blocks
-            blocks = nn.ModuleList()
-            for j in range(num_res_blocks + 1):  # +1 for skip connection
-                in_ch = ch + out_ch if j == 0 else ch
-                blocks.append(ConvBlock2D(in_ch, out_ch, time_emb_dim))
-                ch = out_ch
-            self.decoder_blocks.append(blocks)
-            
-            # Upsample (except last)
-            if i < len(channel_multipliers) - 1:
-                self.upsample_blocks.append(nn.ConvTranspose2d(ch, ch, 4, stride=2, padding=1))
+            # Upsample first (except at the first decoder level)
+            if i > 0:
+                self.upsamplers.append(nn.ConvTranspose2d(in_ch, in_ch, 4, stride=2, padding=1))
             else:
-                self.upsample_blocks.append(nn.Identity())
+                self.upsamplers.append(None)
+            
+            # Residual blocks with skip connections
+            for j in range(num_res_blocks):
+                # First block at each resolution receives skip connection
+                skip_ch = out_ch  # Skip connection has out_ch channels
+                block_in_ch = in_ch + skip_ch
+                self.decoder.append(ConvBlock2D(block_in_ch, out_ch, time_emb_dim))
+                in_ch = out_ch
         
         # Output convolution
         self.output_conv = nn.Sequential(
-            nn.GroupNorm(8, ch),
+            nn.GroupNorm(8, in_ch),
             nn.SiLU(),
-            nn.Conv2d(ch, out_channels, 3, padding=1),
+            nn.Conv2d(in_ch, out_channels, 3, padding=1),
         )
     
     def forward(self, x: torch.Tensor, t: torch.Tensor) -> torch.Tensor:
@@ -362,26 +370,39 @@ class UNet2D(nn.Module):
         # Input
         h = self.input_conv(x)
         
-        # Encoder with skip connections
-        skip_connections = []
-        for blocks, downsample in zip(self.encoder_blocks, self.downsample_blocks):
-            for block in blocks:
-                h = block(h, t_emb)
-                skip_connections.append(h)
-            h = downsample(h)
+        # Encoder - collect skip connections
+        skips = [h]
+        encoder_idx = 0
+        num_res_blocks = len(self.encoder) // self.num_resolutions
+        
+        for i in range(self.num_resolutions):
+            # Apply residual blocks
+            for _ in range(num_res_blocks):
+                h = self.encoder[encoder_idx](h, t_emb)
+                skips.append(h)
+                encoder_idx += 1
+            
+            # Downsample
+            if self.downsamplers[i] is not None:
+                h = self.downsamplers[i](h)
         
         # Bottleneck
-        h = self.bottleneck(h, t_emb)
+        h = self.bottleneck1(h, t_emb)
+        h = self.bottleneck2(h, t_emb)
         
-        # Decoder with skip connections
-        for blocks, upsample in zip(self.decoder_blocks, self.upsample_blocks):
-            h = upsample(h)
-            for i, block in enumerate(blocks):
-                if i == 0:
-                    # Concatenate skip connection
-                    skip = skip_connections.pop()
-                    h = torch.cat([h, skip], dim=1)
-                h = block(h, t_emb)
+        # Decoder - use skip connections in reverse
+        decoder_idx = 0
+        for i in range(self.num_resolutions):
+            # Upsample
+            if self.upsamplers[i] is not None:
+                h = self.upsamplers[i](h)
+            
+            # Apply residual blocks with skip connections
+            for _ in range(num_res_blocks):
+                skip = skips.pop()
+                h = torch.cat([h, skip], dim=1)
+                h = self.decoder[decoder_idx](h, t_emb)
+                decoder_idx += 1
         
         # Output
         return self.output_conv(h)
@@ -549,7 +570,8 @@ class UNet3D(nn.Module):
         for blocks, downsample in zip(self.encoder_blocks, self.downsample_blocks):
             for block in blocks:
                 h = block(h, t_emb)
-                skip_connections.append(h)
+            # Save skip connection before downsampling
+            skip_connections.append(h)
             h = downsample(h)
         
         # Bottleneck

@@ -2,7 +2,7 @@
 
 from .sde import VPSDE, VESDE
 from .score_network import SimpleScoreNetwork
-from .training import train_score_network
+from .training import train_score_network, train_image_diffusion
 from .sampling import sample_reverse_sde, sample_probability_flow_ode
 from .schedules import (
     NoiseSchedule,
@@ -31,6 +31,7 @@ __all__ = [
     "get_score_network",
     # Training and sampling
     "train_score_network",
+    "train_image_diffusion",
     "sample_reverse_sde",
     "sample_probability_flow_ode",
     # Noise schedules
