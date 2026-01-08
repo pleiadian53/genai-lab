@@ -141,7 +141,7 @@ $$
 
 ## Stage 5: Score Matching & Denoising
 
-**Status**: 🔲 Planned
+**Status**: ✅ Implemented
 
 ### Key Concepts
 
@@ -155,11 +155,19 @@ $$
 \mathcal{L}_{\text{DSM}} = \mathbb{E}_{x, \tilde{x}} \left[ \| s_\theta(\tilde{x}) - \nabla_{\tilde{x}} \log p(\tilde{x} | x) \|^2 \right]
 $$
 
+### Implementation
+
+- `src/genailab/diffusion/sde.py` — VP-SDE, VE-SDE with noise schedules
+- `src/genailab/diffusion/architectures.py` — Score networks (MLP, TabularScoreNetwork, UNet2D, UNet3D)
+- `src/genailab/diffusion/training.py` — Score matching training loops
+
 ### Milestones
 
-- [ ] Implement score network
-- [ ] Denoising score matching loss
-- [ ] Langevin sampling
+- [x] Implement score network (MLP, attention-based)
+- [x] Denoising score matching loss
+- [x] VP-SDE and VE-SDE formulations
+- [x] Noise schedules (linear, cosine)
+- [ ] Langevin sampling (basic implementation exists)
 - [ ] Noise-conditional score networks (NCSN)
 
 ### References
@@ -169,16 +177,16 @@ $$
 
 ---
 
-## Stage 6: Denoising Diffusion (DDPM)
+## Stage 6: Denoising Diffusion (DDPM) & SDE Framework
 
-**Status**: 🔲 Planned
+**Status**: ✅ Implemented
 
 ### Key Concepts
 
 - **Forward process**: Gradually add noise $q(x_t | x_{t-1})$
 - **Reverse process**: Learn to denoise $p_\theta(x_{t-1} | x_t)$
 - **Noise schedule**: Linear, cosine, learned
-- **Connection to VAE**: Hierarchical latent variables
+- **SDE formulation**: Continuous-time diffusion via SDEs
 
 ### Core Equations
 
@@ -194,24 +202,31 @@ $$
 p_\theta(x_{t-1} | x_t) = \mathcal{N}(x_{t-1}; \mu_\theta(x_t, t), \sigma_t^2 I)
 $$
 
-### Implementation Plan
+### Implementation
 
-- `src/genailab/model/diffusion.py` — Diffusion model (scaffold exists)
-- Noise schedules
-- U-Net or Transformer backbone
-- Sampling algorithms (DDPM, DDIM)
+- `src/genailab/diffusion/` — Complete diffusion module
+  - `sde.py` — VP-SDE, VE-SDE base classes
+  - `architectures.py` — UNet2D, UNet3D, TabularScoreNetwork
+  - `training.py` — `train_score_network`, `train_image_diffusion`
+  - `sampling.py` — Reverse SDE, probability flow ODE
+- `notebooks/diffusion/` — Educational tutorials (01-04)
+- `scripts/diffusion/` — Production training scripts
 
 ### Milestones
 
-- [ ] Forward diffusion process
-- [ ] Noise prediction network
-- [ ] DDPM training loop
+- [x] Forward diffusion process (VP-SDE, VE-SDE)
+- [x] Score prediction network (U-Net for images, MLP+attention for tabular)
+- [x] Training loop with checkpointing
+- [x] Reverse SDE sampling
+- [x] Probability flow ODE sampling
+- [x] Medical imaging diffusion (synthetic X-rays)
 - [ ] DDIM fast sampling
 - [ ] Conditional diffusion (classifier-free guidance)
 
 ### References
 
 - Ho et al., "Denoising Diffusion Probabilistic Models" (2020)
+- Song et al., "Score-Based Generative Modeling through Stochastic Differential Equations" (2021)
 - `dev/references/Principles of diffusion models.pdf` — Sections 3-4
 
 ---
@@ -376,6 +391,9 @@ y → Encoder → z_y (target)
 1. Lopez et al., "Deep generative modeling for single-cell transcriptomics" (scVI, 2018)
 2. Lotfollahi et al., "scGen: Predicting single-cell perturbation responses" (2019)
 3. Bunne et al., "Learning Single-Cell Perturbation Responses using Neural Optimal Transport" (2023)
+4. **scPPDM**: "Single-cell Perturbation Prediction via Diffusion Models" — `dev/references/scPPDM.pdf`
+   - Applies diffusion models to predict single-cell perturbation responses
+   - Key target for implementation in this project
 
 ---
 
@@ -405,6 +423,7 @@ y → Encoder → z_y (target)
 
 ## Next Steps
 
-1. **Immediate**: Add latent space visualization to VAE
-2. **This week**: Implement β-VAE with configurable β
-3. **Next**: Score matching fundamentals before DDPM
+1. **Immediate**: Test diffusion training on RunPod with large preset
+2. **This week**: Add conditional diffusion (classifier-free guidance)
+3. **Next**: Flow matching implementation
+4. **Ongoing**: Apply diffusion to gene expression data (scPPDM-style)

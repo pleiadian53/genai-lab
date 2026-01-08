@@ -52,6 +52,8 @@ genai-lab/
 ├── examples/           # Production scripts (real-world applications)
 │   ├── perturbation/   # Drug response, perturbation prediction
 │   └── utils/          # Helper modules for examples
+├── scripts/            # Training scripts with CLI (mirrors notebooks/)
+│   └── diffusion/      # Diffusion model training scripts
 ├── data/               # Local data storage (gitignored)
 ├── tests/
 └── environment.yml     # Conda environment specification
@@ -150,19 +152,22 @@ genailab-train --config configs/cvae_toy.yaml
 - [x] Environment setup (conda/mamba + Poetry)
 - [x] Data preparation documentation
 
-### Stage 3: Score Matching & Energy Functions 🔄
+### Stage 3: Score Matching & Energy Functions ✅
 
 - [x] Score matching overview documentation
 - [x] Energy functions deep dive (Boltzmann, partition function)
-- [ ] Langevin dynamics implementation
-- [ ] Denoising score matching loss
+- [x] VP-SDE and VE-SDE formulations
+- [x] Denoising score matching loss
 
-### Stage 4: Diffusion Models (Planned)
+### Stage 4: Diffusion Models ✅
 
-- [ ] Forward/reverse diffusion process
-- [ ] Time-conditional score network
-- [ ] Latent diffusion for gene expression
-- [ ] Conditional generation with guidance
+- [x] Forward/reverse diffusion process (VP-SDE, VE-SDE)
+- [x] Score networks (MLP, TabularScoreNetwork, UNet2D, UNet3D)
+- [x] Medical imaging diffusion (synthetic X-rays)
+- [x] Training scripts with configurable model sizes
+- [x] RunPod setup documentation for GPU training
+- [ ] Conditional generation with classifier-free guidance
+- [ ] Flow matching
 
 ### Stage 5: Counterfactual & Causal (Planned)
 

@@ -15,6 +15,8 @@ Use these documents alongside the code and notebooks to understand the theory, i
 | [score_matching/](./score_matching/) | Score functions & energy models | [README.md](./score_matching/README.md) |
 | [EBM/](./EBM/) | Energy-Based Models | [README.md](./EBM/README.md) |
 | [data/](./data/) | Data preparation guides | [data_preparation.md](./data/data_preparation.md) |
+| [runpods/](./runpods/) | GPU cloud setup (RunPod) | [project_setup_on_new_pod.md](./runpods/project_setup_on_new_pod.md) |
+| [incubation/](./incubation/) | Experimental ideas (JEPA, etc.) | - |
 
 ---
 

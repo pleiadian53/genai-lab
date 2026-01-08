@@ -18,6 +18,11 @@ from .architectures import (
     UNet3D,
     get_score_network,
 )
+from .datasets import (
+    SyntheticXRayDataset,
+    ChestXRayDataset,
+    get_dataset,
+)
 
 __all__ = [
     # SDEs
@@ -41,4 +46,8 @@ __all__ = [
     "SigmoidSchedule",
     "QuadraticSchedule",
     "get_schedule",
+    # Datasets
+    "SyntheticXRayDataset",
+    "ChestXRayDataset",
+    "get_dataset",
 ]
