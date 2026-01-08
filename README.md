@@ -72,6 +72,23 @@ Detailed theory, derivations, and mathematical foundations:
 | [score_matching](docs/score_matching/) | Score functions, Fisher vs Stein scores | [README.md](docs/score_matching/README.md) |
 | [beta-VAE](docs/beta-VAE/) | Disentanglement and interpretability | [beta_vae.md](docs/beta-VAE/beta_vae.md) |
 | [data](docs/data/) | Data preparation for RNA-seq | [PBMC.md](docs/data/PBMC.md) |
+| [incubation](docs/incubation/) | Ideas under development (JEPA, generative AI for biology) | See below |
+
+### Ideas Under Incubation (`docs/incubation/`)
+
+Exploratory architectural proposals and application ideas not yet implemented:
+
+| Document | Focus |
+|----------|-------|
+| [joint_latent_space_and_JEPA.md](docs/incubation/joint_latent_space_and_JEPA.md) | Joint latent spaces for static/dynamic data, JEPA for Perturb-seq |
+| [generative-ai-for-gene-expression-prediction.md](docs/incubation/generative-ai-for-gene-expression-prediction.md) | Diffusion/VAE/Flow for gene expression with uncertainty |
+| [generative-ai-for-perturbation-modeling.md](docs/incubation/generative-ai-for-perturbation-modeling.md) | Generative approaches for scPerturb, beyond GEM-1 |
+
+**Key insights from incubation:**
+
+- **Joint latent spaces**: Static (bulk RNA-seq) and dynamic (Perturb-seq) data can share the same manifold
+- **JEPA over reconstruction**: Predicting embeddings is more robust for biology
+- **Hybrid predictive-generative**: Combine GEM-1-style predictors with generative wrappers for uncertainty
 
 ### Interactive Tutorials (`notebooks/`)
 
