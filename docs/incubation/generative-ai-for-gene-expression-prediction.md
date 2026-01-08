@@ -233,6 +233,154 @@ def sample(model, metadata, n_steps=1000):
 2. **Computational cost** - Training requires many forward passes
 3. **Hyperparameter sensitivity** - Noise schedule, network architecture matter
 4. **Validation** - How to evaluate sample quality for gene expression?
+5. **Count data** - Gene expression is counts, not continuous (see below)
+
+### Handling Count Data in Diffusion Models
+
+A fundamental challenge for applying diffusion models to gene expression is that **gene expression data consists of counts** (TPM, UMI counts), not continuous values like image pixels. Diffusion models assume continuous data where adding Gaussian noise is semantically meaningful.
+
+#### The Problem
+
+Raw gene expression matrices contain:
+- **Integer counts** (UMI-based scRNA-seq)
+- **TPM/FPKM** (normalized but still count-derived)
+- **Sparse zeros** (dropout in scRNA-seq)
+- **Heavy-tailed distributions** (few highly expressed genes)
+
+Adding Gaussian noise to counts doesn't have clear biological meaning—what does "gene X expression = 5.3 ± 0.7 noise" mean?
+
+#### Solution 1: Latent Diffusion + Count-Aware Decoder (Recommended)
+
+The standard approach combines **two components** that work together:
+
+1. **Latent Diffusion**: Run diffusion in a learned continuous latent space (not raw counts)
+2. **Count-Aware Decoder**: VAE decoder outputs NB/ZINB distribution parameters (not point estimates)
+
+```
+Counts → log1p → Encoder → z (continuous) → Diffusion → z' → NB Decoder → NB(μ,θ) → Sample counts
+```
+
+**Why both are needed**:
+- **Latent space** makes diffusion well-defined (continuous, bounded, smooth)
+- **NB/ZINB decoder** ensures outputs respect count statistics (non-negative, overdispersed, sparse)
+
+**Implementation** (see `notebooks/diffusion/04_gene_expression_diffusion/`):
+
+```python
+# 1. Train VAE with NB decoder (not MSE!)
+vae = GeneVAE_NB(n_genes=20000, latent_dim=128)
+# Encoder: counts → latent
+# Decoder: latent → NB(μ, θ) parameters
+
+# 2. Train with NB reconstruction loss
+loss = elbo_loss_nb(x=counts, mu=dec_mu, theta=dec_theta, 
+                    enc_mu=enc_mu, enc_logvar=enc_logvar)
+
+# 3. Extract latent representations for diffusion
+with torch.no_grad():
+    latent_data = vae.encode(log1p(counts))[0]  # Get mu
+
+# 4. Train diffusion in latent space
+diffusion = train_diffusion(latent_data)  # Standard continuous diffusion
+
+# 5. Sample: noise → latent → NB params → counts
+z_samples = diffusion.sample(n=100)
+mu, theta = vae.decode(z_samples)  # NB parameters
+count_samples = sample_negative_binomial(mu, theta)  # Stochastic sampling
+```
+
+**The NB/ZINB Decoder** (see `src/genailab/model/decoders.py`):
+
+```python
+class NegativeBinomialDecoder(nn.Module):
+    """Outputs NB(μ, θ) parameters instead of point estimates."""
+    
+    def forward(self, z, library_size=None):
+        # Rate (softmax ensures non-negative, sums to 1)
+        rho = F.softmax(self.rho_head(z), dim=-1)
+        
+        # Scale by library size
+        mu = rho * library_size  # Expected counts
+        
+        # Dispersion (learned per-gene)
+        theta = torch.exp(self.log_theta)
+        
+        return {"mu": mu, "theta": theta}
+```
+
+**Zero-Inflated NB (ZINB) Decoder** for sparse scRNA-seq:
+
+```python
+class ZINBDecoder(NegativeBinomialDecoder):
+    """Adds dropout probability π for excess zeros."""
+    
+    def forward(self, z, library_size=None):
+        out = super().forward(z, library_size)
+        out["pi"] = torch.sigmoid(self.pi_head(z))  # Dropout prob
+        return out
+```
+
+**Loss functions** (see `src/genailab/objectives/losses.py`):
+
+```python
+# NB negative log-likelihood
+def nb_loss(x, mu, theta):
+    return -NegativeBinomial(mu, theta).log_prob(x).mean()
+
+# ZINB for sparse data
+def zinb_loss(x, mu, theta, pi):
+    # Zero case: log(π + (1-π) * NB(0))
+    # Non-zero case: log((1-π) * NB(x))
+    ...
+```
+
+#### Solution 2: Log-Transform + Clip (Simple Baseline)
+
+Simple but loses count semantics:
+
+```python
+# Preprocessing
+x_continuous = np.log1p(counts)  # log(1 + x) transform
+x_normalized = (x_continuous - mean) / std
+
+# Train diffusion on normalized data
+diffusion = train_diffusion(x_normalized)
+
+# Postprocessing
+samples_normalized = diffusion.sample()
+samples_continuous = samples_normalized * std + mean
+samples_counts = np.expm1(samples_continuous).clip(0)  # exp(x) - 1, clip negatives
+```
+
+**Limitations**: Loses discrete structure, can produce non-integer "counts."
+
+#### Solution 3: Discrete Diffusion (D3PM)
+
+For true count modeling, use discrete diffusion:
+
+```python
+# D3PM: Diffusion on discrete tokens
+# Transition matrix instead of Gaussian noise
+Q_t = (1 - β_t) * I + β_t * uniform_matrix
+
+# Forward: gradually corrupt to uniform distribution
+# Reverse: learn to denoise discrete tokens
+```
+
+**Status**: Not yet implemented in genai-lab. See Austin et al. (2021) "Structured Denoising Diffusion Models in Discrete State-Spaces."
+
+#### Summary: Approaches Compared
+
+| Approach | Description | Pros | Cons | Use When |
+|----------|-------------|------|------|----------|
+| **Latent Diffusion + NB/ZINB** | Diffusion in VAE latent space with count-aware decoder | Proper count model, well-defined diffusion | Requires VAE training | **Default choice** |
+| Log-transform only | Diffusion on log1p(counts), clip output | Simple, fast | Loses count structure | Quick prototyping |
+| Discrete diffusion (D3PM) | Diffusion directly on discrete counts | True count model | Complex, slow, less mature | Research applications |
+
+**Implementation in genai-lab**:
+- `src/genailab/model/decoders.py`: `NegativeBinomialDecoder`, `ZINBDecoder`
+- `src/genailab/objectives/losses.py`: `nb_loss()`, `zinb_loss()`, `elbo_loss_nb()`, `elbo_loss_zinb()`
+- `notebooks/diffusion/04_gene_expression_diffusion/`: Latent diffusion example
 
 ---
 
