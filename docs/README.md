@@ -14,7 +14,7 @@ Use these documents alongside the code and notebooks to understand the theory, i
 | [beta-VAE/](./beta-VAE/) | Disentanglement | [beta_vae.md](./beta-VAE/beta_vae.md) |
 | [score_matching/](./score_matching/) | Score functions & energy models | [README.md](./score_matching/README.md) |
 | [EBM/](./EBM/) | Energy-Based Models | [README.md](./EBM/README.md) |
-| [data/](./data/) | Data preparation guides | [data_preparation.md](./data/data_preparation.md) |
+| [datasets/](./datasets/) | Datasets & pipelines | [README.md](./datasets/README.md) |
 | [runpods/](./runpods/) | GPU cloud setup (RunPod) | [project_setup_on_new_pod.md](./runpods/project_setup_on_new_pod.md) |
 | [incubation/](./incubation/) | Experimental ideas (JEPA, etc.) | - |
 
@@ -42,12 +42,14 @@ The VAE series provides a complete treatment from theory to implementation:
 | [EBM/README.md](./EBM/README.md) | Energy functions and Boltzmann distributions |
 | [EBM/EBM-stein-vs-fisher-score.md](./EBM/EBM-stein-vs-fisher-score.md) | Stein vs Fisher score comparison |
 
-### Data Preparation
+### Datasets
 
 | Document | Content |
 |----------|---------|
-| [data/data_preparation.md](./data/data_preparation.md) | RNA-seq preprocessing workflows |
-| [data/PBMC.md](./data/PBMC.md) | PBMC 3k/68k dataset guide |
+| [datasets/README.md](./datasets/README.md) | Datasets overview and index |
+| [datasets/gene_expression/](./datasets/gene_expression/) | Gene expression (PBMC, RNA-seq) |
+| [datasets/medical_imaging/](./datasets/medical_imaging/) | Medical imaging (Chest X-ray) |
+| [datasets/perturbation/](./datasets/perturbation/) | Perturbation data (scPerturb) |
 
 ---
 
@@ -69,7 +71,7 @@ Each topic folder corresponds to implementations in `src/genailab/`:
 | Docs Folder | Code Location | Example Notebook |
 |-------------|---------------|------------------|
 | `docs/VAE/` | `src/genailab/model/vae.py` | `examples/01_bulk_cvae.ipynb` |
-| `docs/data/` | `src/genailab/data/` | `examples/02_pbmc3k_cvae_nb.ipynb` |
+| `docs/datasets/` | `src/genailab/data/`, `src/genailab/diffusion/datasets.py` | `examples/02_pbmc3k_cvae_nb.ipynb` |
 
 ### Reference Style
 
@@ -77,7 +79,7 @@ When working through a notebook, keep the relevant doc open:
 
 - **Training a VAE?** → Read [VAE-model-training.md](./VAE/VAE-model-training.md)
 - **Confused about ELBO?** → Read [VAE-02-elbo.md](./VAE/VAE-02-elbo.md)
-- **Preprocessing scRNA-seq?** → Read [PBMC.md](./data/PBMC.md)
+- **Preprocessing scRNA-seq?** → Read [PBMC.md](./datasets/gene_expression/PBMC.md)
 
 ---
 

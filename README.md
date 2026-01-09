@@ -68,13 +68,15 @@ Detailed theory, derivations, and mathematical foundations:
 | Topic | Description | Start Here |
 |-------|-------------|------------|
 | [VAE](docs/VAE/) | Variational Autoencoders (ELBO, inference, training) | [VAE-01-overview.md](docs/VAE/VAE-01-overview.md) |
+| [beta-VAE](docs/beta-VAE/) | VAE with disentanglement (β parameter) | [beta_vae.md](docs/beta-VAE/beta_vae.md) |
 | [EBM](docs/EBM/) | Energy-Based Models (Boltzmann, partition functions) | [README.md](docs/EBM/README.md) |
 | [score_matching](docs/score_matching/) | Score functions, Fisher vs Stein scores | [README.md](docs/score_matching/README.md) |
 | [flow_matching](docs/flow_matching/) | Flow matching & rectified flow | [rectifying_flow.md](docs/flow_matching/rectifying_flow.md) |
 | [diffusion/DiT](docs/diffusion/DiT/) | Diffusion Transformers (architecture) | [diffusion_transformer.md](docs/diffusion/DiT/diffusion_transformer.md) |
-| [beta-VAE](docs/beta-VAE/) | Disentanglement and interpretability | [beta_vae.md](docs/beta-VAE/beta_vae.md) |
-| [data](docs/data/) | Data preparation for RNA-seq | [PBMC.md](docs/data/PBMC.md) |
-| [incubation](docs/incubation/) | Ideas under development (JEPA, generative AI for biology) | See below |
+| [Latent Diffusion + NB/ZINB](docs/incubation/generative-ai-for-gene-expression-prediction.md) | Diffusion in VAE latent space with count-aware decoder | Section: Handling Count Data |
+| [JEPA](docs/incubation/joint_latent_space_and_JEPA.md) | Joint Embedding Predictive Architecture for biology | Full document |
+| [datasets](docs/datasets/) | Datasets & preprocessing pipelines | [README.md](docs/datasets/README.md) |
+| [incubation](docs/incubation/) | Ideas under development (SSM backbones, alternative architectures) | [README.md](docs/incubation/README.md) |
 
 ### Ideas Under Incubation (`docs/incubation/`)
 
