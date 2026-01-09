@@ -524,3 +524,4 @@ They form the backbone of modern score network architectures, enabling the netwo
   - [Score Network Architecture](../../../dev/notebooks/diffusion/02_sde_formulation/score_network_architecture.md)
   - [Forward Process Derivation](../forward_process_derivation.md)
   - [Training Loss and Denoising](../../../dev/notebooks/diffusion/02_sde_formulation/training_loss_and_denoising.md)
+- **Related topic**: [Numerical Embeddings and Continuous Values](../../../docs/incubation/numerical_embeddings_and_continuous_values.md) - Explores how similar sinusoidal embedding techniques are used for numerical values in LLMs and their relevance to time embedding

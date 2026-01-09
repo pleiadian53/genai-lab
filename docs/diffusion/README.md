@@ -253,6 +253,48 @@ This directory explains how to build neural networks that estimate $\nabla_x \lo
 
 ---
 
+### **[classifier_free_guidance.md](./classifier_free_guidance.md)** — Conditional Generation
+
+**Comprehensive guide to classifier-free guidance for conditional diffusion models**
+
+**Topics covered**:
+- Problem: Why naive conditioning doesn't work well
+- Classifier guidance (original approach with separate classifier)
+- Classifier-free guidance (elegant solution without classifier)
+- Training procedure (condition dropping)
+- Guidance scale and fidelity vs. diversity trade-off
+- Implementation in both DDPM and SDE views
+- Variants: dynamic guidance, multi-conditional, negative prompting
+
+**When to read**: When building conditional diffusion models (text-to-image, class-conditional, etc.)
+
+**Key insight**: Train one model for both conditional and unconditional generation by randomly dropping conditions during training, then amplify the difference at sampling time.
+
+---
+
+### **history/** — Historical Development
+
+**How diffusion models evolved and unified**
+
+#### **[history/diffusion_models_development.md](./history/diffusion_models_development.md)** — Complete Historical Timeline
+
+**Traces the development of diffusion models from multiple perspectives**
+
+**Topics covered**:
+- Timeline: Score matching (2005) → DDPM (2020) → SDE view (2021)
+- Was DDPM derived from SDEs? (No—retrospective unification)
+- Three views: Variational, Score-Based, Flow-Based
+- How the SDE view unified them all
+- Why understanding history clarifies the "multiple views" confusion
+
+**When to read**: After understanding both DDPM and SDE views, when seeking big-picture understanding
+
+**Key insight**: DDPM was developed independently as a discrete-time model. The SDE view came later and revealed that DDPM, NCSN, and flow-based models are all the same underlying process.
+
+**Includes**: Diagram showing the convergence of three perspectives to continuous-time formulation
+
+---
+
 ## Organization Strategy
 
 ### `docs/diffusion/` vs `notebooks/diffusion/`
