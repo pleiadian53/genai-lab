@@ -231,31 +231,107 @@ $$
 
 ---
 
-## Stage 7: Flow Matching
+## Stage 7: Flow Matching & Rectified Flow
 
-**Status**: 🔲 Planned
+**Status**: 📝 Documented
 
 ### Key Concepts
 
-- **Continuous normalizing flows**: ODE-based density transformation
-- **Optimal transport**: Straight-line interpolation paths
+- **Flow matching**: Learn velocity field via regression, not score matching
+- **Rectified flow**: Linear interpolation paths (simplest flow matching)
+- **Deterministic sampling**: ODE-based generation (no stochastic noise)
 - **Simulation-free training**: No ODE solver during training
 
 ### Core Equations
 
+**Path (rectified flow):**
+
 $$
-\frac{dx}{dt} = v_\theta(x, t), \quad x(0) \sim p_0, \quad x(1) \sim p_1
+x_t = (1 - t) \cdot x_0 + t \cdot x_1
 $$
+
+**Velocity:**
+
+$$
+\frac{dx_t}{dt} = x_1 - x_0
+$$
+
+**Loss:**
+
+$$
+\mathcal{L}_{\text{RF}} = \mathbb{E}_{x_0, x_1, t} \left[ \| v_\theta(x_t, t) - (x_1 - x_0) \|^2 \right]
+$$
+
+### Comparison: Score Matching vs Flow Matching
+
+| Aspect | Score Matching | Flow Matching |
+|--------|---------------|---------------|
+| What's learned | Score: $\nabla_x \log p_t(x)$ | Velocity: $v_\theta(x, t)$ |
+| Forward process | Stochastic (add noise) | Deterministic (interpolate) |
+| Reverse process | Stochastic SDE | Deterministic ODE |
+| Sampling steps | 100-1000 | 10-50 |
+
+### Documentation
+
+- [Rectified Flow Tutorial](flow_matching/rectifying_flow.md) — From first principles
 
 ### Milestones
 
+- [x] Rectified flow theory documentation
 - [ ] Implement flow matching loss
 - [ ] Conditional flow matching
 - [ ] Compare with DDPM on gene expression
 
 ### References
 
+- Liu et al., "Flow Straight and Fast: Learning to Generate and Transfer Data with Rectified Flow" (2022)
 - Lipman et al., "Flow Matching for Generative Modeling" (2023)
+
+---
+
+## Stage 7b: Diffusion Transformers (DiT)
+
+**Status**: 📝 Documented
+
+### Key Concepts
+
+- **Transformer backbone**: Replace U-Net with Transformer for diffusion/flow models
+- **Patch tokenization**: Convert images/data to token sequences
+- **Adaptive LayerNorm (AdaLN)**: Time and condition modulation via FiLM
+- **Architecture-objective separation**: DiT works with score matching, noise prediction, or rectified flow
+
+### Architecture
+
+```text
+Input → Patch Embed → [Transformer Blocks with AdaLN] → Output Projection
+                              ↑
+                    Time Embed + Condition Embed
+```
+
+### Why DiT Over U-Net
+
+| Aspect | U-Net | DiT |
+|--------|-------|-----|
+| Context | Local → global via downsampling | Global via attention |
+| Conditioning | Architectural changes needed | Add tokens or modulation |
+| Input shapes | Fixed grid | Variable (with masking) |
+| Scalability | Limited | Scales with compute |
+
+### Documentation
+
+- [Diffusion Transformer Tutorial](diffusion/DiT/diffusion_transformer.md) — Architecture and biology applications
+
+### Milestones
+
+- [x] DiT theory documentation
+- [x] AdaLN/FiLM conditioning explanation
+- [ ] Minimal DiT implementation
+- [ ] DiT + rectified flow for gene expression
+
+### References
+
+- Peebles & Xie, "Scalable Diffusion Models with Transformers" (2023)
+- Perez et al., "FiLM: Visual Reasoning with a General Conditioning Layer" (2018)
 
 ---
 
