@@ -25,6 +25,11 @@ See [docs/INDUSTRY_LANDSCAPE.md](docs/INDUSTRY_LANDSCAPE.md) for a comprehensive
 ```text
 genai-lab/
 ├── src/genailab/
+│   ├── foundation/     # 🆕 Foundation model adaptation framework
+│   │   ├── configs/        # Resource-aware model configs (small/medium/large)
+│   │   ├── tuning/         # LoRA, adapters, freezing strategies
+│   │   ├── conditioning/   # FiLM, cross-attention, CFG (planned)
+│   │   └── recipes/        # End-to-end pipelines (planned)
 │   ├── data/           # Data loading, transforms, preprocessing
 │   │   ├── paths.py        # Standardized data path management
 │   │   ├── sc_preprocess.py    # scRNA-seq preprocessing (Scanpy)
@@ -40,19 +45,25 @@ genai-lab/
 │   ├── workflows/      # Training, simulation, benchmarking
 │   └── utils/          # Config, reproducibility
 ├── docs/               # Theory documents and derivations
+│   ├── foundation_models/  # 🆕 Foundation model adaptation
+│   ├── DiT/            # 🆕 Diffusion Transformers
+│   ├── JEPA/           # 🆕 Joint Embedding Predictive Architecture
+│   ├── latent_diffusion/   # 🆕 Latent diffusion for biology
+│   ├── DDPM/           # Denoising Diffusion Probabilistic Models
 │   ├── VAE/            # VAE theory and derivations
 │   ├── EBM/            # Energy-based models
 │   ├── score_matching/ # Score matching and energy functions
-│   ├── beta-VAE/       # Disentanglement
-│   └── data/           # Data preparation guides
+│   ├── flow_matching/  # Flow matching & rectified flow
+│   └── datasets/       # Data preparation guides
 ├── notebooks/          # Educational tutorials (interactive learning)
+│   ├── foundation_models/  # 🆕 Foundation adaptation tutorials
 │   ├── diffusion/      # Diffusion models tutorials
 │   ├── vae/            # VAE tutorials
 │   └── foundations/    # Mathematical foundations
 ├── examples/           # Production scripts (real-world applications)
 │   ├── perturbation/   # Drug response, perturbation prediction
 │   └── utils/          # Helper modules for examples
-├── scripts/            # Training scripts with CLI (mirrors notebooks/)
+├── scripts/            # Training scripts with CLI
 │   └── diffusion/      # Diffusion model training scripts
 ├── data/               # Local data storage (gitignored)
 ├── tests/
@@ -67,16 +78,18 @@ Detailed theory, derivations, and mathematical foundations:
 
 | Topic | Description | Start Here |
 |-------|-------------|------------|
+| 🆕 [foundation_models](docs/foundation_models/) | Foundation model adaptation (LoRA, adapters, freezing) | [leveraging_foundation_models_v2.md](docs/foundation_models/leveraging_foundation_models_v2.md) |
+| 🆕 [DiT](docs/DiT/) | Diffusion Transformers (architecture, training, sampling) | [README.md](docs/DiT/README.md) |
+| 🆕 [JEPA](docs/JEPA/) | Joint Embedding Predictive Architecture | [README.md](docs/JEPA/README.md) |
+| 🆕 [latent_diffusion](docs/latent_diffusion/) | Latent diffusion with NB/ZINB decoders | [README.md](docs/latent_diffusion/README.md) |
+| [DDPM](docs/DDPM/) | Denoising Diffusion Probabilistic Models | [README.md](docs/DDPM/README.md) |
 | [VAE](docs/VAE/) | Variational Autoencoders (ELBO, inference, training) | [VAE-01-overview.md](docs/VAE/VAE-01-overview.md) |
 | [beta-VAE](docs/beta-VAE/) | VAE with disentanglement (β parameter) | [beta_vae.md](docs/beta-VAE/beta_vae.md) |
 | [EBM](docs/EBM/) | Energy-Based Models (Boltzmann, partition functions) | [README.md](docs/EBM/README.md) |
 | [score_matching](docs/score_matching/) | Score functions, Fisher vs Stein scores | [README.md](docs/score_matching/README.md) |
-| [flow_matching](docs/flow_matching/) | Flow matching & rectified flow | [rectifying_flow.md](docs/flow_matching/rectifying_flow.md) |
-| [diffusion/DiT](docs/diffusion/DiT/) | Diffusion Transformers (architecture) | [diffusion_transformer.md](docs/diffusion/DiT/diffusion_transformer.md) |
-| [Latent Diffusion + NB/ZINB](docs/incubation/generative-ai-for-gene-expression-prediction.md) | Diffusion in VAE latent space with count-aware decoder | Section: Handling Count Data |
-| [JEPA](docs/incubation/joint_latent_space_and_JEPA.md) | Joint Embedding Predictive Architecture for biology | Full document |
+| [flow_matching](docs/flow_matching/) | Flow matching & rectified flow | [README.md](docs/flow_matching/README.md) |
 | [datasets](docs/datasets/) | Datasets & preprocessing pipelines | [README.md](docs/datasets/README.md) |
-| [incubation](docs/incubation/) | Ideas under development (SSM backbones, alternative architectures) | [README.md](docs/incubation/README.md) |
+| [incubation](docs/incubation/) | Ideas under development | [README.md](docs/incubation/README.md) |
 
 ### Ideas Under Incubation (`docs/incubation/`)
 
@@ -100,6 +113,7 @@ Educational Jupyter notebooks for hands-on learning:
 
 | Topic | Description | Start Here |
 |-------|-------------|------------|
+| 🆕 [foundation_models](notebooks/foundation_models/) | Foundation model adaptation (LoRA, adapters, resource management) | [README.md](notebooks/foundation_models/README.md) |
 | [diffusion](notebooks/diffusion/) | Diffusion models (DDPM, score-based, flow matching) | [01_ddpm_basics.ipynb](notebooks/diffusion/01_ddpm_basics.ipynb) |
 | [vae](notebooks/vae/) | VAE tutorials (coming soon) | - |
 | [foundations](notebooks/foundations/) | Mathematical foundations (coming soon) | - |
@@ -187,20 +201,36 @@ genailab-train --config configs/cvae_toy.yaml
 - [x] Medical imaging diffusion (synthetic X-rays)
 - [x] Training scripts with configurable model sizes
 - [x] RunPod setup documentation for GPU training
+- [x] Comprehensive DDPM documentation series
+- [x] Gene expression architectures (latent tokens, pathway tokens)
 - [ ] Conditional generation with classifier-free guidance
-- [ ] Flow matching
+- [ ] Flow matching implementation
 
-### Stage 5: Counterfactual & Causal (Planned)
+### Stage 5: Foundation Model Adaptation ✅
+
+- [x] Resource-aware model configurations (small/medium/large)
+- [x] Auto-detection of hardware (M1 Mac, RunPod, Cloud)
+- [x] LoRA (Low-Rank Adaptation) implementation
+- [x] Comprehensive documentation (DiT, JEPA, Latent Diffusion)
+- [ ] Adapters and freezing strategies
+- [ ] Conditioning modules (FiLM, cross-attention, CFG)
+- [ ] Tutorial notebooks for each adaptation pattern
+- [ ] End-to-end recipes for gene expression tasks
+
+### Stage 6: Advanced Architectures 📝
+
+- [x] DiT (Diffusion Transformers) documentation
+- [x] JEPA (Joint Embedding Predictive Architecture) documentation
+- [x] Latent Diffusion documentation
+- [ ] DiT implementation for gene expression
+- [ ] JEPA implementation for Perturb-seq
+- [ ] Flow matching implementation
+
+### Stage 7: Counterfactual & Causal (Planned)
 
 - [ ] Counterfactual generation pipeline
 - [ ] Deconfounding / SCM-flavored latent model
 - [ ] Causal regularization via invariance
-
-### Stage 6: Advanced Topics (Planned)
-
-- [ ] JEPA-style representation learning
-- [ ] Contrastive methods for biology
-- [ ] Multi-modal integration
 
 ## Industry Landscape
 

@@ -291,7 +291,7 @@ $$
 
 ## Stage 7b: Diffusion Transformers (DiT)
 
-**Status**: 📝 Documented
+**Status**: ✅ Documented
 
 ### Key Concepts
 
@@ -319,12 +319,18 @@ Input → Patch Embed → [Transformer Blocks with AdaLN] → Output Projection
 
 ### Documentation
 
-- [Diffusion Transformer Tutorial](diffusion/DiT/diffusion_transformer.md) — Architecture and biology applications
+- [DiT Series](DiT/README.md) — Complete documentation series
+  - [00_dit_overview.md](DiT/00_dit_overview.md) — Introduction
+  - [01_dit_foundations.md](DiT/01_dit_foundations.md) — Architecture details
+  - [02_dit_training.md](DiT/02_dit_training.md) — Training with rectified flow
+  - [03_dit_sampling.md](DiT/03_dit_sampling.md) — Sampling strategies
+  - [open_research_tokenization.md](DiT/open_research_tokenization.md) — Tokenization for biology
 
 ### Milestones
 
-- [x] DiT theory documentation
+- [x] DiT theory documentation (complete series)
 - [x] AdaLN/FiLM conditioning explanation
+- [x] Tokenization strategies for gene expression
 - [ ] Minimal DiT implementation
 - [ ] DiT + rectified flow for gene expression
 
@@ -364,9 +370,40 @@ $$
 
 ---
 
+## Stage 8b: Latent Diffusion Models
+
+**Status**: ✅ Documented
+
+### Key Concepts
+
+- **Two-stage training**: VAE for compression + Diffusion in latent space
+- **Count-aware decoders**: NB/ZINB decoders for gene expression
+- **Efficiency**: Train diffusion on compressed representations
+- **Biological constraints**: Preserve count structure and sparsity
+
+### Documentation
+
+- [Latent Diffusion Series](latent_diffusion/README.md) — Complete documentation
+  - [00_latent_diffusion_overview.md](latent_diffusion/00_latent_diffusion_overview.md)
+  - [01_latent_diffusion_foundations.md](latent_diffusion/01_latent_diffusion_foundations.md)
+  - [02_latent_diffusion_training.md](latent_diffusion/02_latent_diffusion_training.md)
+  - [03_latent_diffusion_applications.md](latent_diffusion/03_latent_diffusion_applications.md)
+  - [04_latent_diffusion_combio.md](latent_diffusion/04_latent_diffusion_combio.md)
+
+### Milestones
+
+- [x] Latent diffusion theory documentation
+- [x] VAE with NB/ZINB decoders
+- [x] DiT backbone for latent diffusion
+- [x] Conditioning mechanisms (FiLM, cross-attention)
+- [ ] Implementation for gene expression
+- [ ] End-to-end training pipeline
+
+---
+
 ## Stage 9: Joint Embedding Predictive Architecture (JEPA)
 
-**Status**: 🔲 Planned (see `docs/incubation/joint_latent_space_and_JEPA.md`)
+**Status**: ✅ Documented
 
 ### Key Concepts
 
@@ -400,13 +437,24 @@ y → Encoder → z_y (target)
 | Video (dynamic) | Time-series, Perturb-seq, lineage tracing |
 | Variable-length clips | Single-cell snapshots across conditions |
 
+### Documentation
+
+- [JEPA Series](JEPA/README.md) — Complete documentation
+  - [00_jepa_overview.md](JEPA/00_jepa_overview.md)
+  - [01_jepa_foundations.md](JEPA/01_jepa_foundations.md)
+  - [02_jepa_training.md](JEPA/02_jepa_training.md)
+  - [03_jepa_applications.md](JEPA/03_jepa_applications.md)
+  - [04_jepa_perturbseq.md](JEPA/04_jepa_perturbseq.md) — Complete Perturb-seq implementation
+  - [open_research_joint_latent.md](JEPA/open_research_joint_latent.md)
+
 ### Milestones
 
-- [ ] Joint embedding architecture
+- [x] JEPA theory documentation (complete series)
+- [x] VICReg regularization explanation
+- [x] Perturb-seq architecture and training
+- [ ] Joint embedding architecture implementation
 - [ ] Predictor network with perturbation conditioning
-- [ ] Variance-Invariance-Covariance (VICReg) regularization
 - [ ] Apply to gene expression time series
-- [ ] JEPA for Perturb-seq (predict perturbed state from baseline + perturbation)
 
 ### References
 
@@ -444,6 +492,52 @@ y → Encoder → z_y (target)
 
 - Ha & Schmidhuber, "World Models" (2018)
 - Hafner et al., "Dream to Control" (2020)
+
+---
+
+## Stage 11: Foundation Model Adaptation
+
+**Status**: ✅ Framework Implemented
+
+### Key Concepts
+
+- **Resource-aware configurations**: Small/medium/large model presets
+- **Parameter-efficient fine-tuning**: LoRA, adapters, freezing strategies
+- **Hardware auto-detection**: M1 Mac, RunPod, Cloud GPUs
+- **Modular design**: Composable components for adaptation
+
+### Implementation
+
+- `src/genailab/foundation/` — Complete package
+  - `configs/model_configs.py` — Small/medium/large presets
+  - `configs/resource_profiles.py` — Hardware detection
+  - `tuning/lora.py` — LoRA implementation
+
+### Documentation
+
+- [Foundation Models Series](foundation_models/) — Complete guides
+  - [leveraging_foundation_models_v2.md](foundation_models/leveraging_foundation_models_v2.md)
+  - [data_shape_v2.md](foundation_models/data_shape_v2.md)
+  - [IMPLEMENTATION_GUIDE.md](foundation_models/IMPLEMENTATION_GUIDE.md)
+- [Package README](../src/genailab/foundation/README.md)
+- [Tutorial Roadmap](../notebooks/foundation_models/README.md)
+
+### Milestones
+
+- [x] Resource-aware model configurations
+- [x] Auto-detection of hardware resources
+- [x] LoRA implementation with save/load utilities
+- [x] Comprehensive documentation (foundation models, DiT, JEPA, latent diffusion)
+- [ ] Adapters and freezing strategies
+- [ ] Conditioning modules (FiLM, cross-attention, CFG)
+- [ ] Tutorial notebooks
+- [ ] End-to-end recipes for gene expression
+
+### References
+
+- Hu et al., "LoRA: Low-Rank Adaptation of Large Language Models" (2021)
+- Houlsby et al., "Parameter-Efficient Transfer Learning for NLP" (2019)
+- Perez et al., "FiLM: Visual Reasoning with a General Conditioning Layer" (2018)
 
 ---
 

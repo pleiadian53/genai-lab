@@ -18,6 +18,7 @@ For production-ready scripts and real-world applications, see `../examples/`.
 
 ```
 notebooks/
+├── foundation_models/  # 🆕 Foundation model adaptation (LoRA, adapters, resource management)
 ├── diffusion/          # Diffusion models (DDPM, score-based, flow matching)
 ├── vae/                # Variational autoencoders
 └── foundations/        # Mathematical foundations (score functions, energy models)
@@ -27,7 +28,24 @@ notebooks/
 
 ## Learning Paths
 
-### Path 1: Generative Models for Gene Expression
+### Path 1: Foundation Model Adaptation (New!)
+
+**Prerequisites**: Basic PyTorch, understanding of transformers
+
+1. **Resource-Aware Training**
+   - `foundation_models/01_model_sizes_and_resources.ipynb` (planned) — Hardware detection and model sizing
+   - Learn to configure models for M1 Mac, RunPod, or Cloud GPUs
+
+2. **Parameter-Efficient Fine-Tuning**
+   - `foundation_models/02_lora_basics.ipynb` (planned) — LoRA fundamentals
+   - `foundation_models/03_adapters_vs_lora.ipynb` (planned) — Comparing strategies
+   - `foundation_models/04_freezing_strategies.ipynb` (planned) — Transfer learning
+
+3. **End-to-End Application**
+   - `foundation_models/07_end_to_end_gene_expression.ipynb` (planned) — Complete pipeline
+   - See also: `docs/foundation_models/` for theory
+
+### Path 2: Generative Models for Gene Expression
 
 **Prerequisites**: Basic probability, PyTorch, gene expression data
 
@@ -43,15 +61,16 @@ notebooks/
 3. **Applications**
    - Move to `examples/` for production workflows
 
-### Path 2: Drug Response Prediction
+### Path 3: Drug Response Prediction
 
 **Goal**: Predict perturbation effects using diffusion models (scPPDM approach)
 
 1. `diffusion/01_ddpm_basics.ipynb` — Understand DDPM mechanics
 2. `diffusion/04_conditional_generation.ipynb` (planned) — Conditional diffusion
-3. `examples/perturbation/scPPDM_pipeline.py` — Production implementation
+3. `foundation_models/05_conditioning_patterns.ipynb` (planned) — FiLM, cross-attention
+4. `examples/perturbation/scPPDM_pipeline.py` — Production implementation
 
-### Path 3: Mathematical Foundations
+### Path 4: Mathematical Foundations
 
 **For researchers developing novel methods**
 
@@ -111,6 +130,15 @@ When adding new notebooks:
 ---
 
 ## Planned Notebooks
+
+### Foundation Models (New!)
+- [ ] `01_model_sizes_and_resources.ipynb` — Hardware detection and resource management
+- [ ] `02_lora_basics.ipynb` — LoRA fundamentals and implementation
+- [ ] `03_adapters_vs_lora.ipynb` — Comparing adaptation strategies
+- [ ] `04_freezing_strategies.ipynb` — Transfer learning patterns
+- [ ] `05_conditioning_patterns.ipynb` — FiLM, cross-attention, CFG
+- [ ] `06_mixture_of_experts.ipynb` — Advanced architectures
+- [ ] `07_end_to_end_gene_expression.ipynb` — Complete pipeline
 
 ### Diffusion Models
 - [ ] `02_score_matching.ipynb` — Score-based generative models

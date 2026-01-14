@@ -61,22 +61,29 @@ M1_PROFILE = ResourceProfile(
 )
 
 RUNPOD_PROFILE = ResourceProfile(
-    name="RunPod RTX 3090 24GB",
+    name="RunPod A40 48GB",
     device="cuda",
-    memory_gb=24.0,
+    memory_gb=48.0,  # A40 GPU (good balance of cost/performance)
     num_gpus=1,
     
     # Recommendations
-    recommended_model_size="medium",
-    max_batch_size=32,
+    recommended_model_size="medium",  # Can handle medium to large models
+    max_batch_size=64,  # Larger batches with 48GB
     use_mixed_precision=True,
-    use_gradient_checkpointing=False,
+    use_gradient_checkpointing=False,  # Not needed with 48GB
     use_distributed=False,
     
     # GPU optimizations
     use_torch_compile=True,
     use_flash_attention=True,
 )
+
+# Note: RunPod offers various GPU options:
+# - RTX 3090/4090 (24GB): ~$0.24-0.59/hr - Good for medium models
+# - A40 (48GB): ~$0.40/hr - Best balance (recommended)
+# - H100 SXM (80GB): ~$2.69/hr - For large-scale training
+# - RTX 5090 (32GB): ~$0.89/hr - Latest generation
+# Adjust memory_gb and max_batch_size based on your chosen instance
 
 CLOUD_PROFILE = ResourceProfile(
     name="Cloud A100 40GB",
