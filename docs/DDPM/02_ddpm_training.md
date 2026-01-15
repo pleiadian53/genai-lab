@@ -7,6 +7,7 @@ This document bridges the mathematical foundations of DDPM to practical training
 ## Overview
 
 Training a DDPM involves:
+
 1. **Loss function**: Simple MSE vs. weighted ELBO
 2. **Architecture**: Choosing the right network for your data
 3. **Conditioning**: How to incorporate additional information
