@@ -31,11 +31,13 @@ Clinical utility means producing **actionable distributions** under intervention
 **Goal**: Generate realistic gene expression profiles conditioned on biological context.
 
 **Requirements**:
+
 - **Realistic marginals** — Proper count distributions (NB/ZINB), zero-inflation, library size effects
 - **Realistic conditionals** — Accurate tissue, disease subtype, and covariate dependencies
 - **Calibrated uncertainty** — Reliable confidence estimates for downstream decisions
 
 **Use cases**:
+
 - Data augmentation for rare cell types
 - Synthetic controls for experiments
 - Batch effect correction
@@ -46,11 +48,13 @@ Clinical utility means producing **actionable distributions** under intervention
 **Goal**: Predict cellular response to genetic or chemical perturbations.
 
 **Requirements**:
+
 - **Δ-expression prediction** — Counterfactual shift under perturbation, not just reconstruction
 - **Generalization** — Accurate predictions for unseen perturbations or combinations
 - **OOD-aware uncertainty** — Higher uncertainty for novel cell states or perturbations
 
 **Use cases**:
+
 - Virtual screening (predict without experiments)
 - Combination therapy prediction
 - Mechanism discovery
@@ -98,21 +102,25 @@ decoder: latent_tokens → NB/ZINB parameters (mean, dispersion, dropout)
 ### Why This Works
 
 **1. Learned semantic tokenization**
+
 - Encoder discovers meaningful biological patterns
 - Avoids arbitrary patch-based tokenization
 - Tokens represent gene modules, pathways, or cell states
 
 **2. Stable diffusion dynamics**
+
 - Continuous latent space (no count artifacts)
 - Normalized scale (better gradient flow)
 - Lower dimensionality (faster training)
 
 **3. Biological realism**
+
 - NB/ZINB decoder handles count distributions
 - Library size normalization in decoder
 - Zero-inflation modeling
 
 **4. Modular design**
+
 - Encoder/decoder can be pretrained separately
 - DiT backbone can be frozen or adapted
 - Easy to swap components
@@ -135,6 +143,7 @@ decoder: R^(m×d) → R^20000  # Back to gene space
 ```
 
 **Advantages**:
+
 - **Data-adaptive** — Model learns optimal tokenization
 - **Compute-friendly** — 64 tokens << 20K genes (attention is O(m²))
 - **LoRA-compatible** — Small adapters can steer large backbone
@@ -178,6 +187,7 @@ token_50 → "Apoptosis genes"
 ```
 
 **Advantages**:
+
 - **Interpretability** — Pathway-level explanations are clinically legible
 - **Lower dimension** — ~50-500 pathways vs 20K genes
 - **Transfer learning** — Pathways consistent across datasets
@@ -205,6 +215,7 @@ attention_mask = GRN_adjacency_matrix  # Sparse (num_genes, num_genes)
 ```
 
 **Advantages**:
+
 - **Mechanistic** — Respects known regulatory relationships
 - **Perturbation-aware** — Better inductive bias for interventions
 - **Efficient** — Sparse attention O(num_edges) vs O(n²)
@@ -224,10 +235,12 @@ sequence = [gene_1, gene_2, ..., gene_k]  # Top-k genes
 ```
 
 **Advantages**:
+
 - **Empirically validated** — Works in Geneformer
 - **Sequence-native** — Natural for transformers
 
 **Disadvantages**:
+
 - **Ordering artifacts** — Ties get arbitrary order
 - **Scaling issues** — 20K sequence length is expensive
 - **Truncation loss** — Top-k loses information
@@ -265,6 +278,7 @@ optimizer = torch.optim.Adam(head.parameters(), lr=1e-3)
 ```
 
 **When to use**:
+
 - **Sanity check** — Test if representations are already good
 - **Low data** — Few samples available
 - **Fast iteration** — Quick baseline
@@ -293,6 +307,7 @@ for block in transformer.blocks:
 ```
 
 **When to use**:
+
 - **Stable training** — Less prone to overfitting
 - **Multiple tasks** — Swap adapters per task
 - **Limited compute** — Fewer parameters than full fine-tuning
@@ -324,6 +339,7 @@ attention.value = LoRALinear(hidden_dim, hidden_dim, rank=8)
 ```
 
 **When to use**:
+
 - **Best efficiency** — Highest utility per parameter
 - **Multiple personas** — Easy to swap per-dataset/task
 - **Memory constrained** — Minimal memory overhead
@@ -356,6 +372,7 @@ for module in model.modules():
 ```
 
 **When to use**:
+
 - **More expressiveness** — Beyond LoRA/adapters
 - **Moderate data** — Enough to avoid overfitting
 - **Task-specific features** — Need to adapt high-level representations
@@ -402,6 +419,7 @@ output = cross_attention(
 ```
 
 **When to use**:
+
 - **Perturbation modeling** — Perturbation as control signal
 - **Multi-modal conditioning** — Cell type + tissue + batch
 - **Classifier-free guidance** — Sample-time steering
@@ -425,6 +443,7 @@ loss = KL_divergence(student_output, teacher_output)
 ```
 
 **When to use**:
+
 - **Deployment constraints** — Clinical pipelines need fast inference
 - **Edge devices** — Limited compute
 - **Cost reduction** — Cheaper API calls
@@ -482,6 +501,7 @@ x_perturbed = decoder(z_perturbed)
 ```
 
 **Why delta is better**:
+
 - More stable training
 - Better generalization
 - Easier to interpret
@@ -557,6 +577,7 @@ model = LatentDiffusionModel(
 ```
 
 **Benefits**:
+
 - **Modular** — Swap components easily
 - **Reusable** — Share across projects
 - **Testable** — Unit test each component
@@ -573,6 +594,7 @@ Break implementation into manageable sessions that compound.
 **Goal**: Understand foundation model adaptation strategies.
 
 **Topics**:
+
 - Clinical targets and success criteria
 - Latent-space strategy
 - Tokenization options
@@ -585,6 +607,7 @@ Break implementation into manageable sessions that compound.
 **Goal**: Build one complete end-to-end system.
 
 **Tasks**:
+
 - Implement latent diffusion for expression
 - Add NB/ZINB decoder
 - Create conditioning API (perturbation, tissue, batch, covariates)
@@ -596,6 +619,7 @@ Break implementation into manageable sessions that compound.
 **Goal**: Package adaptation strategies as reusable modules.
 
 **Tasks**:
+
 - Implement LoRA, adapters, freeze policies
 - Create "one-line switch" configs
 - Benchmark strategies on same task
@@ -607,6 +631,7 @@ Break implementation into manageable sessions that compound.
 **Goal**: Build delta-in-latent perturbation model.
 
 **Tasks**:
+
 - Implement delta predictor
 - Add perturbation encoder
 - Evaluate: directional accuracy, pathway consistency, calibration
@@ -618,6 +643,7 @@ Break implementation into manageable sessions that compound.
 **Goal**: Handle real-world deployment challenges.
 
 **Tasks**:
+
 - Batch effect / domain shift handling
 - Uncertainty calibration + OOD detection
 - Counterfactual validity checks
@@ -696,18 +722,22 @@ Break implementation into manageable sessions that compound.
 ## References
 
 **Foundation models**:
+
 - Theodoris et al. (2023): "Transfer learning enables predictions in network biology" (Geneformer)
 - Cui et al. (2024): "scGPT: Toward Building a Foundation Model for Single-Cell Multi-omics"
 
 **Adaptation strategies**:
+
 - Hu et al. (2021): "LoRA: Low-Rank Adaptation of Large Language Models"
 - Houlsby et al. (2019): "Parameter-Efficient Transfer Learning for NLP" (Adapters)
 - Perez et al. (2018): "FiLM: Visual Reasoning with a General Conditioning Layer"
 
 **Latent diffusion**:
+
 - Rombach et al. (2022): "High-Resolution Image Synthesis with Latent Diffusion Models"
 - Peebles & Xie (2023): "Scalable Diffusion Models with Transformers" (DiT)
 
 **Computational biology applications**:
+
 - Lotfollahi et al. (2023): "Predicting cellular responses to novel drug combinations" (CPA)
 - Lopez et al. (2018): "Deep generative modeling for single-cell transcriptomics" (scVI)

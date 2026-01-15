@@ -33,21 +33,25 @@ Target y → Encoder → z_y
 ### Why This Matters
 
 **1. Computational efficiency**
+
 - No expensive decoder
 - Prediction in low-dimensional latent space
 - Faster training, less memory
 
 **2. Better representations**
+
 - Focus on semantic content, not pixel details
 - Invariant to nuisance factors
 - More robust to noise
 
 **3. World modeling**
+
 - Learn dynamics without generation
 - Predict future states efficiently
 - Enable planning and reasoning
 
 **4. No contrastive negatives**
+
 - Unlike SimCLR, MoCo, CLIP
 - No need to sample negative pairs
 - Simpler training objective
@@ -95,6 +99,7 @@ Cost: Low (no decoder, no negatives)
 ### 1. Encoder
 
 Maps inputs to embeddings:
+
 $$
 z = f_\theta(x)
 $$
@@ -104,7 +109,9 @@ $$
 ### 2. Predictor
 
 Predicts target embedding from context:
+
 $$
+
 \hat{z}_y = g_\phi(z_x, \text{context})
 $$
 
@@ -119,21 +126,26 @@ Prevents collapse via three terms:
 
 **Variance**: Keep embeddings spread out
 $$
+
 \mathcal{L}_{\text{var}} = \sum_d \max(0, \gamma - \sqrt{\text{Var}(z_d) + \epsilon})
 $$
 
 **Invariance**: Predictions match targets
 $$
+
 \mathcal{L}_{\text{inv}} = \| z_y - \hat{z}_y \|^2
 $$
 
 **Covariance**: Decorrelate dimensions
 $$
+
 \mathcal{L}_{\text{cov}} = \sum_{i \neq j} \text{Cov}(z_i, z_j)^2
 $$
 
 **Total loss**:
+
 $$
+
 \mathcal{L} = \lambda_{\text{inv}} \mathcal{L}_{\text{inv}} + \lambda_{\text{var}} \mathcal{L}_{\text{var}} + \lambda_{\text{cov}} \mathcal{L}_{\text{cov}}
 $$
 
@@ -144,6 +156,7 @@ $$
 ### Problem with Generative Models in Biology
 
 **Reconstruction is often not the goal**:
+
 - We don't need to generate realistic gene expression
 - We care about **predictions** (perturbations, trajectories)
 - Pixel-level accuracy is overkill
@@ -176,11 +189,13 @@ x_{t+1} → Encoder → z_{t+1}
 ```
 
 **3. Handles heterogeneity**
+
 - Cell-level predictions (not population average)
 - Uncertainty in embedding space
 - Robust to technical noise
 
 **4. Compositional generalization**
+
 - Learn perturbation operators
 - Combine multiple perturbations
 - Transfer across cell types
@@ -192,12 +207,14 @@ x_{t+1} → Encoder → z_{t+1}
 ### The Problem with Separate Models
 
 **Traditional approach**:
+
 - Bulk RNA-seq model (static)
 - Time-series model (dynamic)
 - Perturb-seq model (perturbations)
 - **Each has its own latent space**
 
 **Issues**:
+
 - No knowledge transfer
 - Can't combine modalities
 - Redundant learning
@@ -208,6 +225,7 @@ x_{t+1} → Encoder → z_{t+1}
 > If two data types differ only by dimensionality or observation density, they probably want the same latent space.
 
 **For biology**:
+
 - **Bulk RNA-seq** = "static image" (baseline state)
 - **Time-series** = "video" (temporal dynamics)
 - **Perturb-seq** = "video with interventions"
@@ -223,6 +241,7 @@ Perturb-seq ───┘
 ```
 
 **Benefits**:
+
 - Static data teaches spatial priors (cell types, pathways)
 - Dynamic data teaches temporal dynamics
 - Perturbation data teaches causal relationships
@@ -296,6 +315,7 @@ Generative: ẑ → Decoder/Diffusion → x̂
 3. Get both prediction AND uncertainty quantification
 
 **Benefits**:
+
 - JEPA learns dynamics efficiently
 - Generative model handles distribution
 - Best of both worlds
@@ -325,6 +345,7 @@ loss = ||z_pred - z_actual||²
 ```
 
 **Advantages**:
+
 - No need to reconstruct all 20K genes
 - Learn perturbation operators
 - Compositional (combine perturbations)
@@ -391,11 +412,13 @@ loss = ||z_response - z_actual||²
 ### 1. Efficiency
 
 **Generative models**:
+
 - Train decoder on 20K genes
 - Pixel-level reconstruction loss
 - Slow, memory-intensive
 
 **JEPA**:
+
 - No decoder
 - Embedding-level loss (e.g., 256-dim)
 - Fast, memory-efficient
@@ -405,11 +428,13 @@ loss = ||z_response - z_actual||²
 ### 2. Robustness
 
 **Generative models**:
+
 - Sensitive to technical noise
 - Must model all variation
 - Overfits to batch effects
 
 **JEPA**:
+
 - Focuses on semantic content
 - Invariant to nuisance factors
 - More robust representations
@@ -417,10 +442,12 @@ loss = ||z_response - z_actual||²
 ### 3. Interpretability
 
 **Generative models**:
+
 - Black box decoder
 - Hard to interpret latents
 
 **JEPA**:
+
 - Direct prediction in embedding space
 - Can probe what's being predicted
 - Easier to analyze learned representations
@@ -428,10 +455,12 @@ loss = ||z_response - z_actual||²
 ### 4. Compositional Generalization
 
 **Generative models**:
+
 - Learn p(x|condition)
 - Hard to combine conditions
 
 **JEPA**:
+
 - Learn perturbation operators
 - Naturally compositional
 - Combine multiple perturbations
@@ -463,6 +492,7 @@ loss = ||z_response - z_actual||²
 **How do you evaluate embedding predictions?**
 
 **Solutions**:
+
 - Downstream task performance
 - Embedding similarity metrics
 - Probe classifiers
@@ -584,15 +614,18 @@ loss = ||z_response - z_actual||²
 ## References
 
 **JEPA papers**:
+
 - LeCun, "A Path Towards Autonomous Machine Intelligence" (2022)
 - Assran et al., "Self-Supervised Learning from Images with a Joint-Embedding Predictive Architecture" (I-JEPA, 2023)
 - Bardes et al., "V-JEPA: Latent Video Prediction for Visual Representation Learning" (2024)
 - Meta AI, "V-JEPA 2: Self-Supervised Video Models Enable Understanding, Prediction, and Planning" (2025)
 
 **Joint latent spaces**:
+
 - ByteDance & HKU, "Goku: Native Joint Image-Video Generation" (2024)
 
 **VICReg**:
+
 - Bardes et al., "VICReg: Variance-Invariance-Covariance Regularization for Self-Supervised Learning" (2022)
 
 **Biology applications** (to be developed):

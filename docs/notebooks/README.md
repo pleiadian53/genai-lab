@@ -24,6 +24,7 @@ View rendered notebooks with proper math and plots:
 - 📊 [VAE Notebooks](https://pleiadian53.github.io/genai-lab/notebooks/vae/)
 
 **Advantages:**
+
 - ✅ Reliable rendering (no GitHub timeouts)
 - ✅ Math properly displayed  
 - ✅ Plots and outputs preserved
@@ -50,6 +51,7 @@ jupyter notebook
 ```
 
 **Advantages:**
+
 - ✅ Fully interactive
 - ✅ Modify and experiment
 - ✅ Run with your own data

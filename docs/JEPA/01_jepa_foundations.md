@@ -579,6 +579,7 @@ class VICRegLoss(nn.Module):
 | `epsilon` | 1e-4 | Numerical stability |
 
 **Tuning guidelines**:
+
 - Increase `lambda_var` if embeddings collapse
 - Increase `lambda_cov` if dimensions are correlated
 - Decrease `lambda_inv` if predictions are too rigid
@@ -845,11 +846,13 @@ class BioJEPA(nn.Module):
 **Key insight**: Predictor should be smaller than encoder
 
 **Rationale**:
+
 - Encoder learns rich representations
 - Predictor learns relationships
 - Asymmetry prevents shortcut solutions
 
 **Typical ratios**:
+
 - Predictor depth = 0.5× encoder depth
 - Predictor width = 1.0× encoder width
 

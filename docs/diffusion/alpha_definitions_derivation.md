@@ -30,6 +30,7 @@ dx = -\frac{1}{2}\beta(t)\,x\,dt + \sqrt{\beta(t)}\,dw
 $$
 
 where:
+
 - $x(t)$ is the state at time $t$ (starts at $x_0$)
 - $\beta(t) > 0$ is the noise schedule
 - $dw$ is Brownian motion
@@ -135,6 +136,7 @@ x(t) = \alpha(t) x_0 + \alpha(t) \int_0^t \mu(s)\sqrt{\beta(s)}\,dw(s)
 $$
 
 **Physical meaning**: 
+
 - $\alpha(t)$ is the **signal decay coefficient**
 - The term $\alpha(t) x_0$ shows how the original signal scales over time
 - As $t$ increases and $\beta(s) > 0$, $\alpha(t)$ decreases toward 0
@@ -224,6 +226,7 @@ $$
 $$
 
 where:
+
 - $\sqrt{\bar{\alpha}_t} = \alpha(t)$ is the signal coefficient
 - $\sqrt{1-\bar{\alpha}_t}$ is the noise coefficient
 

@@ -11,11 +11,13 @@ This document explores the concept of joint latent spaces for computational biol
 ### The Problem with Separate Models
 
 **Historical accident in computer vision**:
+
 - Images and videos treated as fundamentally different
 - Separate models, separate latent spaces
 - No knowledge transfer
 
 **Mathematical reality**:
+
 $$
 \text{Video} \in \mathbb{R}^{T \times H \times W \times C}
 $$
@@ -457,11 +459,13 @@ def train_joint_jepa(
 ### The Problem
 
 **Traditional approach**:
+
 - Pad all sequences to same length
 - Waste computation on padding tokens
 - Inefficient for variable-length data
 
 **Biological example**:
+
 - Time-series with different lengths (3 time points vs 10 time points)
 - Single-cell samples with different cell counts
 - Spatial data with different tissue sizes
@@ -571,15 +575,18 @@ print(f"Sample 3 out: {samples_out[2].shape}")  # (48, 256)
 **Question**: What is the right dimensionality for joint biological latent space?
 
 **Current practice**:
+
 - Images: 256-1024 dim
 - Gene expression: 128-512 dim
 
 **Open issues**:
+
 - Does biology need more or less than vision?
 - How does dimensionality affect transfer?
 - Can we learn optimal dimensionality?
 
 **Proposed experiments**:
+
 - Train joint models with varying latent dims
 - Measure downstream task performance
 - Analyze information content (effective rank)
@@ -597,6 +604,7 @@ print(f"Sample 3 out: {samples_out[2].shape}")  # (48, 256)
 4. Measure transfer via ablation
 
 **Metrics**:
+
 - Downstream task accuracy
 - Sample efficiency (performance with less data)
 - Generalization to held-out conditions
@@ -611,6 +619,7 @@ print(f"Sample 3 out: {samples_out[2].shape}")  # (48, 256)
 3. **Hybrid** — Soft biological priors
 
 **Trade-offs**:
+
 - Learned: Flexible but data-hungry
 - Structured: Sample-efficient but rigid
 - Hybrid: Best of both?
@@ -677,6 +686,7 @@ def temporal_consistency_loss(z_sequence):
 3. Identify conserved vs species-specific dimensions
 
 **Applications**:
+
 - Translate mouse perturbations to human
 - Validate drug effects across species
 - Identify evolutionary conservation
@@ -686,6 +696,7 @@ def temporal_consistency_loss(z_sequence):
 **Question**: How to scale joint models to millions of cells and thousands of conditions?
 
 **Challenges**:
+
 - Memory constraints
 - Training time
 - Data heterogeneity
@@ -716,21 +727,25 @@ def temporal_consistency_loss(z_sequence):
 ### Implementation Checklist
 
 **1. Data preparation**:
+
 - [ ] Normalize static and dynamic data consistently
 - [ ] Align feature spaces (same genes)
 - [ ] Create mixed batches
 
 **2. Model architecture**:
+
 - [ ] Shared encoder for both modalities
 - [ ] Modality-specific predictors (optional)
 - [ ] VICReg or similar regularization
 
 **3. Training**:
+
 - [ ] Mixed batch sampling
 - [ ] Balanced loss weighting
 - [ ] Monitor both tasks
 
 **4. Evaluation**:
+
 - [ ] Test on both modalities
 - [ ] Measure cross-modality transfer
 - [ ] Validate on downstream tasks
@@ -775,17 +790,21 @@ def temporal_consistency_loss(z_sequence):
 ## References
 
 **Joint latent spaces**:
+
 - ByteDance & HKU (2024): "Goku: Native Joint Image-Video Generation"
 - Meta AI (2025): "V-JEPA 2: Self-Supervised Video Models Enable Understanding, Prediction, and Planning"
 
 **JEPA**:
+
 - LeCun (2022): "A Path Towards Autonomous Machine Intelligence"
 - Assran et al. (2023): "Self-Supervised Learning from Images with a Joint-Embedding Predictive Architecture"
 
 **Biological applications**:
+
 - Lotfollahi et al. (2023): "Predicting cellular responses to novel drug combinations"
 - Bunne et al. (2023): "Learning Single-Cell Perturbation Responses using Neural Optimal Transport"
 
 **Variable-length sequences**:
+
 - Vaswani et al. (2017): "Attention is All You Need"
 - Press et al. (2021): "Train Short, Test Long: Attention with Linear Biases Enables Input Length Extrapolation"

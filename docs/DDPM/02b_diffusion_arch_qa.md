@@ -268,6 +268,7 @@ condition_embed = embedder(torch.tensor(indices))  # (32, 256)
 ```
 
 **Why this works**: 
+
 - Cell types are discrete categories
 - Each gets a learnable vector representation
 - Similar to word embeddings in NLP
@@ -355,6 +356,7 @@ condition_embed = embedder(gene_indices, drug_indices, doses)  # (32, 512)
 ```
 
 **Why this works**:
+
 - Each component embedded separately (preserves semantics)
 - Concatenation combines all information
 - MLP learns interactions between components
@@ -445,6 +447,7 @@ condition_embed = embedder(indices, mask)  # (32, 256)
 ```
 
 **Why this works**:
+
 - Handles variable number of perturbations
 - Order-invariant (set semantics, not sequence)
 - Masking handles different lengths
@@ -536,6 +539,7 @@ condition_embed = embedder(
 ```
 
 **Why this works**:
+
 - Respects biological hierarchy
 - Bottom-up composition (cell → tissue → organism)
 - Different embedding sizes reflect complexity
@@ -830,6 +834,7 @@ Token 1 = [0.5, -0.2, 0.8, ..., 0.3]
 | **Text**   | batch=32    | seq_len=50    | embed_dim=768 | -           |
 
 **Key difference**: 
+
 - Images have **2D spatial structure** (height × width)
 - Tokens have **1D sequence structure** (just num_tokens)
 - The positional encoding provides ordering info (like in NLP)
@@ -853,14 +858,17 @@ tokens_as_sequence = (batch, seq_len=64, features=256)
 ### Why Sequence is Better
 
 **1. No inherent spatial structure in gene expression**
+
 - Gene order in genome ≠ meaningful for expression patterns
 - Unlike pixels, where neighbors have spatial meaning
 
 **2. Transformers work on sequences**
+
 - Self-attention doesn't assume spatial locality
 - Can capture any gene-gene interactions
 
 **3. More like NLP than vision**
+
 - Genes are like "words" in a biological "sentence"
 - Tokens are semantic clusters, not spatial patches
 
@@ -914,11 +922,13 @@ attn_scores = Q @ K.T  # (num_tokens, num_tokens)
 ### For Interpretation
 
 **1. Tokens are semantic, not spatial**
+
 - Analyze what biological patterns each token captures
 - Use gene loadings to interpret tokens
 - Compare to known pathways/modules
 
 **2. Token order doesn't matter (much)**
+
 - Positional encoding adds ordering info
 - But tokens aren't inherently ordered like pixels
 - Could potentially shuffle and retrain
@@ -945,6 +955,7 @@ plt.scatter(tokens_2d[:, 0], tokens_2d[:, 1])
 The architecture processes **one sample at a time** (with batching for efficiency). The "thousands of samples" are your dataset, processed in minibatches during training, just like images in computer vision.
 
 **Key points**:
+
 - Each sample: 20K genes → 64 tokens (256-dim each)
 - Batching: Process 32 samples in parallel
 - Training: Iterate through dataset in minibatches
@@ -1034,13 +1045,16 @@ token_activations = z.mean(dim=-1)  # (batch, 64)
 ## References
 
 **Sequence models for biology**:
+
 - Theodoris et al. (2023): "Transfer learning enables predictions in network biology" (Geneformer)
 - Cui et al. (2024): "scGPT: Toward Building a Foundation Model for Single-Cell Multi-omics"
 
 **Transformers and attention**:
+
 - Vaswani et al. (2017): "Attention Is All You Need"
 - Devlin et al. (2019): "BERT: Pre-training of Deep Bidirectional Transformers"
 
 **Latent representations**:
+
 - Rombach et al. (2022): "High-Resolution Image Synthesis with Latent Diffusion Models"
 - Kingma & Welling (2014): "Auto-Encoding Variational Bayes"

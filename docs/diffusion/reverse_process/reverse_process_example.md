@@ -25,6 +25,7 @@ dx = 0 \cdot dt + \sqrt{2D}\,dw
 $$
 
 **Parameters**:
+
 - Drift: $f(x,t) = 0$ (no preferred direction)
 - Diffusion coefficient: $g(t) = \sqrt{2D}$ (constant diffusion)
 
@@ -35,6 +36,7 @@ p_t(x) = \mathcal{N}(0, 2Dt) = \frac{1}{\sqrt{4\pi Dt}} \exp\left(-\frac{x^2}{4D
 $$
 
 **Properties**:
+
 - Mean: $\mathbb{E}[x(t)] = 0$ (stays centered at origin)
 - Variance: $\text{Var}(x(t)) = 2Dt$ (spreads linearly with time)
 

@@ -41,6 +41,7 @@ Instead of separate encoders:
 They use **one encoder-decoder pair** that maps both images and videos into the **same latent manifold**.
 
 **Why this matters:**
+
 - Image-only data teaches **spatial priors** (texture, composition, objects)
 - Video data teaches **dynamics** (motion, continuity, causality)
 - Both shape the *same latent geometry*
@@ -65,10 +66,12 @@ A joint latent space means static and dynamic biology train each other instead o
 Goku uses **rectified flow** rather than classic DDPM noise schedules.
 
 **Conceptual difference:**
+
 - **Diffusion**: Learn to undo noise step by step
 - **Rectified flow**: Learn a *direct velocity field* that moves noise → data
 
 **Why this matters for joint training:**
+
 - Flow matching is simpler to condition
 - It handles variable sequence lengths more gracefully
 - Less bookkeeping when mixing modalities
@@ -80,11 +83,13 @@ This is particularly appealing for **non-image domains** like biology, where the
 This is perhaps the most under-appreciated idea.
 
 **Traditional approach:**
+
 - Pad videos to the same length
 - Resize everything to the same resolution
 - Waste computation on padding tokens
 
 **Patch n' Pack approach:**
+
 - Tokenize everything into patches
 - Concatenate all tokens into one long sequence
 - Add block attention masks so tokens only attend within their own sample
@@ -115,6 +120,7 @@ Most video models split attention into:
 Goku doesn't. It uses **plain full attention** with masking.
 
 **Why this matters:**
+
 - No architectural bias saying "time is special"
 - The model discovers when temporal relationships matter
 - Images and videos become first-class citizens in the same token universe
@@ -168,6 +174,7 @@ V-JEPA 2 is the first world model trained on video that enables:
 - Robotic planning from observation
 
 **Key findings:**
+
 - Video encoder pre-trained *without* language supervision can be aligned with LLMs
 - Self-supervised video pretraining enables physical world understanding
 - Two-phase training: (1) self-supervised from video, (2) small amount of robot interaction data
@@ -177,6 +184,7 @@ V-JEPA 2 is the first world model trained on video that enables:
 Instead of autoregressive token generation, VL-JEPA predicts **continuous text embeddings**.
 
 **Advantages:**
+
 - 50% fewer trainable parameters than standard VLMs
 - Supports selective decoding (2.85× fewer decode operations)
 - Natively supports open-vocabulary classification, retrieval, and VQA
@@ -308,6 +316,7 @@ Updated via EMA (momentum). Takes the observed expression under perturbation and
 Takes baseline context + covariates. The challenge: what is "baseline context" for a cell that's already perturbed?
 
 **Options:**
+
 - **Cell-type context**: Learned embedding of cell type/cluster label
 - **Matched controls**: Sample a control cell from same covariates as baseline
 - **Population baseline**: Covariate-conditioned baseline embedding (learned)
@@ -329,6 +338,7 @@ $$
 $$
 
 **Implementation options:**
+
 - MLP with FiLM-style conditioning
 - Cross-attention: "perturbation tokens attend to cell tokens"
 - Small Transformer over tokens: $[h_i, e(p_i), e(c_i), e(t_i)]$ → 2-4 blocks → $\hat{z}$
@@ -381,11 +391,13 @@ This gives:
 ### Training Recipe
 
 **Phase 1: Self-supervised pretraining**
+
 - Ignore perturbation labels initially
 - Train JEPA with masking/augmentations
 - Goal: Learn a good cell state manifold
 
 **Phase 2: Perturbation-conditioned JEPA**
+
 - Add perturbation tokens
 - Predict target embedding from baseline-ish context + perturbation
 

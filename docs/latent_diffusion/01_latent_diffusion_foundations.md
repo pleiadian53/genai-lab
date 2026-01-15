@@ -29,6 +29,7 @@ Noise → Denoising Process → Latent → Decoder → Gene Expression
 ### 1.1 VAE for Gene Expression
 
 **Why VAE for biology**:
+
 - Probabilistic (captures uncertainty)
 - Continuous latent space (smooth interpolation)
 - Well-understood training (ELBO objective)
@@ -121,6 +122,7 @@ class GeneExpressionEncoder(nn.Module):
 ### 1.3 Decoder with NB/ZINB Distribution
 
 **Why NB/ZINB for gene expression**:
+
 - Gene expression counts are overdispersed (variance > mean)
 - Negative Binomial (NB) models overdispersion
 - Zero-Inflated NB (ZINB) models excess zeros (dropout)
@@ -1085,16 +1087,20 @@ class CompleteLaten​tDiffusion(nn.Module):
 ## References
 
 **Latent Diffusion**:
+
 - Rombach et al. (2022): "High-Resolution Image Synthesis with Latent Diffusion Models"
 - Vahdat et al. (2021): "Score-based Generative Modeling in Latent Space"
 
 **VAE for Biology**:
+
 - Lopez et al. (2018): "Deep generative modeling for single-cell transcriptomics" (scVI)
 - Eraslan et al. (2019): "Single-cell RNA-seq denoising using a deep count autoencoder"
 
 **NB/ZINB Distributions**:
+
 - Hilbe (2011): "Negative Binomial Regression"
 - Risso et al. (2018): "A general and flexible method for signal extraction from single-cell RNA-seq data" (ZINB-WaVE)
 
 **DiT**:
+
 - Peebles & Xie (2023): "Scalable Diffusion Models with Transformers"

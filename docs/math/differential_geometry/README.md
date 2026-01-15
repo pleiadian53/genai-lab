@@ -84,10 +84,12 @@ If you know differential geometry and want ML applications:
 **Problem**: Design novel proteins with desired functions
 
 **Geometry**: 
+
 - Backbone: Torsion angles $(\phi, \psi, \omega)$ on torus $T^3$
 - Full structure: SE(3) transformations (rigid motions)
 
 **Recent work**:
+
 - **RFdiffusion** (2023): De novo protein design using SE(3)-equivariant diffusion
 - **Chroma** (2023): Generative model for protein design
 - **FoldFlow** (2023): Flow matching on SE(3)
@@ -99,11 +101,13 @@ If you know differential geometry and want ML applications:
 **Problem**: Predict how small molecules bind to proteins
 
 **Geometry**:
+
 - Translation: $\mathbb{R}^3$
 - Rotation: SO(3) (3D rotations)
 - Combined: SE(3) (Euclidean group)
 
 **Recent work**:
+
 - **DiffDock** (2023): SE(3)-equivariant diffusion for docking
 - 38% improvement over prior methods
 
@@ -114,10 +118,12 @@ If you know differential geometry and want ML applications:
 **Problem**: Weather prediction, climate modeling
 
 **Geometry**: 
+
 - Earth surface: Sphere $S^2$
 - Need to respect spherical geometry (no "edges")
 
 **Recent work**:
+
 - Spherical CNNs for climate data
 - Diffusion models on $S^2$ for weather forecasting
 
@@ -128,10 +134,12 @@ If you know differential geometry and want ML applications:
 **Problem**: Motion planning, manipulation
 
 **Geometry**:
+
 - Configuration space: Product of circles $(S^1)^n$ for revolute joints
 - End-effector poses: SE(3)
 
 **Recent work**:
+
 - Diffusion policies on configuration manifolds
 - SE(3)-equivariant networks for grasping
 

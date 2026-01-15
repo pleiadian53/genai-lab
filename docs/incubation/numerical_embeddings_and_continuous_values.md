@@ -18,17 +18,20 @@ This document explores a fundamental challenge in modern deep learning: **how to
 Language models excel at discrete tokens (words, subwords, characters) but struggle with **continuous numerical values**. Here's why:
 
 **The Tokenization Problem:**
+
 - Numbers like `3.14159` get tokenized as `["3", ".", "14", "159"]`
 - This destroys numerical relationships: `3.14` and `3.15` are close numerically but may have completely different token sequences
 - The model can't learn that `3.14159 ≈ π` or that `1000 > 999` in a meaningful way
 - Arithmetic operations become nearly impossible: the model can't reliably compute `2 + 2 = 4`
 
 **The Scale Problem:**
+
 - Small numbers (`0.001`) and large numbers (`1,000,000`) are treated as unrelated tokens
 - No inherent understanding of magnitude, order, or relationships
 - Scientific notation (`1.23e-4`) is even more fragmented
 
 **The Precision Problem:**
+
 - Floating-point precision is lost in tokenization
 - `3.141592653589793` and `3.141592653589794` might tokenize identically
 - Fine-grained distinctions disappear
@@ -53,6 +56,7 @@ If LLMs can't handle numbers well, they can't truly understand these domains.
 **Approach**: Treat numbers as a special token type with learned embeddings.
 
 **Methods:**
+
 - **Number-aware tokenization**: Split numbers into components (integer part, decimal part, exponent) and learn embeddings for each
 - **Magnitude-aware embeddings**: Embed numbers in a way that preserves scale relationships
 - **Hybrid approaches**: Combine tokenization with learned numerical representations
@@ -77,10 +81,12 @@ class NumericalEmbedding(nn.Module):
 ```
 
 **Pros:**
+
 - Fully learnable, can adapt to task
 - Can capture domain-specific numerical patterns
 
 **Cons:**
+
 - Doesn't generalize to unseen numbers well
 - Requires careful design of number decomposition
 - Still loses some precision
@@ -113,6 +119,7 @@ $$
 $$
 
 **Why This Works:**
+
 - **Bounded**: Values stay in $[-1, 1]$, training stable
 - **Smooth**: Differentiable, allows interpolation
 - **Multi-scale**: Different frequencies capture different magnitudes
@@ -126,6 +133,7 @@ This is **identical** to the time embedding used in diffusion models! Time $t$ a
 **Approach**: Feed numbers directly as floating-point values, but with special processing.
 
 **Methods:**
+
 - **Normalization**: Scale numbers to a standard range (e.g., $[0, 1]$ or $[-1, 1]$)
 - **Log scaling**: Use $\log(n + \epsilon)$ for wide-ranging values
 - **Quantization**: Discretize into bins, then use embeddings
@@ -150,11 +158,13 @@ def encode_number(n):
 ```
 
 **Pros:**
+
 - Simple, interpretable
 - Preserves exact values (within precision)
 - Can handle arbitrary ranges with normalization
 
 **Cons:**
+
 - Requires careful normalization
 - May not capture complex numerical relationships
 - Less expressive than learned embeddings
@@ -179,6 +189,7 @@ x_2 \cos(2\omega n) - x_3 \sin(2\omega n) \\
 $$
 
 **Why This Might Work:**
+
 - Preserves relative relationships: numbers close in value have similar rotations
 - Can be applied to attention mechanisms
 - Naturally handles different scales through frequency selection
@@ -224,11 +235,13 @@ class HybridNumericalEmbedding(nn.Module):
 Time embedding in diffusion models and numerical embeddings in LLMs solve **the same fundamental problem**: representing a continuous scalar in a way that neural networks can process effectively.
 
 **Time Embedding (Diffusion):**
+
 - Input: Continuous time $t \in [0, 1]$
 - Challenge: Network needs to distinguish $t=0.5$ from $t=0.51$ and learn time-dependent behavior
 - Solution: Sinusoidal embedding $\gamma(t)$ with multiple frequencies
 
 **Numerical Embedding (LLMs):**
+
 - Input: Continuous number $n \in \mathbb{R}$
 - Challenge: Network needs to understand $n=3.14$ vs. $n=3.15$ and numerical relationships
 - Solution: Similar sinusoidal embedding $\gamma(n)$ with multiple frequencies
@@ -310,12 +323,14 @@ RoPE-style approaches could unify these.
 ### When to Use Sinusoidal Embeddings
 
 **Good for:**
+
 - Continuous values that need smooth interpolation
 - Values with known ranges (can normalize)
 - When you want multi-scale representation
 - When you need to generalize to unseen values
 
 **Not ideal for:**
+
 - Very sparse or discrete values (learned embeddings better)
 - Values with complex, non-smooth relationships
 - When exact precision is critical (may need direct encoding)

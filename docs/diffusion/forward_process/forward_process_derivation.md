@@ -21,6 +21,7 @@ dx = -\frac{1}{2}\beta(t)\,x\,dt + \sqrt{\beta(t)}\,dw
 $$
 
 where:
+
 - $\beta(t) > 0$ is the noise schedule (a design choice)
 - $dw$ is the Brownian motion increment
 
@@ -228,6 +229,7 @@ $$
 $$
 
 where:
+
 - $\sqrt{\bar{\alpha}_t}$ = signal coefficient (how much of $x_0$ remains)
 - $\sqrt{1-\bar{\alpha}_t}$ = noise coefficient (how much noise is added)
 

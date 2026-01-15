@@ -39,6 +39,7 @@ dx = f(x,t)\,dt + g(t)\,dw
 $$
 
 where:
+
 - $f(x,t) \in \mathbb{R}^d$ is the **drift** (deterministic force)
 - $g(t) \in \mathbb{R}$ is the **diffusion coefficient** (noise amplitude)
 - $w(t) \in \mathbb{R}^d$ is standard Brownian motion
@@ -171,12 +172,16 @@ $$
 From the transition probability, conditioned on starting at $x' = x - \delta x \approx x$:
 
 **First moment**:
+
 $$
+
 \mathbb{E}[\delta x] = f(x,t) \Delta t + O(\Delta t^2)
 $$
 
 **Second moment** (each component):
+
 $$
+
 \mathbb{E}[\delta x_i \delta x_j] = \begin{cases}
 g(t)^2 \Delta t + f_i f_j \Delta t^2 & \text{if } i = j \\
 f_i f_j \Delta t^2 & \text{if } i \neq j
@@ -316,6 +321,7 @@ $$
 **Meaning**: Probability flux due to deterministic drift.
 
 **Expanded form**:
+
 $$
 -\nabla \cdot (f p_t) = -f \cdot \nabla p_t - p_t \nabla \cdot f
 $$
@@ -334,6 +340,7 @@ $$
 **Meaning**: Probability spreads from high-density to low-density regions.
 
 **Sign convention**:
+
 - $\nabla^2 p_t > 0$: Concave up → probability flows *in* (increases)
 - $\nabla^2 p_t < 0$: Concave down → probability flows *out* (decreases)
 
@@ -358,6 +365,7 @@ J = f p_t - \frac{1}{2}g(t)^2 \nabla p_t
 $$
 
 **Components**:
+
 - $f p_t$: Drift current (probability flowing along drift)
 - $-\frac{1}{2}g(t)^2 \nabla p_t$: Diffusion current (Fick's law, probability flowing down gradients)
 
@@ -422,6 +430,7 @@ dx = -\theta x \, dt + \sigma \, dw
 $$
 
 where:
+
 - $-\theta x$: Drift toward origin (like a spring)
 - $\sigma$: Constant diffusion
 

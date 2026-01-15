@@ -64,6 +64,7 @@ src/genailab/foundation/
 ```
 
 **Still to create**:
+
 - `tuning/adapters.py`
 - `tuning/freeze.py`
 - `conditioning/film.py`
@@ -184,6 +185,7 @@ LoRA.merge_and_save(model, "merged_model.pt")
 4. Try `notebooks/foundation_models/02_lora_basics.ipynb`
 
 **Key settings for M1**:
+
 - Batch size: 8
 - Gradient accumulation: 4 (effective batch = 32)
 - Gradient checkpointing: ON
@@ -199,6 +201,7 @@ LoRA.merge_and_save(model, "merged_model.pt")
 4. Experiment with `MEDIUM_CONFIG` or `LARGE_CONFIG`
 
 **Key settings for GPU**:
+
 - Batch size: 32-64
 - Gradient accumulation: 1
 - Flash attention: ON

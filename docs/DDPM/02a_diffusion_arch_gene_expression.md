@@ -140,11 +140,13 @@ class LatentTokenDiffusion(nn.Module):
 ### Why It's Good
 
 **1. Learned, data-adaptive tokenization**
+
 - Model learns what biological variation to capture
 - Tokens emerge from data, not imposed a priori
 - Can discover novel gene modules/patterns
 
 **2. Compute-friendly**
+
 - 64 tokens << 20K genes
 - Attention is O(m²) where m=64, not O(20000²)
 - Enables scaling to large models
@@ -167,6 +169,7 @@ adapter = LoRAAdapter()
 ```
 
 **4. Flexible conditioning**
+
 - Easy to inject perturbation info at token level
 - Can condition on cell type, time, etc.
 
@@ -336,20 +339,24 @@ class PathwayTokenDiffusion(nn.Module):
 ### Why It's Good
 
 **1. Interpretability**
+
 - Each token has biological meaning
 - Can explain predictions at pathway level
 - Clinically legible ("upregulated immune pathways")
 
 **2. Lower dimension**
+
 - ~500 pathways vs 20K genes
 - More tractable for analysis
 
 **3. Transfer learning**
+
 - Pathways are consistent across datasets
 - Model trained on one dataset can transfer to another
 - Easier to align across species (conserved pathways)
 
 **4. Inductive bias**
+
 - Encodes known biology
 - Faster convergence
 - Better generalization with limited data
@@ -520,21 +527,25 @@ class GraphAttentionLayer(nn.Module):
 ### Why It's Good
 
 **1. Mechanistic flavor**
+
 - Respects known regulatory relationships
 - More biologically plausible
 - Better for causal reasoning
 
 **2. Better inductive bias for perturbations**
+
 - Perturbations propagate through GRN
 - Model learns regulatory logic
 - More accurate predictions for unseen perturbations
 
 **3. Computational efficiency**
+
 - Sparse attention: O(num_edges) instead of O(n²)
 - Typical GRN: ~100K edges for 20K genes
 - Much faster than full attention
 
 **4. Interpretability**
+
 - Can trace predictions through regulatory paths
 - Identify key regulators
 - Explain perturbation effects mechanistically
@@ -645,17 +656,20 @@ class RankBasedDiffusion(nn.Module):
 ### Why It's Good (and Not So Good)
 
 **Pros**:
+
 - Works empirically (Geneformer shows this)
 - Natural for transformers (sequence processing)
 - Can capture expression-dependent relationships
 
 **Cons**:
+
 - **Ordering artifacts**: Genes with same expression get arbitrary order
 - **Scaling issues**: 20K sequence length is expensive
 - **Truncation**: Top-k genes loses information
 - **Not biologically motivated**: Ranking is artificial
 
 **When to use**: 
+
 - When you have lots of data (Geneformer trained on millions of cells)
 - When interpretability is less important
 - When other methods fail
@@ -828,17 +842,21 @@ print(f"Improvement: {(baseline_loss - model_loss) / baseline_loss * 100:.1f}%")
 ## References
 
 **Latent diffusion**:
+
 - Rombach et al. (2022): "High-Resolution Image Synthesis with Latent Diffusion Models"
 
 **Gene expression models**:
+
 - Theodoris et al. (2023): "Transfer learning enables predictions in network biology" (Geneformer)
 - Cui et al. (2024): "scGPT: Toward Building a Foundation Model for Single-Cell Multi-omics"
 - Lotfollahi et al. (2023): "Predicting cellular responses to novel drug combinations"
 
 **Pathway analysis**:
+
 - Subramanian et al. (2005): "Gene set enrichment analysis" (GSEA)
 - Liberzon et al. (2015): "The Molecular Signatures Database (MSigDB)"
 
 **Gene regulatory networks**:
+
 - Szklarczyk et al. (2021): "The STRING database" 
 - Aibar et al. (2017): "SCENIC: single-cell regulatory network inference"

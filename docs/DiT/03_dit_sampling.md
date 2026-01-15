@@ -11,11 +11,13 @@ This document explains how to generate samples from trained DiT models using rec
 Sampling from DiT + rectified flow is **deterministic ODE integration**:
 
 **Forward ODE** (noise → data):
+
 $$
 \frac{dx}{dt} = v_\theta(x, t)
 $$
 
 **Key properties**:
+
 - Deterministic (same noise → same output)
 - Fast (20-50 steps typical)
 - Straight paths (rectified flow)
@@ -193,6 +195,7 @@ def sample_rk4(model, shape, num_steps=20, device='cuda'):
 | RK4 | 4th | 10-20 | 40-80 | Slowest | Best |
 
 **Recommendation**: 
+
 - Fast generation: Euler with 50 steps
 - Balanced: Heun with 25 steps
 - Best quality: RK4 with 20 steps
@@ -309,6 +312,7 @@ samples = sample_cfg(model, class_labels, guidance_weight=2.0, num_steps=50)
 ```
 
 **Guidance weight effects**:
+
 - $w = 0$: Pure conditional (no guidance)
 - $w = 1$: Moderate guidance
 - $w = 2-4$: Strong guidance (better quality, less diversity)

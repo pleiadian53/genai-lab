@@ -61,6 +61,7 @@ $$
 5. Project back to image space
 
 **For other domains**:
+
 - Genes, cells, regions → tokens
 - Time series → temporal tokens
 - Latent representations → abstract tokens
@@ -117,29 +118,35 @@ Tokens → Linear → Velocity field
 ### Rectified Flow Loss
 
 **Standard form**:
+
 $$
 \mathcal{L} = \mathbb{E}_{x_0, x_1, t} \left[ \left\| v_\theta(x_t, t) - (x_1 - x_0) \right\|^2 \right]
 $$
 
 where:
+
 - $x_0 \sim p_{\text{data}}$ (real data)
 - $x_1 \sim \mathcal{N}(0, I)$ (noise)
 - $x_t = t x_1 + (1-t) x_0$ (linear interpolation)
 - $v_\theta$ is the DiT network
 
 **With conditioning**:
+
 $$
+
 \mathcal{L} = \mathbb{E}_{x_0, x_1, t, c} \left[ \left\| v_\theta(x_t, t, c) - (x_1 - x_0) \right\|^2 \right]
 $$
 
 ### Why This is Simple
 
 **Compared to DDPM**:
+
 - No noise schedules to tune
 - No variance parameterization
 - Direct regression target
 
 **Compared to score matching**:
+
 - No score function computation
 - No Langevin dynamics
 - Deterministic sampling via ODE
@@ -151,6 +158,7 @@ $$
 ### ODE Integration
 
 **Forward ODE** (noise → data):
+
 $$
 \frac{dx}{dt} = v_\theta(x, t, c)
 $$
@@ -169,6 +177,7 @@ return x  # Generated sample
 ```
 
 **Properties**:
+
 - Deterministic (same noise → same output)
 - Fast (20-50 steps typical)
 - Straight paths (rectified flow)
@@ -280,12 +289,14 @@ return x  # Generated sample
 ### Why DiT is Promising for Biology
 
 **Traditional challenges**:
+
 - Gene expression: High-dimensional, unordered
 - Cell states: Continuous, compositional
 - Perturbations: Need flexible conditioning
 - Time series: Variable-length trajectories
 
 **DiT solutions**:
+
 - **Tokens**: Genes, cells, regions, timepoints
 - **Attention**: Capture gene-gene interactions
 - **Conditioning**: Perturbations, cell types, experimental conditions
@@ -382,16 +393,19 @@ Located in `docs/diffusion/DiT/`:
 ## Next Steps
 
 **Continue to**:
+
 - [01_dit_foundations.md](01_dit_foundations.md) — Detailed architecture
 - [02_dit_training.md](02_dit_training.md) — Training pipeline
 - [03_dit_sampling.md](03_dit_sampling.md) — Sampling strategies
 
 **Related documentation**:
+
 - [Flow Matching](../flow_matching/) — Rectified flow theory
 - [DDPM](../DDPM/) — Discrete diffusion models
 - [SDE](../SDE/) — Continuous-time perspective
 
 **Supplementary deep dives**:
+
 - [diffusion_transformer.md](../diffusion/DiT/diffusion_transformer.md) — Comprehensive tutorial
 - [time_embeddings_explained.md](../diffusion/DiT/time_embeddings_explained.md) — Time conditioning
 

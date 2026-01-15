@@ -44,6 +44,7 @@ d^2(\mathcal{N}(\mu_r, \Sigma_r), \mathcal{N}(\mu_g, \Sigma_g)) = \|\mu_r - \mu_
 $$
 
 where:
+
 - $\mu_r, \mu_g \in \mathbb{R}^d$ are mean vectors
 - $\Sigma_r, \Sigma_g \in \mathbb{R}^{d \times d}$ are covariance matrices
 - $\text{Tr}(\cdot)$ is the matrix trace
@@ -257,11 +258,13 @@ fid_value = fid.compute_fid(
 - **Early GANs**: FID ≈ 50-100
 
 **CIFAR-10**:
+
 - **SOTA models**: FID ≈ 2-3
 - **Good models**: FID ≈ 5-10
 - **Moderate models**: FID ≈ 20-40
 
 **CelebA-HQ**:
+
 - **SOTA models**: FID ≈ 3-8
 - **Good models**: FID ≈ 10-20
 
@@ -320,6 +323,7 @@ While not typically used as a training loss, FID can be approximated for gradien
 **Dependency**: Typically uses Inception-v3 trained on ImageNet.
 
 **Issues**:
+
 - **Domain mismatch**: ImageNet features may not be optimal for medical images, satellite imagery, etc.
 - **Bias**: Inherits biases from ImageNet training
 - **Not universal**: Doesn't work for non-image data without adaptation
@@ -329,6 +333,7 @@ While not typically used as a training loss, FID can be approximated for gradien
 **Problem**: FID estimates have variance that depends on sample size.
 
 **Recommendations**:
+
 - Use **same sample size** for all comparisons
 - Use **≥10,000 samples** for stable estimates
 - Report **multiple runs** with different random samples
@@ -343,6 +348,7 @@ N = 50,000: FID = 14.7 ± 0.1
 ### 4. Doesn't Capture All Aspects
 
 **What FID misses**:
+
 - **Local structure**: Fine-grained details
 - **Semantic correctness**: Object relationships, physical plausibility
 - **Perceptual quality**: Some artifacts humans notice
@@ -357,6 +363,7 @@ N = 50,000: FID = 14.7 ± 0.1
 ### 6. Computational Cost
 
 **Requirements**:
+
 - Pre-trained Inception-v3 model
 - Feature extraction for all images
 - Covariance computation (scales as $O(d^2 n)$ for $d$ dimensions, $n$ samples)
@@ -370,11 +377,13 @@ N = 50,000: FID = 14.7 ± 0.1
 ### 1. Standardize Evaluation Protocol
 
 **Image preprocessing**:
+
 - Resize to 299×299 (Inception-v3 input size)
 - Normalize to [0, 1] or [-1, 1] consistently
 - Use same preprocessing for real and generated images
 
 **Sample size**:
+
 - Use ≥10,000 samples (preferably 50,000)
 - Use same number of real and generated samples
 - Report sample size in papers
@@ -404,6 +413,7 @@ print(f'FID: {mean_fid:.2f} ± {std_fid:.2f}')
 ### 4. Report Full Details
 
 **Minimum reporting**:
+
 - FID value with standard deviation
 - Number of samples used
 - Feature extractor (Inception-v3, etc.)
@@ -434,6 +444,7 @@ For non-natural images:
 **Improvement**: More robust implementation addressing numerical issues.
 
 **Changes**:
+
 - Better handling of edge cases
 - Improved numerical stability
 - Consistent preprocessing
@@ -445,6 +456,7 @@ For non-natural images:
 **Alternative**: Uses kernel methods instead of Gaussian assumption.
 
 **Advantages**:
+
 - No Gaussian assumption
 - Unbiased estimator
 - Better for small sample sizes
@@ -462,6 +474,7 @@ where $k(\cdot, \cdot)$ is a kernel function (e.g., polynomial kernel).
 **Decomposition**: Separates FID into quality (precision) and diversity (recall).
 
 **Advantages**:
+
 - More interpretable
 - Detects mode collapse vs. poor quality
 - Complements FID
@@ -469,6 +482,7 @@ where $k(\cdot, \cdot)$ is a kernel function (e.g., polynomial kernel).
 ### Domain-Specific FID
 
 **Adaptations**:
+
 - **Medical imaging**: Use pre-trained medical image networks
 - **Satellite imagery**: Use remote sensing features
 - **Biological data**: Use domain-specific embeddings
@@ -487,18 +501,22 @@ where $k(\cdot, \cdot)$ is a kernel function (e.g., polynomial kernel).
 ### Examples
 
 **Text**:
+
 - Use BERT or GPT embeddings as features
 - Compute FID in embedding space
 
 **Audio**:
+
 - Use audio feature extractors (e.g., VGGish)
 - Compute FID on spectrograms or learned features
 
 **Molecular structures**:
+
 - Use molecular fingerprints or graph embeddings
 - Compute FID in chemical space
 
 **Gene expression**:
+
 - Use pathway embeddings or PCA features
 - Compute FID in biological feature space
 
@@ -558,12 +576,14 @@ where $k(\cdot, \cdot)$ is a kernel function (e.g., polynomial kernel).
 ### When to Use FID
 
 **Use FID when**:
+
 - Evaluating image generative models
 - Comparing different models on same dataset
 - Need single scalar metric
 - Have sufficient samples (≥10,000)
 
 **Don't rely solely on FID when**:
+
 - Working with non-image data (adapt carefully)
 - Need to diagnose specific issues (use P/R)
 - Sample size is small (<1,000)

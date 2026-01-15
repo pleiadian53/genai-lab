@@ -24,6 +24,7 @@ Latent diffusion models are particularly well-suited for computational biology b
 **Goal**: Generate realistic single-cell gene expression profiles.
 
 **Applications**:
+
 - Data augmentation for rare cell types
 - Synthetic controls for experiments
 - Batch effect removal
@@ -254,6 +255,7 @@ def evaluate_single_cell_generation(model, test_data, cell_types, device='cuda')
 **Goal**: Predict cellular response to genetic/chemical perturbations.
 
 **Applications**:
+
 - Virtual screening (predict without experiment)
 - Combination prediction (multiple perturbations)
 - Mechanism discovery (analyze latent changes)
@@ -517,6 +519,7 @@ def evaluate_perturbation_prediction(
 **Goal**: Predict one modality from another (e.g., protein from RNA).
 
 **Applications**:
+
 - Fill missing modalities
 - Cross-modality validation
 - Integrated multi-omics analysis
@@ -668,6 +671,7 @@ class MultiOmicsLatentDiffusion(nn.Module):
 **Goal**: Model developmental or disease trajectories over time.
 
 **Applications**:
+
 - Predict future cell states
 - Identify branch points
 - Model differentiation
@@ -757,6 +761,7 @@ class TrajectoryLatentDiffusion(nn.Module):
 **Goal**: Generate spatial gene expression patterns.
 
 **Applications**:
+
 - Super-resolution (increase spatial resolution)
 - Missing region imputation
 - 3D reconstruction
@@ -924,17 +929,21 @@ class SpatialLatentDiffusion(nn.Module):
 ## References
 
 **Single-Cell Generation**:
+
 - Marouf et al. (2020): "Realistic in silico generation and augmentation of single-cell RNA-seq data using generative adversarial networks" (scGAN)
 - Lopez et al. (2018): "Deep generative modeling for single-cell transcriptomics" (scVI)
 
 **Perturbation Prediction**:
+
 - Lotfollahi et al. (2019): "scGen predicts single-cell perturbation responses"
 - Lotfollahi et al. (2023): "Predicting cellular responses to novel drug combinations with a deep generative model" (CPA)
 
 **Multi-Omics**:
+
 - Argelaguet et al. (2018): "Multi-Omics Factor Analysis" (MOFA)
 - Gayoso et al. (2021): "Joint probabilistic modeling of single-cell multi-omic data with totalVI"
 
 **Spatial Transcriptomics**:
+
 - Cable et al. (2022): "Robust decomposition of cell type mixtures in spatial transcriptomics"
 - Biancalani et al. (2021): "Deep learning and alignment of spatially resolved single-cell transcriptomes"

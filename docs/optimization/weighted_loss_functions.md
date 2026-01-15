@@ -347,10 +347,12 @@ loss = (weights * per_sample_loss).mean()
 ```
 
 **When to normalize**:
+
 - Importance sampling (to get unbiased estimates)
 - When comparing losses across different batches
 
 **When not to normalize**:
+
 - Most neural network training (weights are relative, not absolute)
 - When using `.mean()` for final reduction
 

@@ -35,6 +35,7 @@ q(x_t \mid x_{t-1}) = \mathcal{N}(x_t; \sqrt{1 - \beta_t} x_{t-1}, \beta_t I)
 $$
 
 where:
+
 - $t = 1, 2, \ldots, T$ (typically $T = 1000$)
 - $\beta_t \in (0, 1)$ is the **variance schedule** (how much noise to add)
 - $\beta_1 < \beta_2 < \cdots < \beta_T$ (increasing noise)
@@ -86,6 +87,7 @@ $$
 By induction:
 
 **Base case** ($t=1$):
+
 $$
 x_1 = \sqrt{\alpha_1} x_0 + \sqrt{1 - \alpha_1} \epsilon_0 = \sqrt{\bar{\alpha}_1} x_0 + \sqrt{1 - \bar{\alpha}_1} \epsilon_0
 $$
@@ -93,6 +95,7 @@ $$
 **Inductive step**: Assume $x_t = \sqrt{\bar{\alpha}_t} x_0 + \sqrt{1 - \bar{\alpha}_t} \bar{\epsilon}_t$.
 
 Then:
+
 $$
 \begin{align}
 x_{t+1} &= \sqrt{\alpha_{t+1}} x_t + \sqrt{1 - \alpha_{t+1}} \epsilon_t \\
@@ -102,16 +105,19 @@ x_{t+1} &= \sqrt{\alpha_{t+1}} x_t + \sqrt{1 - \alpha_{t+1}} \epsilon_t \\
 $$
 
 The two noise terms combine (sum of independent Gaussians):
+
 $$
 \sqrt{\alpha_{t+1}(1 - \bar{\alpha}_t)} \bar{\epsilon}_t + \sqrt{1 - \alpha_{t+1}} \epsilon_t \sim \mathcal{N}(0, [\alpha_{t+1}(1 - \bar{\alpha}_t) + (1 - \alpha_{t+1})] I)
 $$
 
 Simplify the variance:
+
 $$
 \alpha_{t+1}(1 - \bar{\alpha}_t) + (1 - \alpha_{t+1}) = \alpha_{t+1} - \alpha_{t+1}\bar{\alpha}_t + 1 - \alpha_{t+1} = 1 - \alpha_{t+1}\bar{\alpha}_t = 1 - \bar{\alpha}_{t+1}
 $$
 
 Therefore:
+
 $$
 x_{t+1} = \sqrt{\bar{\alpha}_{t+1}} x_0 + \sqrt{1 - \bar{\alpha}_{t+1}} \epsilon
 $$
@@ -212,6 +218,7 @@ $$
 $$
 
 **Interpretation**:
+
 - $L_T$: How close is $q(x_T \mid x_0)$ to $p(x_T) = \mathcal{N}(0, I)$? (Usually negligible)
 - $L_{t-1}$: How well does $p_\theta$ match the true posterior $q$?
 - $L_0$: Reconstruction term (discrete decoder or continuous likelihood)
@@ -235,11 +242,13 @@ Instead of directly predicting $\mu_\theta(x_t, t)$, we can predict the **noise*
 ### Reparameterization
 
 Recall:
+
 $$
 x_t = \sqrt{\bar{\alpha}_t} x_0 + \sqrt{1 - \bar{\alpha}_t} \epsilon
 $$
 
 Solving for $x_0$:
+
 $$
 x_0 = \frac{1}{\sqrt{\bar{\alpha}_t}} (x_t - \sqrt{1 - \bar{\alpha}_t} \epsilon)
 $$
@@ -253,6 +262,7 @@ $$
 ### Noise Prediction Network
 
 Define:
+
 $$
 \mu_\theta(x_t, t) = \frac{1}{\sqrt{\alpha_t}} \left(x_t - \frac{\beta_t}{\sqrt{1 - \bar{\alpha}_t}} \epsilon_\theta(x_t, t)\right)
 $$
@@ -268,6 +278,7 @@ $$
 $$
 
 where:
+
 - $t \sim \text{Uniform}(\{1, \ldots, T\})$
 - $x_0 \sim q(x_0)$
 - $\epsilon \sim \mathcal{N}(0, I)$
@@ -322,6 +333,7 @@ $$
 where $s = 0.008$ is a small offset.
 
 **Advantages**:
+
 - More uniform signal-to-noise ratio across timesteps
 - Better sample quality
 - Fewer steps needed
@@ -362,6 +374,7 @@ We derived DDPM from first principles:
 6. **Connection to score matching**: Noise prediction ≈ score prediction
 
 **Key insights**:
+
 - Training is simple: predict the noise that was added
 - Sampling is iterative denoising
 - The model learns the score function implicitly

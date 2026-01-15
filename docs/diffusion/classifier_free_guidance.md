@@ -184,6 +184,7 @@ Guided score (w=2):
 ```
 
 **Effect of $w > 1$**:
+
 - Samples become **more aligned** with the condition
 - But also **less diverse** (mode-seeking behavior)
 - Trade-off: fidelity vs. diversity
@@ -400,11 +401,13 @@ where $\tilde{s}_\theta$ is the guided score.
 ### From Original Paper (Ho & Salimans, 2021)
 
 **ImageNet 128×128**:
+
 - $w = 1$: FID = 12.6, Diversity = high
 - $w = 2$: FID = 7.0, Diversity = medium
 - $w = 4$: FID = 4.6, Diversity = low
 
 **Trade-off**:
+
 - Higher $w$ → Better FID (sample quality)
 - Higher $w$ → Worse diversity (mode collapse)
 
@@ -415,6 +418,7 @@ where $\tilde{s}_\theta$ is the guided score.
 - Users can adjust from 1 to 20
 
 **DALL-E 2, Imagen**:
+
 - Heavy use of classifier-free guidance
 - Enables high-fidelity text-to-image generation
 
@@ -449,12 +453,14 @@ where $\tilde{s}_\theta$ is the guided score.
 ### When to Use
 
 **Use classifier-free guidance when**:
+
 - You want high-quality conditional generation
 - You have paired data $(x, c)$
 - You want control over conditioning strength
 - You don't want to train a separate classifier
 
 **Consider alternatives when**:
+
 - Two forward passes are too expensive (use distillation)
 - You have very limited conditional data (might not learn unconditional well)
 - Conditions are complex or structured (might need specialized architectures)

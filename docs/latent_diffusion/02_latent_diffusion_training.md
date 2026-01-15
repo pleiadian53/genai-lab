@@ -271,6 +271,7 @@ def train_vae(
 | **Epochs** | 100-200 | Until convergence |
 
 **Beta-VAE tuning**:
+
 - `beta < 1.0`: Better reconstruction, less disentanglement
 - `beta = 1.0`: Standard VAE
 - `beta > 1.0`: More disentanglement, worse reconstruction
@@ -482,11 +483,13 @@ def train_diffusion(
 ### 3.1 When to Use Joint Fine-Tuning
 
 **Use when**:
+
 - VAE reconstruction is suboptimal
 - Want end-to-end optimization
 - Have sufficient data
 
 **Don't use when**:
+
 - VAE is already good
 - Limited data (risk overfitting)
 - Want modular components
@@ -808,12 +811,14 @@ def train_diffusion_with_cfg(
 ### 5.1 Key Metrics
 
 **VAE metrics**:
+
 - Reconstruction loss (NLL)
 - KL divergence
 - Total ELBO
 - Reconstruction quality (correlation with original)
 
 **Diffusion metrics**:
+
 - MSE loss (noise prediction)
 - Sample quality (FID, IS for images; biological metrics for gene expression)
 - Sampling diversity
@@ -962,13 +967,16 @@ def evaluate_diffusion_samples(vae, diffusion, num_samples=1000, device='cuda'):
 ## References
 
 **Latent Diffusion**:
+
 - Rombach et al. (2022): "High-Resolution Image Synthesis with Latent Diffusion Models"
 - Ho & Salimans (2022): "Classifier-Free Diffusion Guidance"
 
 **VAE Training**:
+
 - Higgins et al. (2017): "beta-VAE: Learning Basic Visual Concepts with a Constrained Variational Framework"
 - Bowman et al. (2016): "Generating Sentences from a Continuous Space" (KL annealing)
 
 **Biology Applications**:
+
 - Lopez et al. (2018): "Deep generative modeling for single-cell transcriptomics" (scVI)
 - Lotfollahi et al. (2020): "scGen predicts single-cell perturbation responses"

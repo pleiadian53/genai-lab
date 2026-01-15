@@ -38,17 +38,20 @@ output = transformer(tokens)
 ### Why This Feels Wrong
 
 **Q1: Why 16×16?**
+
 - Not "right" — just empirically tuned
 - Different models use different sizes (2×2, 4×4, 8×8, 14×14, 16×16)
 - No principled way to choose
 
 **Q2: Should patch size depend on content?**
+
 - Medical images (smooth gradients): Large patches OK
 - Text images (fine details): Small patches needed
 - Satellite images: Depends on scale of features
 - **Current approach**: One size for all!
 
 **Q3: Do patches respect semantic boundaries?**
+
 - A 16×16 patch might contain:
   - Half a face, half background
   - Part of an object, part of another
@@ -71,6 +74,7 @@ output = transformer(tokens)
 Gene expression vectors: $x \in \mathbb{R}^{20000}$ (20K genes)
 
 **Properties**:
+
 - **Unordered**: No natural sequence (unlike DNA)
 - **Dense**: Most genes have non-zero expression
 - **Compositional**: Relative values matter
@@ -87,6 +91,7 @@ output = transformer(tokens)
 ```
 
 **Problems**:
+
 - Ranking is **arbitrary** — not biological
 - 20K tokens = huge sequences (O(n²) = 400M operations)
 - What about genes with same expression?
@@ -103,6 +108,7 @@ tokens = [module_embeddings]  # ~500 pathways
 ```
 
 **Problems**:
+
 - How to define modules? (Also arbitrary!)
 - Loses individual gene information
 - Ignores within-module correlations
@@ -115,6 +121,7 @@ output = model(z)  # No tokens!
 ```
 
 **Problems**:
+
 - Less interpretable
 - Loses biological structure
 - Black box
@@ -127,6 +134,7 @@ output = graph_transformer(gene_expression, grn)
 ```
 
 **Problems**:
+
 - GRN knowledge incomplete
 - Still 20K nodes to handle
 - Which GRN to use?
@@ -156,16 +164,19 @@ Attention: 65,536² → 256² (65,000× reduction!)
 ```
 
 **2. Transfer from NLP**
+
 - Transformers proven for sequences
 - Patches make images "sequence-like"
 - Can reuse architectures
 
 **3. Good Enough in Practice**
+
 - ImageNet SOTA achieved
 - Stable Diffusion works
 - Empirical success
 
 **4. Implementation Simplicity**
+
 - Easy to code
 - GPU-efficient
 - Standard operations
@@ -209,11 +220,13 @@ tokens = learned_tokenizer(image)  # Adaptive!
 ```
 
 **Advantages**:
+
 - Content-aware
 - Can adapt to different regions
 - Potentially more semantic
 
 **Challenges**:
+
 - How to train the tokenizer?
 - Discrete vs continuous tokens?
 - Computational cost
@@ -238,10 +251,12 @@ class HybridModel(nn.Module):
 **Idea**: Work directly in continuous space
 
 **For images**:
+
 - Latent diffusion (VAE → continuous latent → diffusion)
 - No explicit tokens
 
 **For gene expression**:
+
 - Direct MLP/attention on expression vector
 - Treat as continuous state, not sequence
 
@@ -351,11 +366,13 @@ Retina → V1 (edges) → V2 (motion) → V3 (shape) → V4 → IT (objects)
 ### What's Working
 
 **For images**:
+
 - Fixed patches (8×8, 16×16) are standard
 - Empirically tuned per model
 - Stable Diffusion 3, Sora use patch-based approaches
 
 **For gene expression**:
+
 - Multiple approaches being explored
 - No clear winner yet
 - Geneformer (ranking), scPPDM (tabular), others
@@ -372,6 +389,7 @@ Retina → V1 (edges) → V2 (motion) → V3 (shape) → V4 → IT (objects)
 ### What's Still Unknown
 
 **Open problems**:
+
 - Principled way to choose patch size
 - Optimal tokenization for non-image modalities
 - Whether biological inspiration helps
@@ -392,6 +410,7 @@ patch_size = 4  # For higher quality (more compute)
 ```
 
 **Experiment with**:
+
 - Different patch sizes for your data
 - Hierarchical approaches if quality matters
 - Latent diffusion (VAE + diffusion) to avoid tokenization
@@ -415,6 +434,7 @@ output = transformer(tokens)
 ```
 
 **Then**:
+
 - Compare approaches empirically
 - Publish ablation study
 - Let performance guide you
@@ -427,10 +447,12 @@ output = transformer(tokens)
 3. Then experiment with alternatives
 
 **Don't overthink**:
+
 - If patches work for your task, use them
 - Principled design is nice, but results matter
 
 **But do explore**:
+
 - This is an open research area
 - Novel tokenization strategies could be publishable
 - Especially for non-image modalities
@@ -489,16 +511,19 @@ Fast iteration             vs     Deep understanding
 ### Why This Matters
 
 **For science**:
+
 - Understanding principles leads to better models
 - Biological inspiration may unlock new capabilities
 - Theory guides experimentation
 
 **For engineering**:
+
 - Principled designs generalize better
 - Less hyperparameter tuning
 - More robust to distribution shift
 
 **For biology applications**:
+
 - Gene expression needs better representations
 - Biological structure should inform design
 - Interpretability matters
@@ -510,22 +535,26 @@ Fast iteration             vs     Deep understanding
 **The honest assessment**:
 
 **Patch-based tokenization is arbitrary and unnatural.**
+
 - 16×16 is not "right" — it's empirically tuned
 - Should vary by resolution, task, data
 - Doesn't respect semantic boundaries
 - Not biologically inspired
 
 **But it works.**
+
 - Achieves SOTA on many tasks
 - Computationally efficient
 - Easy to implement
 
 **For gene expression, it's even worse.**
+
 - No natural tokenization exists
 - Current approaches are hacks
 - Open research problem
 
 **The field is still figuring this out.**
+
 - Active research area
 - No consensus
 - Your skepticism is warranted
@@ -543,19 +572,23 @@ Fast iteration             vs     Deep understanding
 ### Tokenization Approaches
 
 **Patch-based**:
+
 - Dosovitskiy et al. (2020): "An Image is Worth 16x16 Words" (ViT)
 - Peebles & Xie (2023): "Scalable Diffusion Models with Transformers" (DiT)
 
 **Hierarchical**:
+
 - Liu et al. (2021): "Swin Transformer: Hierarchical Vision Transformer using Shifted Windows"
 - Wang et al. (2021): "Pyramid Vision Transformer"
 
 **Learned Tokenization**:
+
 - Bao et al. (2021): "BEiT: BERT Pre-Training of Image Transformers"
 - Esser et al. (2021): "Taming Transformers for High-Resolution Image Synthesis" (VQGAN)
 - Chang et al. (2022): "MaskGIT: Masked Generative Image Transformer"
 
 **Gene Expression**:
+
 - Theodoris et al. (2023): "Transfer learning enables predictions in network biology" (Geneformer)
 - Cui et al. (2024): "scGPT: Toward Building a Foundation Model for Single-Cell Multi-omics"
 

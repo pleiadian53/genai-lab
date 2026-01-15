@@ -147,6 +147,7 @@ $$
 $$
 
 where:
+
 - $\gamma_{\text{scale}}$, $\gamma_{\text{shift}}$ are computed from the time embedding $\gamma(t)$
 - $\odot$ denotes element-wise multiplication
 
@@ -188,6 +189,7 @@ h = scale * h + shift
 ```
 
 **Why FiLM is better**:
+
 - Concatenation only affects the input; FiLM can modulate at any layer
 - FiLM provides multiplicative control, which is more expressive
 - FiLM allows the base features and time conditioning to be processed separately before combining
@@ -413,6 +415,7 @@ $$
 where $\mu$, $\sigma$ are computed per group of channels.
 
 **Benefits**: 
+
 - Normalization helps training stability
 - FiLM provides conditioning
 - Used in Stable Diffusion
@@ -451,6 +454,7 @@ t_emb_fine = time_embedding(t, max_freq=10000)
 **Typical choices**: 32, 64, 128, 256
 
 **Rule of thumb**: 
+
 - Simple tasks (2D toy data): 32-64
 - Image generation: 128-256
 - Higher dimensions give more expressiveness but add parameters
@@ -458,6 +462,7 @@ t_emb_fine = time_embedding(t, max_freq=10000)
 ### 2. Where to Apply FiLM
 
 **Common patterns**:
+
 - After each convolution/linear layer
 - Before activation functions
 - Not on the final output layer (usually)

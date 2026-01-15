@@ -69,6 +69,7 @@ $$
 $$
 
 where:
+
 - $\bar{w}(t)$ is a **reverse-time Brownian motion**
 - $\nabla_x \log p_t(x)$ is the **score function** (gradient of log probability density)
 
@@ -83,11 +84,13 @@ where:
 Imagine particles diffusing outward from a point source:
 
 **Forward process**:
+
 - Particles spread out randomly
 - No "memory" of where they came from
 - Pure diffusion: symmetric spreading
 
 **Reverse process**:
+
 - Particles need to **know** where to go back to
 - Not just random motion—need to be "pulled" toward high-density regions
 - The score $\nabla_x \log p_t(x)$ provides this "pull"
@@ -100,6 +103,7 @@ The score function $\nabla_x \log p_t(x)$ points in the direction of **increasin
 - In reverse diffusion: **Follow the probability gradient** to find likely paths back
 
 **Analogy**: 
+
 - Forward: Drop ink in water, watch it spread (no guidance)
 - Reverse: Collect ink back together (need to know where the ink is concentrated)
 
@@ -316,6 +320,7 @@ $$
 is the **normalized gradient** of the probability density.
 
 **Physical interpretation**:
+
 - Points from low probability to high probability
 - Magnitude is stronger in regions with steeper probability gradients
 - Tells particles "which way to go" to increase likelihood
@@ -327,6 +332,7 @@ Why is the score multiplied by $g(t)^2$?
 **Answer**: It's the **diffusion coefficient squared**. 
 
 **Intuition**:
+
 - Stronger diffusion ($g$ large) → more noise added → need stronger correction to reverse
 - Weaker diffusion ($g$ small) → less noise added → need smaller correction
 

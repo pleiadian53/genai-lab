@@ -9,6 +9,7 @@ Reference materials and deep-dive documents for understanding diffusion models f
 **Most comprehensive SDE materials are now in**: [`notebooks/diffusion/02_sde_formulation/supplements/`](../../notebooks/diffusion/02_sde_formulation/supplements/)
 
 **8 focused supplements covering**:
+
 - Forward SDE design choices (VP/VE/sub-VP)
 - Fokker-Planck equation and probability evolution
 - Dimensional analysis and units
@@ -33,6 +34,7 @@ This directory contains **theoretical background** and **mathematical foundation
 **Complete tutorial on Brownian motion from physical origins to diffusion models**
 
 **Topics covered**:
+
 - Physical origin story (Robert Brown, Einstein, Wiener)
 - Random walks vs Brownian motion
 - The four defining properties (and what they really mean)
@@ -53,6 +55,7 @@ This directory contains **theoretical background** and **mathematical foundation
 **Status**: Archived. See `brownian_motion_tutorial.md` for the comprehensive rewrite.
 
 **Contents**:
+
 - Random walk vs Brownian motion comparison
 - Scaling limit derivation
 - Origin story and physical interpretation
@@ -66,6 +69,7 @@ This directory contains **theoretical background** and **mathematical foundation
 **Status**: Archived. Content integrated into `brownian_motion_tutorial.md`.
 
 **Contents**:
+
 - Why $dw(t) \propto \sqrt{dt} \cdot \varepsilon$
 - Step-by-step explanation of variance scaling
 - Connection to Euler-Maruyama numerics
@@ -79,6 +83,7 @@ This directory contains **theoretical background** and **mathematical foundation
 **Status**: Draft/archive. For comprehensive SDE coverage, see `notebooks/diffusion/02_sde_formulation/`.
 
 **Contents**:
+
 - How SDEs are solved
 - What models are learned
 - Wiener process alternatives
@@ -98,6 +103,7 @@ This directory contains the theoretical foundation for generating samples from n
 **Complete derivation of the reverse-time SDE from first principles**
 
 **Topics covered**:
+
 - Anderson's theorem (1982) — the mathematical key to reversing SDEs
 - Derivation via Fokker-Planck equation
 - Why the score function $\nabla_x \log p_t(x)$ appears
@@ -113,6 +119,7 @@ This directory contains the theoretical foundation for generating samples from n
 **Detailed worked example: reversing a 1D Gaussian diffusion**
 
 **Topics covered**:
+
 - Complete setup: forward Brownian motion
 - Step-by-step score calculation for Gaussian
 - Physical interpretation of the score
@@ -129,6 +136,7 @@ This directory contains the theoretical foundation for generating samples from n
 **Derivation of the probability evolution equation from first principles**
 
 **Topics covered**:
+
 - Chapman-Kolmogorov equation
 - Kramers-Moyal expansion
 - Physical interpretation: drift vs. diffusion
@@ -153,6 +161,7 @@ This directory explains how to build neural networks that estimate $\nabla_x \lo
 **Advanced neural network architectures for complex, real-world data**
 
 **Topics covered**:
+
 - **U-Net**: Dominant architecture for images and medical imaging
   - Multi-scale processing, skip connections
   - Residual blocks with time conditioning
@@ -176,6 +185,7 @@ This directory explains how to build neural networks that estimate $\nabla_x \lo
 **Deep-dive into time conditioning mechanisms used in score networks**
 
 **Topics covered**:
+
 - **Time Embedding**: Transform scalar $t$ to high-dimensional representation
   - Sinusoidal embeddings (multiple frequencies)
   - Why networks struggle with raw scalar inputs
@@ -198,6 +208,7 @@ This directory explains how to build neural networks that estimate $\nabla_x \lo
 **Deriving the forward diffusion process: from clean data to noise**
 
 **Topics covered**:
+
 - VP-SDE (Variance Preserving) as the canonical example
 - Solution using integrating factors
 - Derivation of $x_t = \sqrt{\bar{\alpha}_t}\,x_0 + \sqrt{1-\bar{\alpha}_t}\,\varepsilon$
@@ -206,6 +217,7 @@ This directory explains how to build neural networks that estimate $\nabla_x \lo
 **When to read**: After understanding basic SDEs, before reverse processes
 
 **Supplements**:
+
 - [`noise_schedules.md`](./noise_schedules.md) — Common noise schedule choices
 - [`integrating_factor.md`](./integrating_factor.md) — Integrating factor technique
 - [`alpha_definitions_derivation.md`](./alpha_definitions_derivation.md) — Origin of $\alpha(t)$ and $\bar{\alpha}_t$
@@ -217,6 +229,7 @@ This directory explains how to build neural networks that estimate $\nabla_x \lo
 **Comprehensive guide to noise schedules in diffusion models**
 
 **Topics covered**:
+
 - Mathematical background: $\beta(t)$, $\alpha(t)$, $\bar{\alpha}_t$
 - Common schedules: linear, cosine, polynomial, sigmoid
 - Properties and trade-offs
@@ -231,6 +244,7 @@ This directory explains how to build neural networks that estimate $\nabla_x \lo
 **Explanation of integrating factors for solving linear differential equations**
 
 **Topics covered**:
+
 - What is an integrating factor
 - How it simplifies differential equations
 - Derivation of $\frac{d\mu}{dt}$ for exponential integrating factors
@@ -245,6 +259,7 @@ This directory explains how to build neural networks that estimate $\nabla_x \lo
 **How $\alpha(t)$ and $\bar{\alpha}_t$ definitions arise from integrating factors**
 
 **Topics covered**:
+
 - Connection between integrating factor and signal coefficients
 - Why $\bar{\alpha}_t = \exp(-\int_0^t \beta(s)\,ds)$
 - Physical meaning of alpha decay
@@ -258,6 +273,7 @@ This directory explains how to build neural networks that estimate $\nabla_x \lo
 **Comprehensive guide to classifier-free guidance for conditional diffusion models**
 
 **Topics covered**:
+
 - Problem: Why naive conditioning doesn't work well
 - Classifier guidance (original approach with separate classifier)
 - Classifier-free guidance (elegant solution without classifier)
@@ -281,6 +297,7 @@ This directory explains how to build neural networks that estimate $\nabla_x \lo
 **Traces the development of diffusion models from multiple perspectives**
 
 **Topics covered**:
+
 - Timeline: Score matching (2005) → DDPM (2020) → SDE view (2021)
 - Was DDPM derived from SDEs? (No—retrospective unification)
 - Three views: Variational, Score-Based, Flow-Based
@@ -300,12 +317,14 @@ This directory explains how to build neural networks that estimate $\nabla_x \lo
 ### `docs/diffusion/` vs `notebooks/diffusion/`
 
 **This directory (`docs/diffusion/`)**:
+
 - **Purpose**: Reference materials, mathematical deep-dives, historical context
 - **Format**: Markdown documents with rigorous derivations
 - **Style**: Tutorial/blog style but with more mathematical detail
 - **Audience**: Researchers, those seeking deeper understanding
 
 **`notebooks/diffusion/`**:
+
 - **Purpose**: Interactive learning, hands-on coding, visualization
 - **Format**: Jupyter notebooks with executable code
 - **Style**: Step-by-step tutorials with examples
@@ -458,6 +477,7 @@ When adding new documents to this directory:
 ---
 
 **Next Steps**:
+
 - After understanding Brownian motion → `notebooks/diffusion/02_sde_formulation/` for SDE basics
 - After understanding forward/reverse processes → `notebooks/diffusion/02_sde_formulation/supplements/` for implementation details
 - For practical implementation → Start with DDPM notebook, then move to SDE formulation

@@ -46,6 +46,7 @@ z₀ → ... → zₜ → ... → z_T
 ```
 
 **Benefits**:
+
 - **78× fewer dimensions** (20K → 256)
 - **10-100× faster training**
 - **5-10× faster sampling**
@@ -97,11 +98,13 @@ z₀ → ... → zₜ → ... → z_T
 ### 1. Dimensionality Reduction
 
 **Gene expression is high-dimensional but low-rank**:
+
 - 20K genes measured
 - ~100-500 effective dimensions (pathways, modules)
 - Most variation captured by top PCs
 
 **Latent diffusion exploits this**:
+
 - Compress to semantic latent space
 - Diffuse in compressed space
 - Decode to full gene space
@@ -109,10 +112,12 @@ z₀ → ... → zₜ → ... → z_T
 ### 2. Computational Efficiency
 
 **For single-cell data**:
+
 - Millions of cells × 20K genes = intractable
 - Latent space: Millions of cells × 256 dims = manageable
 
 **Speedup example**:
+
 - Pixel-space: 1000 steps × 20K dims = 20M operations
 - Latent-space: 1000 steps × 256 dims = 256K operations
 - **78× faster**
@@ -120,6 +125,7 @@ z₀ → ... → zₜ → ... → z_T
 ### 3. Better Generalization
 
 **Latent space focuses on biology**:
+
 - Remove technical noise (batch effects, dropout)
 - Capture biological variation (cell types, states)
 - Generalize better to new conditions
@@ -127,6 +133,7 @@ z₀ → ... → zₜ → ... → z_T
 ### 4. Multi-Modal Integration
 
 **Natural for multi-omics**:
+
 - Shared latent space for RNA + Protein + ATAC
 - Diffusion operates on joint representation
 - Generate any modality from latent
@@ -174,6 +181,7 @@ z₀ → ... → zₜ → ... → z_T
 **Purpose**: Compress data to latent space
 
 **Options**:
+
 - **VAE**: Continuous latent, probabilistic
 - **VQ-VAE**: Discrete latent, deterministic
 - **VQ-GAN**: Discrete + adversarial (best quality)
@@ -185,6 +193,7 @@ z₀ → ... → zₜ → ... → z_T
 **Purpose**: Generate latent codes
 
 **Options**:
+
 - **DDPM**: Original diffusion
 - **DDIM**: Faster sampling
 - **Rectified Flow**: Straight paths
@@ -197,6 +206,7 @@ z₀ → ... → zₜ → ... → z_T
 **Purpose**: Control generation
 
 **Options**:
+
 - **Class labels**: Cell type, perturbation
 - **Continuous**: Time, dose, expression levels
 - **Cross-attention**: Text, gene sets, pathways
@@ -220,6 +230,7 @@ Sample: noise → latent → scRNA-seq
 ```
 
 **Benefits**:
+
 - Data augmentation
 - Rare cell type generation
 - Batch effect removal
@@ -235,6 +246,7 @@ Generate: perturbed state
 ```
 
 **Benefits**:
+
 - Virtual screening
 - Combination prediction
 - Mechanism discovery
@@ -251,6 +263,7 @@ Generate: Protein latent → Protein
 ```
 
 **Benefits**:
+
 - Fill missing modalities
 - Cross-modality validation
 - Integrated analysis
@@ -266,6 +279,7 @@ Generate: future states
 ```
 
 **Benefits**:
+
 - Predict differentiation
 - Model disease progression
 - Identify branch points
@@ -281,6 +295,7 @@ Generate: expression at location
 ```
 
 **Benefits**:
+
 - Super-resolution
 - Missing region imputation
 - 3D reconstruction
@@ -382,11 +397,13 @@ x_perturbed = vae.decode(z_0)
 ### 1. Efficiency
 
 **Computational**:
+
 - 10-100× faster training than pixel-space
 - 5-10× faster sampling
 - Scalable to millions of cells
 
 **Memory**:
+
 - Lower memory footprint
 - Larger batch sizes possible
 - Distributed training easier
@@ -394,11 +411,13 @@ x_perturbed = vae.decode(z_0)
 ### 2. Quality
 
 **Better samples**:
+
 - Sharper than VAE
 - More diverse than GAN
 - Biologically realistic
 
 **Robustness**:
+
 - Handles technical noise
 - Generalizes across batches
 - Stable training
@@ -406,11 +425,13 @@ x_perturbed = vae.decode(z_0)
 ### 3. Interpretability
 
 **Latent structure**:
+
 - Dimensions correspond to biology
 - Can analyze latent space
 - Identify key factors
 
 **Controllability**:
+
 - Fine-grained conditioning
 - Interpolation in latent space
 - Compositional generation
@@ -418,11 +439,13 @@ x_perturbed = vae.decode(z_0)
 ### 4. Flexibility
 
 **Multi-modal**:
+
 - Shared latent for multi-omics
 - Cross-modality generation
 - Integrated analysis
 
 **Multi-task**:
+
 - Single model for multiple tasks
 - Transfer learning
 - Few-shot adaptation
@@ -434,11 +457,13 @@ x_perturbed = vae.decode(z_0)
 ### Stable Diffusion (Images)
 
 **Architecture**:
+
 - VQ-GAN encoder/decoder (8× compression)
 - U-Net diffusion model
 - CLIP text conditioning
 
 **Training**:
+
 - LAION-5B dataset (5 billion images)
 - 256×256 or 512×512 resolution
 - Text-to-image generation
@@ -446,11 +471,13 @@ x_perturbed = vae.decode(z_0)
 ### Bio Latent Diffusion (Gene Expression)
 
 **Architecture**:
+
 - VAE encoder/decoder (78× compression)
 - DiT or U-Net diffusion model
 - Perturbation/cell-type conditioning
 
 **Training**:
+
 - Single-cell datasets (millions of cells)
 - 20K genes → 256 latent dims
 - Perturbation/trajectory prediction
@@ -468,21 +495,25 @@ x_perturbed = vae.decode(z_0)
 ### ✅ Use Latent Diffusion When:
 
 **High-dimensional data**:
+
 - Gene expression (20K genes)
 - Multi-omics (RNA + Protein + ATAC)
 - Spatial transcriptomics
 
 **Need efficiency**:
+
 - Large datasets (millions of cells)
 - Limited compute
 - Fast sampling required
 
 **Want quality + diversity**:
+
 - Better than VAE (sharper)
 - Better than GAN (mode coverage)
 - Stable training
 
 **Multi-task learning**:
+
 - Generation + prediction
 - Multiple conditions
 - Transfer across datasets
@@ -490,18 +521,22 @@ x_perturbed = vae.decode(z_0)
 ### ❌ Don't Use Latent Diffusion When:
 
 **Low-dimensional data**:
+
 - Already <1000 dims
 - Pixel-space diffusion is fine
 
 **Need exact likelihood**:
+
 - VAE or normalizing flow better
 - Latent diffusion likelihood is approximate
 
 **Real-time inference**:
+
 - Sampling still slower than VAE/GAN
 - Consider distillation or few-step methods
 
 **Simple tasks**:
+
 - Linear models sufficient
 - Overkill for simple prediction
 
@@ -544,15 +579,18 @@ x_perturbed = vae.decode(z_0)
 ## References
 
 **Latent Diffusion**:
+
 - Rombach et al. (2022): "High-Resolution Image Synthesis with Latent Diffusion Models" (Stable Diffusion)
 - Vahdat et al. (2021): "Score-based Generative Modeling in Latent Space"
 
 **Autoencoders**:
+
 - Kingma & Welling (2014): "Auto-Encoding Variational Bayes" (VAE)
 - van den Oord et al. (2017): "Neural Discrete Representation Learning" (VQ-VAE)
 - Esser et al. (2021): "Taming Transformers for High-Resolution Image Synthesis" (VQ-GAN)
 
 **Biology Applications**:
+
 - Lopez et al. (2018): "Deep generative modeling for single-cell transcriptomics" (scVI)
 - Lotfollahi et al. (2023): "Predicting cellular responses to novel drug combinations"
 - Bunne et al. (2023): "Learning Single-Cell Perturbation Responses using Neural Optimal Transport"

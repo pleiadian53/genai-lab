@@ -331,6 +331,7 @@ $$
 $$
 
 **Why boundary term vanishes**:
+
 - Test function $\varphi$ has compact support (or decays rapidly)
 - Probability density $p$ decays at infinity
 - Their product $\to 0$ as $|x| \to \infty$
@@ -388,6 +389,7 @@ $$
 **Statement**: If $\int \varphi(x)\,h(x)\,dx = 0$ for **all** smooth test functions $\varphi$, then $h(x) = 0$ almost everywhere.
 
 **Proof sketch**: 
+
 - Suppose $h(x_0) > 0$ at some point $x_0$
 - By continuity, $h > 0$ in some neighborhood $U$ of $x_0$
 - Choose $\varphi$ to be a smooth bump function: $\varphi > 0$ on $U$, $\varphi = 0$ outside $U$
@@ -409,6 +411,7 @@ The Fokker-Planck equation says that the probability density evolves according t
 2. **Diffusion term** $\frac{1}{2}g^2 \Delta p$: Probability spreads out due to randomness
 
 **Physical interpretation**:
+
 - If you have a swarm of particles following the SDE
 - The density $p(x, t)$ describes their distribution
 - The drift $f$ creates a flow (like a river current)
@@ -459,6 +462,7 @@ $$
 for all test functions $\varphi$.
 
 **Advantages**:
+
 - Exists even when $p$ is not differentiable
 - Includes generalized functions (distributions)
 - More physically relevant (measurements are always averaged)
@@ -568,6 +572,7 @@ J = fp - \frac{1}{2}g^2 \nabla p
 $$
 
 **Interpretation**:
+
 - $fp$: Probability flows along the drift
 - $-\frac{1}{2}g^2 \nabla p$: Probability flows down gradients (from high to low density)
 
@@ -598,6 +603,7 @@ We derived the Fokker–Planck equation through:
    - Fundamental lemma ensures pointwise equality
 
 **Key insights**:
+
 - **Stochastic dynamics at infinitesimal scales are governed by just two terms—drift and diffusion—both emerging from Taylor expansion**
 - **Test functions provide a rigorous framework for working with probability densities**
 - **The Fokker-Planck equation is a conservation law for probability**

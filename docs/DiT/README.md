@@ -107,16 +107,19 @@ Tokens → Linear → Velocity Field
 ### Rectified Flow Loss
 
 **Simple regression**:
+
 $$
 \mathcal{L} = \mathbb{E}_{x_0, x_1, t} \left[ \left\| v_\theta(x_t, t) - (x_1 - x_0) \right\|^2 \right]
 $$
 
 where:
+
 - $x_0 \sim p_{\text{data}}$ (real data)
 - $x_1 \sim \mathcal{N}(0, I)$ (noise)
 - $x_t = t x_1 + (1-t) x_0$ (linear interpolation)
 
 **Key advantages**:
+
 - No noise schedules
 - No variance parameterization
 - Direct regression target
@@ -152,6 +155,7 @@ for batch in dataloader:
 ### ODE Integration
 
 **Forward ODE** (noise → data):
+
 $$
 \frac{dx}{dt} = v_\theta(x, t)
 $$
@@ -170,6 +174,7 @@ return x  # Generated sample
 ```
 
 **Properties**:
+
 - Deterministic (same noise → same output)
 - Fast (20-50 steps)
 - Straight paths (rectified flow)
@@ -206,12 +211,14 @@ return x  # Generated sample
 ### Challenges with Traditional Approaches
 
 **Gene expression data**:
+
 - High-dimensional (10K-30K genes)
 - Unordered (no natural sequence)
 - Sparse (many zeros)
 - Compositional (relative values matter)
 
 **U-Net limitations**:
+
 - Assumes spatial structure
 - Fixed input sizes
 - Hard to condition on perturbations
@@ -219,16 +226,19 @@ return x  # Generated sample
 ### DiT Advantages
 
 **Flexibility**:
+
 - Genes/cells/regions as tokens
 - Variable-length sequences
 - Natural conditioning on perturbations
 
 **Global interactions**:
+
 - Self-attention captures gene-gene dependencies
 - No locality bias
 - Learn regulatory networks
 
 **Scalability**:
+
 - Handle large gene panels
 - Batch different experiments
 - Scale to billions of parameters
@@ -374,17 +384,21 @@ return x  # Generated sample
 ### Key Papers
 
 **DiT**:
+
 - Peebles & Xie (2023): "Scalable Diffusion Models with Transformers"
 
 **Rectified Flow**:
+
 - Liu et al. (2022): "Flow Straight and Fast: Learning to Generate and Transfer Data with Rectified Flow"
 - Liu et al. (2023): "InstaFlow: One Step is Enough for High-Quality Diffusion-Based Text-to-Image Generation"
 
 **Transformers**:
+
 - Dosovitskiy et al. (2020): "An Image is Worth 16x16 Words" (ViT)
 - Vaswani et al. (2017): "Attention is All You Need"
 
 **Conditioning**:
+
 - Perez et al. (2018): "FiLM: Visual Reasoning with a General Conditioning Layer"
 
 ### Modern Implementations

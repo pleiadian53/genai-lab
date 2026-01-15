@@ -110,6 +110,7 @@ Loss: ||z_target - ẑ_target||² (embedding-level)
 ```
 
 **Key advantages**:
+
 - No decoder (10-100× faster)
 - Semantic prediction (robust to noise)
 - No contrastive negatives (simpler than SimCLR)
@@ -138,6 +139,7 @@ Loss: ||z_target - ẑ_target||² (embedding-level)
 > If two data types differ only by dimensionality or observation density, they want the same latent space.
 
 **For biology**:
+
 - Bulk RNA-seq (static) + Time-series (dynamic) → Same latent space
 - Static data teaches spatial priors (cell types, pathways)
 - Dynamic data teaches temporal dynamics
@@ -167,6 +169,7 @@ Loss: ||z_target - ẑ_target||² (embedding-level)
 **Key innovation**: Perturbation operators in latent space
 
 **Applications**:
+
 - Perturb-seq prediction
 - Trajectory inference
 - Multi-omics translation
@@ -189,6 +192,7 @@ loss = ||z_pred - encoder(x_perturbed)||²
 ```
 
 **Advantages**:
+
 - No need to reconstruct all 20K genes
 - Learn perturbation operators
 - Compositional (combine perturbations)
@@ -208,6 +212,7 @@ loss = ||z_t1_pred - encoder(x_t1)||²
 ```
 
 **Applications**:
+
 - Developmental biology
 - Disease progression
 - Drug response over time
@@ -224,6 +229,7 @@ loss = ||z_protein_pred - encoder_protein(x_protein)||²
 ```
 
 **Applications**:
+
 - RNA → Protein prediction
 - ATAC → RNA prediction
 - Cross-species translation
@@ -241,6 +247,7 @@ loss = ||z_response - encoder(x_treated)||²
 ```
 
 **Applications**:
+
 - Drug screening
 - Combination therapy
 - Patient stratification
@@ -303,16 +310,19 @@ loss = ||z_response - encoder(x_treated)||²
 - Multi-omics translation
 
 **Efficiency matters**
+
 - Large-scale datasets
 - Limited compute
 - Need fast training
 
 **Robustness is critical**
+
 - Noisy data
 - Batch effects
 - Technical variation
 
 **Compositional reasoning needed**
+
 - Combine perturbations
 - Transfer across contexts
 - Causal modeling
@@ -320,15 +330,18 @@ loss = ||z_response - encoder(x_treated)||²
 ### ❌ Use Generative Models When:
 
 **Need actual samples**
+
 - Data augmentation
 - Synthetic data generation
 - Uncertainty quantification
 
 **Reconstruction quality matters**
+
 - Image generation
 - High-fidelity synthesis
 
 **Distribution modeling is the goal**
+
 - Density estimation
 - Anomaly detection
 
@@ -409,6 +422,7 @@ x_samples = diffusion_decoder(z_pred, num_samples=100)
 ### Within This Project
 
 **Generative Models**:
+
 - [DDPM](../DDPM/) — Denoising diffusion
 - [SDE](../SDE/) — Stochastic differential equations
 - [Flow Matching](../flow_matching/) — Rectified flow
@@ -416,26 +430,32 @@ x_samples = diffusion_decoder(z_pred, num_samples=100)
 - [VAE](../VAE/) — Variational autoencoders
 
 **Architecture Choices**:
+
 - [Gene Expression Architectures](../DDPM/02a_diffusion_arch_gene_expression.md) — Tokenization for biology
 
 **Incubation**:
+
 - [Joint Latent Spaces](../incubation/joint_latent_space_and_JEPA.md) — Goku insights
 
 ### External Resources
 
 **JEPA Papers**:
+
 - LeCun (2022): "A Path Towards Autonomous Machine Intelligence"
 - Assran et al. (2023): "Self-Supervised Learning from Images with a Joint-Embedding Predictive Architecture" (I-JEPA)
 - Bardes et al. (2024): "V-JEPA: Latent Video Prediction"
 - Meta AI (2025): "V-JEPA 2: Understanding, Prediction, and Planning"
 
 **Joint Latent Spaces**:
+
 - ByteDance & HKU (2024): "Goku: Native Joint Image-Video Generation"
 
 **VICReg**:
+
 - Bardes et al. (2022): "VICReg: Variance-Invariance-Covariance Regularization"
 
 **Biology Applications**:
+
 - Norman et al. (2019): "Exploring genetic interaction manifolds" (Perturb-seq)
 - Lotfollahi et al. (2019): "scGen predicts single-cell perturbation responses"
 - Roohani et al. (2023): "Predicting transcriptional outcomes of novel multigene perturbations" (GEARS)

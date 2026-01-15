@@ -188,6 +188,7 @@ $$
 $$
 
 where:
+
 - $t \sim \text{Uniform}(0, T)$ is a random timestep
 - $x_0 \sim p_{\text{data}}(x \mid c)$ is a real expression profile
 - $\epsilon \sim \mathcal{N}(0, I)$ is random noise
@@ -261,6 +262,7 @@ Counts → log1p → Encoder → z (continuous) → Diffusion → z' → NB Deco
 ```
 
 **Why both are needed**:
+
 - **Latent space** makes diffusion well-defined (continuous, bounded, smooth)
 - **NB/ZINB decoder** ensures outputs respect count statistics (non-negative, overdispersed, sparse)
 
@@ -378,6 +380,7 @@ Q_t = (1 - β_t) * I + β_t * uniform_matrix
 | Discrete diffusion (D3PM) | Diffusion directly on discrete counts | True count model | Complex, slow, less mature | Research applications |
 
 **Implementation in genai-lab**:
+
 - `src/genailab/model/decoders.py`: `NegativeBinomialDecoder`, `ZINBDecoder`
 - `src/genailab/objectives/losses.py`: `nb_loss()`, `zinb_loss()`, `elbo_loss_nb()`, `elbo_loss_zinb()`
 - `notebooks/diffusion/04_gene_expression_diffusion/`: Latent diffusion example
@@ -758,11 +761,13 @@ residual_model = train_diffusion_model(residuals)
 ### Computational Resources
 
 **Training**:
+
 - Diffusion: 1-2 weeks on 4x A100 GPUs for 20K genes
 - VAE: 2-3 days on 1x A100 GPU
 - Flow: 3-5 days on 1x A100 GPU
 
 **Inference**:
+
 - Diffusion: ~1 second per sample (1000 steps)
 - VAE: ~10ms per sample (single forward pass)
 - Flow: ~100ms per sample (ODE solve)
@@ -780,24 +785,28 @@ Since we can't directly observe the "true" distribution, we use proxy metrics:
 ### When to Use Each Approach
 
 **Use diffusion models when**:
+
 - Sample quality is critical
 - You have large datasets
 - Computational resources are available
 - You need flexible conditioning
 
 **Use VAEs when**:
+
 - Fast sampling is required
 - You want interpretable latent space
 - You need explicit likelihood
 - You want to explore latent factors
 
 **Use flows when**:
+
 - Exact likelihood is important
 - You need invertibility
 - You have moderate-sized datasets
 - You want density estimation
 
 **Use hybrid approach when**:
+
 - You have a good predictive model already
 - You want to add uncertainty quantification
 - You need both accuracy and diversity
@@ -825,11 +834,13 @@ We train a cVAE with:
 ### Results
 
 **Quantitative**:
+
 - Reconstruction MSE: 0.42 (vs 0.38 for supervised baseline)
 - Sample diversity: Captures 87% of observed variance
 - Likelihood: -12,450 nats (indicates good density estimation)
 
 **Qualitative**:
+
 - Generated samples respect tissue-specific gene programs
 - Age-related changes are smooth and biologically plausible
 - Rare cell types (e.g., pancreatic islets) are well-represented
@@ -868,24 +879,29 @@ As foundation models for biology continue to scale, integrating generative capab
 ### Foundational Papers
 
 **Diffusion Models**:
+
 - Ho et al. (2020) - "Denoising Diffusion Probabilistic Models"
 - Song et al. (2021) - "Score-Based Generative Modeling through SDEs"
 
 **VAEs**:
+
 - Kingma & Welling (2014) - "Auto-Encoding Variational Bayes"
 - Sohn et al. (2015) - "Learning Structured Output Representation using Deep Conditional Generative Models"
 
 **Normalizing Flows**:
+
 - Chen et al. (2018) - "Neural Ordinary Differential Equations"
 - Grathwohl et al. (2019) - "FFJORD: Free-form Continuous Dynamics for Scalable Reversible Generative Models"
 
 ### Applications to Biology
 
 **Single-cell RNA-seq**:
+
 - Lopez et al. (2018) - "Deep generative modeling for single-cell transcriptomics" (scVI)
 - Lotfollahi et al. (2020) - "scGen predicts single-cell perturbation responses"
 
 **Gene Expression Prediction**:
+
 - Avsec et al. (2021) - "Effective gene expression prediction from sequence by integrating long-range interactions" (Enformer)
 - Theodoris et al. (2023) - "Transfer learning enables predictions in network biology" (Geneformer)
 

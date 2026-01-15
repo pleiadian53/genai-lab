@@ -178,6 +178,7 @@ $$
 $$
 
 where:
+
 - $\mathcal{L}_{\text{disentangle}}$ encourages independence of latent factors
 - $\mathcal{L}_{\text{causal}}$ enforces perturbation effects are additive in latent space
 
@@ -235,11 +236,13 @@ where $\Phi_\theta$ is the learned flow.
 ### The Best of Both Worlds
 
 **Stage 1: GEM-1-style Predictive Model**
+
 - Learn $\mu(c) = \mathbb{E}[x \mid c]$ for all conditions $c$
 - Massive scale, data harmonization, metadata curation
 - Provides strong **prior** for generative model
 
 **Stage 2: Generative Model on Residuals**
+
 - Learn $p(x - \mu(c) \mid c)$ - the distribution around the mean
 - Captures biological variability, technical noise, rare events
 - Much easier to learn than full $p(x \mid c)$
@@ -289,6 +292,7 @@ class HybridPerturbationModel:
 **Model**: Conditional diffusion (Architecture 1)
 
 **Metrics**:
+
 - **Reconstruction**: MSE on held-out cells
 - **Diversity**: Variance of generated samples vs real
 - **Composition**: Accuracy on held-out double knockouts
@@ -306,6 +310,7 @@ class HybridPerturbationModel:
 **Model**: Causal VAE (Architecture 2) or Hybrid (GEM-1 + diffusion)
 
 **Metrics**:
+
 - **Transfer learning**: Train on cell line, test on primary cells
 - **Zero-shot perturbations**: Predict unseen perturbations from embeddings
 - **Counterfactuals**: Generate "what if" scenarios
@@ -315,16 +320,19 @@ class HybridPerturbationModel:
 ### Phase 3: Integration with GEM-1 Philosophy
 
 **Data Harmonization**:
+
 - Apply GEM-1's metadata curation to scPerturb
 - Standardize perturbation ontologies
 - Align cell type annotations
 
 **Model Architecture**:
+
 - Use GEM-1-style predictive model as initialization
 - Add generative wrapper for uncertainty
 - Multi-task learning: predict mean + sample distribution
 
 **Validation**:
+
 - Compare against GEM-1 predictions (if available)
 - Benchmark on experimental validation datasets
 - Collaborate with experimentalists for prospective validation
@@ -363,6 +371,7 @@ GEM-1 and generative models solve **different problems**:
 ### Challenge 1: High Dimensionality (5,000-20,000 genes)
 
 **Solution**: 
+
 - Use **gene program embeddings** (PCA, NMF, or learned)
 - Model in low-dimensional latent space (~50-200 dims)
 - Decode back to gene space
@@ -370,6 +379,7 @@ GEM-1 and generative models solve **different problems**:
 ### Challenge 2: Sparse, Zero-Inflated Data
 
 **Solution**:
+
 - Use **zero-inflated loss functions**
 - Separate models for dropout vs expression level
 - Or use **scVI-style** probabilistic framework
@@ -377,6 +387,7 @@ GEM-1 and generative models solve **different problems**:
 ### Challenge 3: Batch Effects
 
 **Solution**:
+
 - Include batch as conditioning variable
 - Use **adversarial training** to remove batch effects
 - Or **CycleGAN-style** batch correction in latent space
@@ -384,6 +395,7 @@ GEM-1 and generative models solve **different problems**:
 ### Challenge 4: Limited Perturbation Coverage
 
 **Solution**:
+
 - **Meta-learning** across perturbations
 - **Transfer learning** from related perturbations
 - **Graph neural networks** over perturbation similarity graphs
@@ -391,6 +403,7 @@ GEM-1 and generative models solve **different problems**:
 ### Challenge 5: Validation Without Ground Truth
 
 **Solution**:
+
 - **Biological consistency checks**: pathway enrichment, known interactions
 - **Cross-validation**: held-out perturbations, cell types, doses
 - **Prospective validation**: generate predictions → experimentalists test

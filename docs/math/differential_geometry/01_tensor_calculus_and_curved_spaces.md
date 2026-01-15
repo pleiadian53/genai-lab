@@ -5,6 +5,7 @@
 This tutorial introduces tensor calculus and differential geometry on curved spaces, motivated by their emerging applications in machine learning. We'll build from first principles to modern applications in diffusion models, geometric deep learning, and beyond.
 
 **Why this matters for ML**:
+
 - Protein structures live on curved spaces (torsion angles on tori)
 - Molecular conformations are constrained to manifolds
 - Robotic joint configurations form non-Euclidean spaces
@@ -19,12 +20,15 @@ This tutorial introduces tensor calculus and differential geometry on curved spa
 In **Euclidean space** $\mathbb{R}^d$ with **Cartesian coordinates** $(x_1, x_2, \ldots, x_d)$:
 
 **Distance** (Pythagorean theorem):
+
 $$
 ds^2 = dx_1^2 + dx_2^2 + \cdots + dx_d^2
 $$
 
 **Gradient** (just partial derivatives):
+
 $$
+
 \nabla f = \begin{bmatrix}
 \frac{\partial f}{\partial x_1} \\
 \vdots \\
@@ -33,7 +37,9 @@ $$
 $$
 
 **Dot product**:
+
 $$
+
 \mathbf{u} \cdot \mathbf{v} = \sum_{i=1}^d u_i v_i
 $$
 
@@ -49,14 +55,18 @@ Cartesian: $(x, y)$
 Polar: $(r, \theta)$ where $x = r\cos\theta$, $y = r\sin\theta$
 
 **Distance element**:
+
 $$
+
 ds^2 = dr^2 + r^2 d\theta^2
 $$
 
 Notice: Not $dr^2 + d\theta^2$ because angles and radii have different units!
 
 **Gradient**:
+
 $$
+
 \nabla f = \frac{\partial f}{\partial r} \hat{e}_r + \frac{1}{r} \frac{\partial f}{\partial \theta} \hat{e}_\theta
 $$
 
@@ -77,6 +87,7 @@ $$
 **Key difference**: The coefficient $\sin^2\theta$ depends on position—this is **intrinsic curvature**.
 
 **Physical intuition**: 
+
 - Near the equator, longitude lines are far apart
 - Near the poles, they converge
 - This affects distances and gradients
@@ -90,14 +101,18 @@ $$
 The **metric tensor** $g_{ij}$ encodes how to measure distances in arbitrary coordinates.
 
 **Distance element**:
+
 $$
+
 ds^2 = \sum_{i,j=1}^d g_{ij} \, dx^i \, dx^j = g_{ij} \, dx^i \, dx^j
 $$
 
 (Using Einstein summation: repeated indices are summed)
 
 **Matrix form**:
+
 $$
+
 ds^2 = (dx)^T G \, dx
 $$
 
@@ -106,7 +121,9 @@ where $G = [g_{ij}]$ is the **metric tensor matrix**.
 ### 2.2 Examples
 
 **Euclidean space** (Cartesian):
+
 $$
+
 G = I = \begin{bmatrix}
 1 & 0 & \cdots & 0 \\
 0 & 1 & \cdots & 0 \\
@@ -116,7 +133,9 @@ G = I = \begin{bmatrix}
 $$
 
 **Polar coordinates** (in 2D):
+
 $$
+
 G = \begin{bmatrix}
 1 & 0 \\
 0 & r^2
@@ -124,7 +143,9 @@ G = \begin{bmatrix}
 $$
 
 **Sphere** $S^2$ (radius $R$):
+
 $$
+
 G = \begin{bmatrix}
 R^2 & 0 \\
 0 & R^2\sin^2\theta
@@ -132,7 +153,9 @@ R^2 & 0 \\
 $$
 
 **Minkowski spacetime** (special relativity):
+
 $$
+
 G = \begin{bmatrix}
 -c^2 & 0 & 0 & 0 \\
 0 & 1 & 0 & 0 \\
@@ -146,12 +169,16 @@ $$
 The metric tensor relates **contravariant** (upper index) and **covariant** (lower index) vectors.
 
 **Lowering an index**:
+
 $$
+
 v_i = g_{ij} v^j
 $$
 
 **Raising an index**:
+
 $$
+
 v^i = g^{ij} v_j
 $$
 
@@ -172,6 +199,7 @@ In curved space, **partial derivatives of vectors are not tensors**!
 **Why?** Because basis vectors $\hat{e}_i$ themselves change from point to point.
 
 **Example on a sphere**: 
+
 - The "north" direction at one point is different from "north" at another point
 - Taking $\frac{\partial \mathbf{v}}{\partial \theta}$ mixes the change in vector components with the change in basis vectors
 
@@ -180,12 +208,15 @@ In curved space, **partial derivatives of vectors are not tensors**!
 The **covariant derivative** $\nabla_i$ is the correct way to differentiate in curved spaces.
 
 **For a scalar** (easy):
+
 $$
 \nabla_i f = \frac{\partial f}{\partial x^i}
 $$
 
 **For a vector** (requires correction):
+
 $$
+
 \nabla_i v^j = \frac{\partial v^j}{\partial x^i} + \Gamma^j_{ik} v^k
 $$
 
@@ -200,11 +231,14 @@ $$
 $$
 
 **Formula in terms of metric**:
+
 $$
+
 \Gamma^k_{ij} = \frac{1}{2} g^{k\ell} \left(\frac{\partial g_{\ell i}}{\partial x^j} + \frac{\partial g_{\ell j}}{\partial x^i} - \frac{\partial g_{ij}}{\partial x^\ell}\right)
 $$
 
 **Key properties**:
+
 - $\Gamma^k_{ij} = \Gamma^k_{ji}$ (symmetric in lower indices)
 - $\Gamma^k_{ij} = 0$ in Cartesian coordinates on flat space
 - Nonzero in curvilinear coordinates or curved spaces
@@ -214,14 +248,18 @@ $$
 For a sphere $S^2$ with metric $ds^2 = R^2(d\theta^2 + \sin^2\theta \, d\phi^2)$:
 
 **Non-zero Christoffel symbols**:
+
 $$
+
 \Gamma^\theta_{\phi\phi} = -\sin\theta \cos\theta
 $$
 $$
+
 \Gamma^\phi_{\theta\phi} = \Gamma^\phi_{\phi\theta} = \frac{\cos\theta}{\sin\theta} = \cot\theta
 $$
 
 **Interpretation**: 
+
 - Moving in $\phi$ (longitude) changes your $\theta$ (latitude) direction
 - This is the geometric "correction" needed on a curved surface
 
@@ -265,7 +303,9 @@ g^{\phi\phi} \frac{\partial f}{\partial \phi}
 $$
 
 **In orthonormal basis** $(\hat{e}_r, \hat{e}_\phi)$:
+
 $$
+
 \nabla f = \frac{\partial f}{\partial r} \hat{e}_r + \frac{1}{r} \frac{\partial f}{\partial \phi} \hat{e}_\phi
 $$
 
@@ -339,14 +379,18 @@ $$
 ### 6.2 Brownian Motion on Manifolds
 
 **Euclidean Brownian motion**:
+
 $$
+
 dx = \sigma \, dw
 $$
 
 where $dw \sim \mathcal{N}(0, dt \cdot I)$.
 
 **Riemannian Brownian motion**:
+
 $$
+
 dx^i = \sqrt{g^{ij}} \sigma \, dw_j - \frac{1}{2} \Gamma^i_{jk} g^{jk} \sigma^2 \, dt
 $$
 
@@ -359,14 +403,18 @@ $$
 ### 6.3 Score-Based Diffusion on Manifolds
 
 **Forward SDE on manifold $\mathcal{M}$**:
+
 $$
+
 dx = f(x,t) \, dt + g(t) \, dw_{\mathcal{M}}
 $$
 
 where $dw_{\mathcal{M}}$ is Brownian motion on the manifold.
 
 **Reverse SDE**:
+
 $$
+
 dx = \left[f(x,t) - g(t)^2 \nabla_{\mathcal{M}} \log p_t(x)\right] dt + g(t) \, d\bar{w}
 $$
 
@@ -381,6 +429,7 @@ where $\nabla_{\mathcal{M}}$ is the **Riemannian gradient**.
 ### 7.1 Riemannian Score-Based Generative Models
 
 **Key papers**:
+
 - De Bortoli et al. (2022): "Riemannian Score-Based Generative Modeling"
 - Mathieu & Nickel (2020): "Continuous Hierarchical Representations with Poincaré VAEs"
 
@@ -391,6 +440,7 @@ where $\nabla_{\mathcal{M}}$ is the **Riemannian gradient**.
 4. Sample via reverse SDE using the learned score
 
 **Applications**:
+
 - Protein structure generation (torsion angles on torus)
 - Molecular conformations (constrained manifolds)
 - Earth science data (spherical domains)
@@ -405,6 +455,7 @@ where $\nabla_{\mathcal{M}}$ is the **Riemannian gradient**.
 3. **Equivariant networks**: Respect symmetries (rotations, translations)
 
 **Connection to diffusion**: 
+
 - Can we build score networks that are equivariant to geometric transformations?
 - How to parameterize networks on manifolds?
 
@@ -422,6 +473,7 @@ where $\nabla_{\mathcal{M}}$ is the **Riemannian gradient**.
 - **Result**: Always generates valid structures
 
 **State-of-the-art**:
+
 - **FoldFlow** (NeurIPS 2023): Diffusion on SE(3) for protein backbone generation
 - **DiffDock** (ICLR 2023): SE(3)-equivariant diffusion for molecular docking
 
@@ -434,6 +486,7 @@ where $\nabla_{\mathcal{M}}$ is the **Riemannian gradient**.
 - Configuration space: $\mathcal{C} = (S^1)^n$ (n-dimensional torus)
 
 **Geometric approach**:
+
 - Learn motion distribution on $\mathcal{C}$ using Riemannian diffusion
 - Generate collision-free paths respecting joint limits
 - Naturally handles periodicity and constraints
@@ -474,6 +527,7 @@ g = sp.Matrix([[1, 0], [0, r**2]])
 - Learn from data (e.g., neural network parameterization)
 
 **Automatic differentiation**:
+
 - PyTorch/JAX can compute gradients on manifolds
 - Libraries: `geomstats`, `pymanopt`, `geoopt`
 
@@ -650,16 +704,19 @@ class CircleScoreNetworkIntrinsic(nn.Module):
 ### 10.2 Software Libraries
 
 **Manifold optimization**:
+
 - `geoopt` (PyTorch): Riemannian optimization
 - `pymanopt` (NumPy/PyTorch/JAX): General manifold optimization
 - `geomstats` (NumPy/PyTorch/JAX): Comprehensive Riemannian geometry
 
 **Geometric deep learning**:
+
 - `PyG` (PyTorch Geometric): Graph neural networks
 - `DGL`: Deep Graph Library
 - `e3nn`: Equivariant neural networks (SO(3)/E(3))
 
 **Protein structure**:
+
 - `AlphaFold`: Structure prediction
 - `ESM` (Evolutionary Scale Modeling): Protein language models
 - `OpenFold`: Open-source AlphaFold implementation

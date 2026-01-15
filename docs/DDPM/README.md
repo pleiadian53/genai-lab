@@ -258,12 +258,14 @@ DDPM can be viewed as a hierarchical VAE with:
 | **Flow** | Stable | Fast | Good | High | Exact |
 
 **DDPM advantages**:
+
 - Training stability (no adversarial training)
 - High sample quality
 - Flexible conditioning
 - Theoretical foundations
 
 **DDPM disadvantages**:
+
 - Slow sampling (1000 steps)
 - Approximate likelihood
 - High computational cost

@@ -11,12 +11,14 @@ This document provides a complete, end-to-end implementation of JEPA for Perturb
 ### 1.1 Dataset Overview
 
 **Norman et al. Perturb-seq dataset**:
+
 - **Cells**: ~100K K562 cells
 - **Perturbations**: 101 genes (single and double knockouts)
 - **Technology**: CRISPR-based genetic perturbations + scRNA-seq
 - **Genes**: ~20K genes measured
 
 **Key features**:
+
 - Single perturbations: 101 genes
 - Double perturbations: 20 gene pairs
 - Control cells: Non-targeting guides
@@ -949,12 +951,15 @@ def predict_combination(
 ## References
 
 **Perturb-seq data**:
+
 - Norman et al. (2019): "Exploring genetic interaction manifolds constructed from rich single-cell phenotypes"
 - Replogle et al. (2022): "Mapping information-rich genotype-phenotype landscapes with genome-scale Perturb-seq"
 
 **Baseline methods**:
+
 - Lotfollahi et al. (2019): "scGen predicts single-cell perturbation responses"
 - Roohani et al. (2023): "Predicting transcriptional outcomes of novel multigene perturbations with GEARS"
 
 **JEPA**:
+
 - Assran et al. (2023): "Self-Supervised Learning from Images with a Joint-Embedding Predictive Architecture"

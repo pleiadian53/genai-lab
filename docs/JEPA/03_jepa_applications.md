@@ -29,6 +29,7 @@ This document maps JEPA concepts from computer vision to computational biology, 
 **Goal**: Predict cellular response to genetic/chemical perturbations
 
 **Data**:
+
 - Baseline expression: $x_0 \in \mathbb{R}^{20000}$ (unperturbed cells)
 - Perturbed expression: $x_p \in \mathbb{R}^{20000}$ (after perturbation)
 - Perturbation info: Gene ID, type (KO/OE), dose
@@ -244,6 +245,7 @@ def evaluate_perturbation_prediction(model, test_loader, device):
 **Goal**: Predict developmental or disease trajectories
 
 **Data**:
+
 - Time-series expression: $\{x_{t_1}, x_{t_2}, ..., x_{t_n}\}$
 - Time points: $\{t_1, t_2, ..., t_n\}$
 
@@ -348,16 +350,19 @@ class TrajectoryJEPA(nn.Module):
 ### 2.3 Applications
 
 **1. Developmental biology**:
+
 - Predict cell differentiation trajectories
 - Identify branch points
 - Infer lineage relationships
 
 **2. Disease progression**:
+
 - Predict disease state evolution
 - Identify critical transitions
 - Stratify patients by trajectory
 
 **3. Drug response over time**:
+
 - Predict temporal response to drugs
 - Identify optimal treatment timing
 - Detect resistance emergence
@@ -371,6 +376,7 @@ class TrajectoryJEPA(nn.Module):
 **Goal**: Predict one modality from another
 
 **Data**:
+
 - RNA-seq: $x_{rna} \in \mathbb{R}^{20000}$
 - Protein: $x_{protein} \in \mathbb{R}^{5000}$
 - ATAC-seq: $x_{atac} \in \mathbb{R}^{50000}$
@@ -462,16 +468,19 @@ class MultiOmicsJEPA(nn.Module):
 ### 3.3 Applications
 
 **1. RNA → Protein prediction**:
+
 - Predict protein abundance from transcriptomics
 - Identify post-transcriptional regulation
 - Validate proteomics experiments
 
 **2. ATAC → RNA prediction**:
+
 - Predict gene expression from chromatin accessibility
 - Identify regulatory relationships
 - Infer transcription factor activity
 
 **3. Cross-species translation**:
+
 - Predict human expression from mouse
 - Transfer knowledge across species
 - Validate evolutionary conservation
@@ -485,6 +494,7 @@ class MultiOmicsJEPA(nn.Module):
 **Goal**: Predict cellular response to drugs
 
 **Data**:
+
 - Baseline expression: $x_0$
 - Drug features: Chemical structure, target, dose
 - Treated expression: $x_{drug}$
@@ -609,16 +619,19 @@ class DrugResponseJEPA(nn.Module):
 ### 4.3 Applications
 
 **1. Drug screening**:
+
 - Predict response to large drug libraries
 - Identify promising candidates
 - Prioritize experiments
 
 **2. Combination therapy**:
+
 - Predict response to drug combinations
 - Identify synergistic pairs
 - Optimize dosing
 
 **3. Patient stratification**:
+
 - Predict patient-specific responses
 - Personalize treatment
 - Identify biomarkers
@@ -883,14 +896,17 @@ def evaluate_linear_probe(model, train_data, train_labels, test_data, test_label
 ## References
 
 **JEPA papers**:
+
 - Assran et al. (2023): "Self-Supervised Learning from Images with a Joint-Embedding Predictive Architecture"
 - Bardes et al. (2024): "V-JEPA: Latent Video Prediction"
 
 **Perturbation modeling**:
+
 - Lotfollahi et al. (2019): "scGen predicts single-cell perturbation responses"
 - Roohani et al. (2023): "Predicting transcriptional outcomes of novel multigene perturbations with GEARS"
 - Norman et al. (2019): "Exploring genetic interaction manifolds constructed from rich single-cell phenotypes"
 
 **Multi-omics**:
+
 - Ma et al. (2020): "Integrative Methods and Practical Challenges for Single-Cell Multi-omics"
 - Argelaguet et al. (2021): "MOFA+: a statistical framework for comprehensive integration of multi-modal single-cell data"

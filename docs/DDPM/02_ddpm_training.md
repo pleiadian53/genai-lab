@@ -60,6 +60,7 @@ L = \mathbb{E}_{t, x_0, \epsilon} \left[\|\epsilon - \epsilon_\theta(x_t, t)\|^2
 $$
 
 **Pros**:
+
 - Most common formulation
 - Works well empirically
 - Easy to implement
@@ -93,10 +94,12 @@ $$
 $$
 
 **Pros**:
+
 - Direct prediction of clean data
 - Can be easier to interpret
 
 **Cons**:
+
 - Can be less stable (predicting data vs. noise)
 
 **When to use**: When you want direct $x_0$ estimates (e.g., for visualization)
@@ -120,6 +123,7 @@ where $v_t = x_1 - x_0$ is the "velocity" from noise to data.
 **Standard architecture** for image diffusion models.
 
 **Key components**:
+
 - **Encoder-decoder structure**: Downsampling → bottleneck → upsampling
 - **Skip connections**: Preserve spatial information
 - **Attention blocks**: Capture long-range dependencies
@@ -151,6 +155,7 @@ Output (3, 256, 256)
 **Simple architecture** for non-spatial data (gene expression, tabular features).
 
 **Key components**:
+
 - **Residual MLP blocks**: Prevent vanishing gradients
 - **Layer normalization**: Stabilize training
 - **Time embeddings**: Sinusoidal positional encodings
@@ -179,6 +184,7 @@ class ConditionalScoreNetwork(nn.Module):
 **Transformer-based architecture** for sequences and non-grid data.
 
 **Key components**:
+
 - **Token embeddings**: Convert data to tokens
 - **Self-attention**: Capture dependencies
 - **Time conditioning**: Via AdaLN (Adaptive Layer Normalization)
@@ -197,6 +203,7 @@ $$
 $$
 
 **Pros**:
+
 - No learnable parameters
 - Smooth interpolation
 - Works well empirically
@@ -219,10 +226,12 @@ t_{\text{emb}} = \text{Embedding}(t)
 $$
 
 **Pros**:
+
 - Can learn task-specific representations
 - More flexible
 
 **Cons**:
+
 - Requires more parameters
 - May overfit with limited data
 
@@ -411,6 +420,7 @@ scaler.update()
 ### 4. Monitoring
 
 **Key metrics to track**:
+
 - Training loss (should decrease steadily)
 - Sample quality (visual inspection or FID)
 - Gradient norms (should be stable)
@@ -426,6 +436,7 @@ scaler.update()
 **Symptom**: Generated samples are pure noise
 **Cause**: Model hasn't learned the score function
 **Solution**:
+
 - Train longer
 - Check learning rate (may be too high or too low)
 - Verify data preprocessing
@@ -435,6 +446,7 @@ scaler.update()
 **Symptom**: Model generates similar samples
 **Cause**: Insufficient model capacity or training
 **Solution**:
+
 - Increase model size
 - Train longer
 - Use classifier-free guidance
@@ -444,6 +456,7 @@ scaler.update()
 **Symptom**: Loss decreases very slowly
 **Cause**: Poor hyperparameters or architecture
 **Solution**:
+
 - Increase learning rate
 - Use cosine schedule instead of linear
 - Add more layers or hidden dimensions
@@ -462,6 +475,7 @@ scaler.update()
 6. **Training tips**: Use EMA, gradient clipping, mixed precision
 
 **Best practices**:
+
 - Start with simple loss and standard architecture
 - Use cosine schedule for better quality
 - Monitor sample quality during training

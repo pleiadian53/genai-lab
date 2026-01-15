@@ -269,11 +269,13 @@ optimizer = torch.optim.AdamW(
 ```
 
 **Why AdamW**:
+
 - Decoupled weight decay (better than Adam)
 - Stable for transformers
 - Good default choice
 
 **Alternatives**:
+
 - **Adam**: If weight decay not needed
 - **SGD + momentum**: For smaller models
 - **LAMB**: For very large batch sizes
@@ -358,6 +360,7 @@ optimizer.step()
 ```
 
 **When to use**:
+
 - Always for transformers
 - Especially with large learning rates
 - If seeing NaN losses
@@ -388,6 +391,7 @@ optimizer.step()
 | **γ (target std)** | 1.0 | 0.5-2.0 | Target variance |
 
 **Tuning guidelines**:
+
 - If embeddings collapse → increase λ_var
 - If dimensions correlated → increase λ_cov
 - If predictions too rigid → decrease λ_inv
@@ -628,17 +632,20 @@ def validate(model, val_loader, device):
 ### 5.1 Key Metrics to Monitor
 
 **1. Loss components**:
+
 - Total loss
 - Invariance loss (MSE between prediction and target)
 - Variance loss (embedding spread)
 - Covariance loss (dimension decorrelation)
 
 **2. Embedding statistics**:
+
 - Mean embedding norm
 - Embedding variance per dimension
 - Correlation between dimensions
 
 **3. Training dynamics**:
+
 - Learning rate
 - Gradient norms
 - Weight norms
@@ -802,6 +809,7 @@ for batch in train_loader:
 ```
 
 **Benefits**:
+
 - 2-3× faster training
 - 2× less memory
 - Minimal accuracy loss

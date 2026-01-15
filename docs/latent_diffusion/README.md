@@ -102,17 +102,20 @@ z₀ → ... → zₜ → ... → z_T
 ### Why This Works
 
 **Biological data is low-rank**:
+
 - 20K genes measured
 - ~100-500 effective dimensions
 - Most variation in top PCs
 
 **Latent space captures biology**:
+
 - Cell types
 - Pathways
 - States
 - Transitions
 
 **Diffusion adds quality**:
+
 - Sharper than VAE
 - Better mode coverage
 - Stable training
@@ -161,6 +164,7 @@ z₀ → ... → zₜ → ... → z_T
 **Purpose**: Learn compressed latent representation
 
 **Options**:
+
 - **VAE** — Continuous latent, probabilistic
 - **VQ-VAE** — Discrete latent, codebook
 - **VQ-GAN** — Discrete + adversarial (best quality)
@@ -188,6 +192,7 @@ class BiologicalVAE(nn.Module):
 **Purpose**: Generate latent codes
 
 **Options**:
+
 - **DDPM** — Original diffusion
 - **DDIM** — Deterministic, faster sampling
 - **Rectified Flow** — Straight paths, optimal
@@ -216,12 +221,14 @@ class LatentDiffusion(nn.Module):
 **Purpose**: Control generation
 
 **Mechanisms**:
+
 - **Concatenation** — Simple, effective
 - **Cross-attention** — Flexible, powerful
 - **FiLM** — Affine transformation
 - **Adaptive LayerNorm** — DiT-style
 
 **For biology**:
+
 - Cell type: Class embedding
 - Perturbation: Gene embedding
 - Time: Sinusoidal encoding
@@ -241,11 +248,13 @@ class LatentDiffusion(nn.Module):
 3. Sample: noise → latent → scRNA-seq
 
 **Benefits**:
+
 - Data augmentation
 - Rare cell type generation
 - Batch effect removal
 
 **Use cases**:
+
 - Expand training data
 - Generate synthetic controls
 - Simulate experiments
@@ -261,11 +270,13 @@ class LatentDiffusion(nn.Module):
 4. Decode to gene expression
 
 **Benefits**:
+
 - Virtual screening
 - Combination prediction
 - Mechanism discovery
 
 **Use cases**:
+
 - Drug discovery
 - CRISPR screening
 - Genetic interaction mapping
@@ -281,11 +292,13 @@ class LatentDiffusion(nn.Module):
 4. Decode to Protein expression
 
 **Benefits**:
+
 - Fill missing modalities
 - Cross-modality validation
 - Integrated analysis
 
 **Use cases**:
+
 - CITE-seq imputation
 - Predict protein from RNA
 - Multi-omics integration
@@ -301,11 +314,13 @@ class LatentDiffusion(nn.Module):
 4. Decode to expression
 
 **Benefits**:
+
 - Predict differentiation
 - Model disease progression
 - Identify branch points
 
 **Use cases**:
+
 - Developmental biology
 - Disease modeling
 - Drug response over time
@@ -321,11 +336,13 @@ class LatentDiffusion(nn.Module):
 4. Decode to genes
 
 **Benefits**:
+
 - Super-resolution
 - Missing region imputation
 - 3D reconstruction
 
 **Use cases**:
+
 - Enhance spatial resolution
 - Fill tissue gaps
 - Predict 3D structure
@@ -407,11 +424,13 @@ x_gen = vae.decode(z_0)
 ### Quality Improvements
 
 **Better than VAE**:
+
 - Sharper samples (no blurriness)
 - Better mode coverage (all cell types)
 - More realistic (passes biological QC)
 
 **Comparable to pixel-space diffusion**:
+
 - Same sample quality
 - Better efficiency
 - More interpretable
@@ -423,21 +442,25 @@ x_gen = vae.decode(z_0)
 ### ✅ Use Latent Diffusion When:
 
 **High-dimensional data**:
+
 - Gene expression (20K genes)
 - Multi-omics (RNA + Protein + ATAC)
 - Spatial transcriptomics
 
 **Need efficiency**:
+
 - Large datasets (millions of cells)
 - Limited compute
 - Fast iteration required
 
 **Want quality + diversity**:
+
 - Better than VAE
 - Stable than GAN
 - Good mode coverage
 
 **Multi-task learning**:
+
 - Generation + prediction
 - Multiple conditions
 - Transfer across datasets
@@ -445,18 +468,22 @@ x_gen = vae.decode(z_0)
 ### ❌ Don't Use Latent Diffusion When:
 
 **Low-dimensional data**:
+
 - Already <1000 dims
 - Pixel-space diffusion is fine
 
 **Need exact likelihood**:
+
 - VAE or normalizing flow better
 - Latent diffusion likelihood is approximate
 
 **Real-time inference**:
+
 - Sampling still slower than VAE
 - Consider distillation
 
 **Simple tasks**:
+
 - Linear models sufficient
 - Overkill for simple prediction
 
@@ -521,30 +548,36 @@ x_gen = vae.decode(z_0)
 ### Within This Project
 
 **Diffusion Models**:
+
 - [DDPM](../DDPM/) — Denoising diffusion
 - [SDE](../SDE/) — Stochastic differential equations
 - [Flow Matching](../flow_matching/) — Rectified flow
 - [DiT](../DiT/) — Diffusion transformers
 
 **Representation Learning**:
+
 - [VAE](../VAE/) — Variational autoencoders
 - [JEPA](../JEPA/) — Joint embedding predictive architecture
 
 **Architecture Choices**:
+
 - [Gene Expression Architectures](../DDPM/02a_diffusion_arch_gene_expression.md)
 
 ### External Resources
 
 **Latent Diffusion Papers**:
+
 - Rombach et al. (2022): "High-Resolution Image Synthesis with Latent Diffusion Models" (Stable Diffusion)
 - Vahdat et al. (2021): "Score-based Generative Modeling in Latent Space"
 
 **Autoencoder Papers**:
+
 - Kingma & Welling (2014): "Auto-Encoding Variational Bayes" (VAE)
 - van den Oord et al. (2017): "Neural Discrete Representation Learning" (VQ-VAE)
 - Esser et al. (2021): "Taming Transformers for High-Resolution Image Synthesis" (VQ-GAN)
 
 **Biology Applications**:
+
 - Lopez et al. (2018): "Deep generative modeling for single-cell transcriptomics" (scVI)
 - Lotfollahi et al. (2023): "Predicting cellular responses to novel drug combinations"
 - Bunne et al. (2023): "Learning Single-Cell Perturbation Responses using Neural Optimal Transport"

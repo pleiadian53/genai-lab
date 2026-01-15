@@ -228,6 +228,7 @@ $$
 $$
 
 where:
+
 - $\mathcal{L}(t)$ is the loss at training step $t$
 - $\mathcal{L}_{\infty}$ is the final converged loss
 - $T$ is the total training time

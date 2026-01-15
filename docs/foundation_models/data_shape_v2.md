@@ -759,14 +759,17 @@ Everything interesting happens in how you *enter* and *exit* that space.
 ## References
 
 **Transformers**:
+
 - Vaswani et al. (2017): "Attention Is All You Need"
 - Devlin et al. (2019): "BERT: Pre-training of Deep Bidirectional Transformers"
 - Dosovitskiy et al. (2021): "An Image is Worth 16x16 Words: Transformers for Image Recognition"
 
 **Parameter-efficient fine-tuning**:
+
 - Hu et al. (2021): "LoRA: Low-Rank Adaptation of Large Language Models"
 - Houlsby et al. (2019): "Parameter-Efficient Transfer Learning for NLP"
 
 **Diffusion transformers**:
+
 - Peebles & Xie (2023): "Scalable Diffusion Models with Transformers" (DiT)
 - Rombach et al. (2022): "High-Resolution Image Synthesis with Latent Diffusion Models"

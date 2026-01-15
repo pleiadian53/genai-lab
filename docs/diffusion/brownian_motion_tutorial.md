@@ -85,6 +85,7 @@ $$
 $$
 
 **Interpretation**:
+
 - Flip a coin
 - Heads → step right
 - Tails → step left
@@ -152,6 +153,7 @@ Before diving into the properties, let's clarify what we mean by "process" and h
 - **For the collection $\{B_t : t \geq 0\}$**: This is a **stochastic process**—a family of random variables indexed by time
 
 **Think of it this way:**
+
 - At time $t = 0.5$, $B_{0.5}$ is a random variable (could be any real number, with probabilities given by a Gaussian)
 - At time $t = 1.0$, $B_{1.0}$ is a different random variable
 - The **process** $B_t$ is the entire collection: $\{B_{0.5}, B_{1.0}, B_{2.3}, \ldots\}$
@@ -175,6 +177,7 @@ Before diving into the properties, let's clarify what we mean by "process" and h
 - **Dirichlet process**: Realizations are probability distributions
 
 **In summary**: 
+
 - $B_t$ (for fixed $t$) = random variable (position at time $t$)
 - $\{B_t : t \geq 0\}$ = stochastic process (the entire trajectory)
 - "Process" = same mathematical concept as GP, DP, etc., but with different properties
@@ -206,6 +209,7 @@ $$
 **Physical meaning**: The future does not remember the past. Molecular collisions are so rapid and chaotic that past kicks don't influence future kicks.
 
 **Why this is reasonable**:
+
 - Billions of collisions per second
 - Correlations wash out almost instantly
 - The surrounding fluid has no memory at the scale of observation
@@ -235,6 +239,7 @@ This is the most information-dense property. Let's break it down.
 **Spread grows linearly with time.**
 
 **Physical meaning**:
+
 - Each collision adds a tiny displacement
 - Variances add, not displacements
 - This is **diffusion**, not ballistic motion
@@ -258,6 +263,7 @@ Gaussianity is not sacred—it's **statistical inevitability** under these condi
 **Mathematical meaning**: $B_t$ is continuous, but has no well-defined velocity anywhere.
 
 **Physical meaning**:
+
 - The particle never teleports
 - But at every scale, motion is jittery
 
@@ -331,12 +337,16 @@ $$
 **General formula for variance of sum:**
 
 For **independent** random variables $X_1, X_2, \ldots, X_n$:
+
 $$
+
 \text{Var}\left(\sum_{k=1}^n X_k\right) = \sum_{k=1}^n \text{Var}(X_k)
 $$
 
 For **dependent** random variables (with covariance):
+
 $$
+
 \text{Var}\left(\sum_{k=1}^n X_k\right) = \sum_{k=1}^n \text{Var}(X_k) + 2\sum_{i < j} \text{Cov}(X_i, X_j)
 $$
 
@@ -473,6 +483,7 @@ W_n(t) = \frac{1}{\sqrt{n}} S_{\lfloor nt \rfloor}
 $$
 
 **Interpretation**:
+
 - Speed up time by factor $n$ (so $nt$ steps happen by time $t$)
 - Shrink space by $\sqrt{n}$
 
@@ -495,11 +506,13 @@ $$
 as **processes** (convergence in distribution in the space of continuous functions).
 
 **What this means**:
+
 - The rescaled random walk converges to Brownian motion
 - Not just at individual times, but as entire random curves
 - This is a **functional Central Limit Theorem**
 
 **Interpretation**:
+
 - Random walk = microscopic description
 - Brownian motion = macroscopic, continuum description
 
@@ -553,11 +566,13 @@ dx = f(x,t)\,dt + g(t)\,dw(t)
 $$
 
 **Components**:
+
 - $f(x,t)$: Drift (deterministic shrinkage toward origin)
 - $g(t)$: Diffusion coefficient (noise strength)
 - $dw(t) = \sqrt{dt} \cdot \varepsilon$: Brownian motion
 
 **Why this works**:
+
 - Drift scales as $dt$ (slow, deterministic)
 - Diffusion scales as $\sqrt{dt}$ (fast, stochastic)
 - Together they balance to create smooth corruption
@@ -573,6 +588,7 @@ $$
 **Key point**: The reverse process **also uses Brownian motion** (with time running backwards).
 
 **Why this is remarkable**:
+
 - The same stochastic process that corrupts data
 - Can be reversed to generate data
 - All thanks to Anderson's theorem (1982)

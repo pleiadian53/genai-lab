@@ -83,6 +83,7 @@ class PatchEmbed(nn.Module):
 ```
 
 **Dimensions**:
+
 - Input: `(B, 3, 256, 256)`
 - After patchify: `(B, 256, 768)` where 768 = 16×16×3
 - After projection: `(B, 256, embed_dim)`
@@ -199,6 +200,7 @@ Diffusion models are **time-dependent**: behavior must change based on noise lev
 ### 3.2 Adaptive Layer Normalization (AdaLN)
 
 **Standard LayerNorm**:
+
 $$
 \text{LN}(x) = \gamma \cdot \frac{x - \mu}{\sigma} + \beta
 $$
@@ -206,7 +208,9 @@ $$
 where $\gamma$, $\beta$ are **learned parameters** (same for all timesteps).
 
 **Adaptive LayerNorm**:
+
 $$
+
 \text{AdaLN}(x, t) = \gamma(t) \cdot \frac{x - \mu}{\sigma} + \beta(t)
 $$
 
@@ -285,6 +289,7 @@ class TimestepEmbedding(nn.Module):
 ```
 
 **Why sinusoidal?**
+
 - Smooth, continuous representation
 - Similar timesteps → similar embeddings
 - Well-studied in Transformers
@@ -359,6 +364,7 @@ $$
 $$
 
 where:
+
 - $Q = XW_Q$ (queries)
 - $K = XW_K$ (keys)
 - $V = XW_V$ (values)
@@ -496,6 +502,7 @@ class DiTBlockWithCrossAttention(nn.Module):
 ```
 
 **Use cases**:
+
 - Text-to-image: Text tokens as context
 - Perturbation modeling: Perturbation embeddings as context
 - Multi-modal: Any conditioning modality
@@ -539,6 +546,7 @@ class DiTOutput(nn.Module):
 ```
 
 **Dimensions**:
+
 - Input: `(B, 256, 768)` (256 tokens, 768-dim)
 - After projection: `(B, 256, 768)` where 768 = 16×16×3
 - After reshape: `(B, 3, 256, 256)` (image)
@@ -692,6 +700,7 @@ class DiT(nn.Module):
 | 16×16 | 256 | Worse | Fastest |
 
 **Recommendation**: 
+
 - High quality: 2×2 or 4×4
 - Balanced: 8×8
 - Fast: 16×16
@@ -720,10 +729,12 @@ class DiT(nn.Module):
 ### 8.4 Positional Encoding
 
 **Learned vs Sinusoidal**:
+
 - Learned: Slightly better for fixed resolution
 - Sinusoidal: Better for variable resolution
 
 **2D vs 1D**:
+
 - 2D: Respects image structure (slightly better)
 - 1D: Simpler (minimal difference)
 
@@ -747,18 +758,21 @@ class DiT(nn.Module):
 ### 9.2 When to Use Which
 
 **U-Net advantages**:
+
 - Faster (convolutions are efficient)
 - Lower memory
 - Strong spatial inductive bias
 - Proven for images
 
 **DiT advantages**:
+
 - Better scaling (to larger models)
 - Flexible conditioning
 - Modality-agnostic
 - State-of-the-art results
 
 **Recommendation**:
+
 - Images, fixed size, limited compute: U-Net
 - Large-scale, multi-modal, flexible: DiT
 

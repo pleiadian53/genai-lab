@@ -571,6 +571,7 @@ The `docs/incubation/` directory contains exploratory ideas and architectural pr
 **Current State**: GEM-1 (Synthesize Bio) demonstrates supervised prediction at scale
 
 **Generative AI Value-Add**:
+
 - Model full distribution $p(x \mid \text{metadata})$, not just $\mathbb{E}[x]$
 - Uncertainty quantification for experimental planning
 - Diverse synthetic data for augmentation
@@ -586,6 +587,7 @@ The `docs/incubation/` directory contains exploratory ideas and architectural pr
 **Current State**: scGen, CPA, GEARS use VAE/GNN approaches
 
 **Generative AI Value-Add**:
+
 - Compositional generalization (unseen perturbation combinations)
 - Cell-level heterogeneity modeling
 - Counterfactual reasoning
@@ -602,12 +604,14 @@ The `docs/incubation/` directory contains exploratory ideas and architectural pr
 **Goal**: Generate realistic synthetic datasets for drug/target discovery
 
 **Use Cases**:
+
 - Data augmentation for rare conditions
 - Privacy-preserving data sharing
 - Benchmarking computational methods
 - Training downstream classifiers
 
 **Generative AI Value-Add**:
+
 - Diverse, realistic samples (not just mean predictions)
 - Controllable generation (condition on disease, tissue, perturbation)
 - Validation via biological consistency checks
@@ -621,6 +625,7 @@ The `docs/incubation/` directory contains exploratory ideas and architectural pr
 **Status**: Deferred (see `dev/references/scPPDM.pdf`)
 
 **Key Ideas**:
+
 - Diffusion models for single-cell perturbation response prediction
 - Conditional generation on perturbation identity
 - Comparison with VAE-based methods (scGen, CPA)

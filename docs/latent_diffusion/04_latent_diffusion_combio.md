@@ -1053,14 +1053,17 @@ def compare_with_scgen(adata_train, adata_test):
 ## References
 
 **Latent Diffusion**:
+
 - Rombach et al. (2022): "High-Resolution Image Synthesis with Latent Diffusion Models"
 - Ho & Salimans (2022): "Classifier-Free Diffusion Guidance"
 
 **Baselines**:
+
 - Lopez et al. (2018): "Deep generative modeling for single-cell transcriptomics" (scVI)
 - Lotfollahi et al. (2019): "scGen predicts single-cell perturbation responses"
 - Lotfollahi et al. (2023): "Predicting cellular responses to novel drug combinations" (CPA)
 
 **Datasets**:
+
 - Norman et al. (2019): "Exploring genetic interaction manifolds constructed from rich single-cell phenotypes"
 - Zheng et al. (2017): "Massively parallel digital transcriptional profiling of single cells"

@@ -265,6 +265,7 @@ Companies building foundation models specifically for gene expression, transcrip
 | **Approach** | Generate biologically realistic gene expression data in silico |
 
 **What They Do:**
+
 - Build generative models that can simulate gene expression profiles under various conditions
 - Enable in silico experimentation that bridges wet lab and computation
 - Multi-omics and public + private data harmonization
@@ -275,6 +276,7 @@ Companies building foundation models specifically for gene expression, transcrip
 - Their GEM-1 represents the state-of-the-art we're studying
 
 **Key Blog Posts:**
+
 - https://www.synthesize.bio/blog
 
 ---
@@ -289,12 +291,14 @@ Companies building foundation models specifically for gene expression, transcrip
 | **Founded** | 2014 (Toronto) |
 
 **What They Do:**
+
 - First transformer neural network engineered specifically for transcriptomics
 - Predicts tissue-specific regulatory mechanisms of RNA expression
 - Predicts binding sites of proteins and microRNAs
 - Predicts effects of genetic variants and therapeutic candidates
 
 **Technical Details:**
+
 - ~2 billion adjustable parameters
 - Trained on thousands of datasets (>1 trillion genomic signals)
 - Designed to understand complex RNA interactions
@@ -316,11 +320,13 @@ Companies building foundation models specifically for gene expression, transcrip
 | **Funding** | €2.2M seed (June 2024) |
 
 **What They Do:**
+
 - First open-source platform dedicated to bio foundation models for DNA and RNA
 - Democratize access to advanced AI tools for pharma/biotech
 - Library of Bio AI Agents for tasks like biomarker discovery and target prediction
 
 **Technical Details:**
+
 - Helix-mRNA: hybrid foundation model for mRNA therapeutics
 - Outperforms prior methods in modeling UTRs and long-sequence regions
 - Uses only ~10% of parameters of comparable models
@@ -343,11 +349,13 @@ Companies building foundation models specifically for gene expression, transcrip
 | **Funding** | $40M Series A (2024) |
 
 **What They Do:**
+
 - AI model that acts like a virtual lab for cancer research
 - Predicts how different cancer treatments might play out in real patients
 - Tests "what if" scenarios for treatment optimization
 
 **Technical Details:**
+
 - OCTO trained on thousands of tumor samples
 - Integrates gene expression, protein data, and cell images
 - Predicts how tweaking a single gene could change protein levels across a tumor
@@ -369,11 +377,13 @@ Companies building foundation models specifically for gene expression, transcrip
 | **Partnerships** | Sanofi ($10M upfront, >$1B potential milestones) |
 
 **What They Do:**
+
 - World's largest life science foundation model
 - Supports DNA, RNA, protein, cellular, and systems-level modalities
 - Designed to understand and predict biological behavior across multiple modalities
 
 **Technical Details:**
+
 - ~210 billion parameters (as of 2025)
 - Cross-Modal Transformer Representation of Interactome and Multi-Omics
 - GPU-accelerated deployment using multi-expert architectures and FP8 precision
@@ -523,11 +533,13 @@ Companies focused on protein structure prediction, design, and protein-based the
 | **Parent** | Alphabet (DeepMind spin-off, 2021) |
 
 **What They Do:**
+
 - Reimagining drug discovery from first principles with AI-first approach
 - Expanded from small molecules to biologics
 - Internal pipeline focused on oncology and immunology
 
 **Technical Details:**
+
 - AlphaFold 3: predicts structure of proteins, DNA, RNA, ligands, and their interactions
 - Released in collaboration with Google DeepMind
 - Nobel Prize-winning foundation (AlphaFold 2)
@@ -549,10 +561,12 @@ Companies focused on protein structure prediction, design, and protein-based the
 | **Funding** | $142M |
 
 **What They Do:**
+
 - Programmable biology for protein engineering
 - Target cancer cells, find alternatives to plastics, environmental mitigations
 
 **Technical Details:**
+
 - ESM3: simultaneously reasons over sequence, structure, and function of proteins
 - Third-generation ESM model
 - Trained on NVIDIA H100 GPUs
@@ -573,11 +587,13 @@ Companies focused on protein structure prediction, design, and protein-based the
 | **Key Technology** | **Generative Biology™** platform |
 
 **What They Do:**
+
 - Pioneer of "Generative Biology" — generating custom protein therapeutics
 - From peptides to antibodies, enzymes, gene therapies
 - Generate, build, measure, learn loop
 
 **Clinical Progress:**
+
 - GB-0895: Phase 3 for severe asthma (anti-TSLP antibody)
 - GB-0669: Phase 1 completed with positive results
 
@@ -598,10 +614,12 @@ Companies focused on protein structure prediction, design, and protein-based the
 | **Investors** | Thrive Capital, OpenAI |
 
 **What They Do:**
+
 - Open-source multi-modal foundation model for molecular structure
 - Unifies predictions across proteins, small molecules, DNA, RNA, covalent modifications
 
 **Technical Details:**
+
 - Chai-1: 77% success rate on PoseBusters (vs 76% AlphaFold3)
 - Can operate without MSAs (reduces compute demands)
 - Chai-2: ~16% hit rate for de novo antibody design across 52 novel antigens
@@ -621,11 +639,13 @@ Companies focused on protein structure prediction, design, and protein-based the
 | **Key Technology** | **Phenom-Beta**, **BioHive-2** supercomputer |
 
 **What They Do:**
+
 - Merge AI with massive biological datasets
 - Process cellular microscopy images into general-purpose embeddings
 - In-silico fluorescent staining from brightfield images
 
 **Technical Details:**
+
 - Phenom-Beta: vision transformer (ViT) with masked autoencoders
 - Trained on RxRx3 dataset (~2.2M images, ~17K knockouts, 1,674 chemicals)
 - BioHive-2: 504 NVIDIA H100 GPUs
@@ -652,18 +672,21 @@ Companies focused on clinical trials, treatment optimization, and patient respon
 | **Funding** | $110M Series E (2025) |
 
 **What They Do:**
+
 - Fully integrated drug discovery suite
 - PandaOmics: discover and prioritize novel targets
 - Chemistry42: generate novel molecules
 - InClinico: design and predict clinical trials
 
 **Technical Details:**
+
 - Precious3GPT: multi-omics, cross-species foundation transformer for aging research
 - Ingests data from rats, monkeys, humans across transcriptomics, proteomics, methylation
 - Enables virtual experiments to forecast compound effects on aging hallmarks
 - Available on Hugging Face
 
 **Clinical Progress:**
+
 - Rentosertib (ISM001-055): AI-discovered drug, Phase 2a results published in Nature Medicine
 - First AI-discovered drug to show clinical proof-of-concept
 
@@ -683,11 +706,13 @@ Companies focused on clinical trials, treatment optimization, and patient respon
 | **Key Technology** | **Tempus One** (AI platform) |
 
 **What They Do:**
+
 - AI-enabled precision medicine
 - Predict response to therapies with greater accuracy
 - Uncover novel biomarkers from real-world data
 
 **Technical Details:**
+
 - Integrates clinical data with AI-driven algorithms
 - Neural-network-based high-throughput drug screening
 - Generative AI capabilities for querying healthcare data
@@ -707,16 +732,19 @@ Companies focused on clinical trials, treatment optimization, and patient respon
 | **Key Technology** | **Federated learning**, **SecureFedYJ** |
 
 **What They Do:**
+
 - AI models for drug discovery and clinical trial optimization
 - Federated learning: train AI without centralizing data
 - Digital pathology AI diagnostics
 
 **Technical Details:**
+
 - Owkin Studio: federated learning platform (40% of revenue)
 - Owkin Connect: AI models for drug discovery (35% of revenue)
 - SecureFedYJ: secure federated learning algorithm
 
 **Partnerships:**
+
 - Amgen: cardiovascular prediction
 - AstraZeneca: AI tool for gBRCA mutation screening
 
@@ -736,11 +764,13 @@ Companies focused on clinical trials, treatment optimization, and patient respon
 | **Funding** | $1B (led by Sam Altman) |
 
 **What They Do:**
+
 - Interventions to slow or reverse cellular aging
 - Focus on neurodegeneration
 - Combine wet-lab biology with computational methods
 
 **Technical Details:**
+
 - GPT-4b micro: biology-specialized foundation model
 - Trained on protein sequences, biological literature, tokenized 3D structural data
 - Redesigned Yamanaka transcription factors (RetroSOX, RetroKLF)
@@ -766,17 +796,20 @@ Companies using AI/ML for target identification and validation (not necessarily 
 | **Headquarters** | Oxford, UK |
 
 **What They Do:**
+
 - Developing RNA medicines for chronic liver diseases
 - Built one of world's largest human liver functional genomics datasets (~120,000 samples)
 - Combine machine learning with human validation models
 
 **Technical Details:**
+
 - Proprietary gene perturbation atlases + patient disease atlases
 - Make causal predictions about drug targets
 - Human validation: perfused livers, diseased tissue slices, primary cells
 - In-house RNA chemistry
 
 **Partnerships:**
+
 - GSK: functional genomics and single-cell datasets
 - Boehringer Ingelheim: chronic liver disease research
 
@@ -797,11 +830,13 @@ Companies using AI/ML for target identification and validation (not necessarily 
 | **Funding** | ~$42M (seed + Series A) |
 
 **What They Do:**
+
 - AI-driven RNA drug discovery with atomic precision
 - Predict RNA structural and functional properties
 - Optimize RNA-targeted and RNA-based modalities
 
 **Technical Details:**
+
 - ATOM-1: large language model for RNA structure prediction
 - PARSE: Platform for AI-driven RNA Structure Exploration
 - Combined foundation-model + wet-lab loop
@@ -823,10 +858,12 @@ Companies using AI/ML for target identification and validation (not necessarily 
 | **Investors** | Sanofi |
 
 **What They Do:**
+
 - Enhance molecular structure identification from natural products
 - Self-supervised learning on mass spectrometry data
 
 **Technical Details:**
+
 - PRISM: Pretrained Representations Informed by Spectral Masking
 - Trained on 1.2 billion small molecule mass spectra
 - Masked peak modeling (similar to masked LM in NLP)

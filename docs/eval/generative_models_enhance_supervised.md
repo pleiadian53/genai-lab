@@ -88,14 +88,17 @@ predictor_enhanced = train_predictor(X_augmented, Y_augmented)
 ### Evidence from Other Domains
 
 **Computer vision**:
+
 - Diffusion-generated images improve classifier accuracy by 5-15%
 - Particularly effective for rare classes
 
 **Natural language processing**:
+
 - GPT-generated text improves few-shot learning
 - Paraphrasing augmentation enhances robustness
 
 **Biological data**:
+
 - scVI-generated cells improve cell type classification
 - Synthetic perturbations improve drug response prediction
 
@@ -284,12 +287,14 @@ def predict(X_new):
 ### Why This Works
 
 **Generative models learn**:
+
 - **Hierarchical structure**: Coarse to fine-grained patterns
 - **Biological pathways**: Coordinated gene expression
 - **Cell state manifolds**: Low-dimensional structure
 - **Invariances**: Robust to technical noise
 
 **These representations**:
+
 - Reduce dimensionality (thousands of genes → hundreds of latent dims)
 - Remove noise (learned from large unlabeled data)
 - Capture biological structure (pathways, regulatory programs)
@@ -470,17 +475,20 @@ predictor_final = train_predictor(X_augmented, Y_augmented)
 ### Why This Works
 
 **Unlabeled data provides**:
+
 - Data manifold structure
 - Natural clusters (cell types, states)
 - Invariances and symmetries
 - Regularization (prevents overfitting)
 
 **Generative model captures**:
+
 - Low-dimensional structure
 - Biological constraints
 - Smooth manifolds
 
 **Supervised predictor benefits**:
+
 - Better representations
 - More robust features
 - Improved generalization
@@ -944,18 +952,21 @@ Based on literature and empirical results:
 ### Key Insights
 
 **Generative models learn structure**:
+
 - Data manifolds
 - Biological constraints
 - Multi-scale patterns
 - Invariances
 
 **This structure enhances supervised learning**:
+
 - Better representations
 - More training data
 - Cleaner inputs
 - Smarter exploration
 
 **The synergy is multiplicative**:
+
 - Each mechanism provides complementary benefits
 - Combined improvements can be substantial (30-50% gains)
 - Particularly effective with limited labeled data

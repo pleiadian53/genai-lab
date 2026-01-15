@@ -46,16 +46,19 @@ $$
 where $p(y|x)$ is a pre-trained classifier's prediction.
 
 **Interpretation**:
+
 - Higher is better
 - Good samples should have confident class predictions (low $p(y|x)$ entropy)
 - Diverse samples should cover many classes (high $p(y)$ entropy)
 
 **Limitations**:
+
 - Requires pre-trained classifier (typically ImageNet-trained Inception network)
 - Doesn't detect overfitting or mode collapse well
 - Not applicable to non-image domains
 
 **Typical values**:
+
 - Random noise: ~1
 - CIFAR-10 real data: ~11.2
 - Good generative models: 8-10
@@ -71,16 +74,19 @@ $$
 where $\mu_r, \Sigma_r$ are mean and covariance of real data features, and $\mu_g, \Sigma_g$ for generated data.
 
 **Interpretation**:
+
 - Lower is better
 - Measures both quality and diversity
 - More robust than IS
 
 **Limitations**:
+
 - Requires pre-trained feature extractor
 - Sensitive to sample size (need 10k+ samples)
 - Assumes Gaussian distributions in feature space
 
 **Typical values**:
+
 - Perfect match: 0
 - Excellent: <10
 - Good: 10-30
@@ -94,12 +100,14 @@ where $\mu_r, \Sigma_r$ are mean and covariance of real data features, and $\mu_
 - **Recall**: Fraction of real distribution covered by generated samples
 
 **Interpretation**:
+
 - Precision measures quality (are generated samples realistic?)
 - Recall measures diversity (does the model cover the full distribution?)
 - High precision, low recall = mode collapse
 - Low precision, high recall = poor quality but diverse
 
 **Advantages**:
+
 - Separates quality and diversity
 - More interpretable than FID
 - Detects mode collapse
@@ -115,11 +123,13 @@ $$
 $$
 
 **Interpretation**:
+
 - Lower is better
 - Directly measures distributional fit
 - Theoretically principled
 
 **Limitations**:
+
 - Requires tractable likelihood (not available for GANs)
 - Can be dominated by imperceptible details
 - Doesn't measure perceptual quality
@@ -133,11 +143,13 @@ $$
 $$
 
 **Interpretation**:
+
 - Higher is better
 - Balances reconstruction and regularization
 - Tractable for many models
 
 **Limitations**:
+
 - Only a lower bound (gap to true likelihood unknown)
 - May not correlate with sample quality
 
@@ -154,15 +166,18 @@ $$
 where $f_l$ are features from layer $l$ of a pre-trained network.
 
 **Interpretation**:
+
 - Lower is better
 - Correlates better with human perception than pixel-wise metrics
 - Useful for image-to-image tasks
 
 **Advantages**:
+
 - Captures perceptual similarity
 - More robust than MSE or SSIM
 
 **Limitations**:
+
 - Requires pre-trained network
 - Domain-specific (primarily images)
 
@@ -201,6 +216,7 @@ where $f_l$ are features from layer $l$ of a pre-trained network.
   $$
   \text{BPD} = -\frac{\log_2 p(x)}{D}
   $$
+
   where $D$ is data dimensionality
 
 #### 3. Sampling Efficiency
@@ -209,6 +225,7 @@ where $f_l$ are features from layer $l$ of a pre-trained network.
 - **FID vs. NFE trade-off**: Quality-speed curve
 
 **Typical trade-offs**:
+
 - DDPM: 1000 steps, high quality
 - DDIM: 50-100 steps, good quality
 - Fast samplers: 10-20 steps, acceptable quality
@@ -239,11 +256,13 @@ where $f_l$ are features from layer $l$ of a pre-trained network.
 #### 1. Define Your Objectives
 
 **For research**:
+
 - State-of-the-art sample quality (FID)
 - Theoretical contributions (likelihood bounds)
 - Novel capabilities (controllability, efficiency)
 
 **For applications**:
+
 - Downstream task performance
 - Computational efficiency
 - Robustness and reliability
@@ -279,6 +298,7 @@ Baseline: FID = 15.2
 #### 4. Statistical Significance
 
 **Best practices**:
+
 - Multiple random seeds (at least 3-5)
 - Report mean ± standard deviation
 - Statistical tests (t-test, bootstrap)
@@ -294,6 +314,7 @@ Difference: 0.5 (not significant, p=0.15)
 #### 5. Computational Budget
 
 **Report full costs**:
+
 - Training: GPU-hours, wall-clock time
 - Sampling: Seconds per sample, NFE
 - Memory: Peak GPU memory
@@ -345,15 +366,18 @@ Model B: FID=12, 10 GPU-hours training, 0.1s/sample
 3. Compare loss trajectories
 
 **Metrics**:
+
 $$
 \text{Epiplexity proxy} = \int_0^T (L(t) - L_\infty) dt
 $$
 
 **Interpretation**:
+
 - High epiplexity → synthetic data teaches biological structure
 - Low epiplexity → synthetic data is noise-matching without structure
 
 **Advantages**:
+
 - Detects whether synthetic data contains learnable biology
 - Goes beyond statistical matching
 - Measures utility for downstream learning
@@ -391,6 +415,7 @@ Practical deployment considerations:
 
 ### Step 5: Reporting
 **Minimum reporting standards**:
+
 - Multiple metrics (quality, diversity, efficiency)
 - Statistical significance (multiple seeds)
 - Computational costs
@@ -432,21 +457,25 @@ Practical deployment considerations:
 ### When is Model A "Better" than Model B?
 
 **Model A is strictly better if**:
+
 - Better on all metrics
 - Same computational cost
 - No significant trade-offs
 
 **Model A is better for research if**:
+
 - Significantly better on primary metric (e.g., FID)
 - Novel capabilities or insights
 - Reasonable computational cost
 
 **Model A is better for deployment if**:
+
 - Sufficient quality for application
 - Much more efficient
 - More robust and reliable
 
 **Model A is better for your specific use case if**:
+
 - Better on task-specific metrics
 - Better downstream performance
 - Fits your computational budget
@@ -467,18 +496,21 @@ Practical deployment considerations:
 ### Recommended Metric Suites
 
 **For image diffusion models**:
+
 - FID (primary)
 - Precision/Recall (quality-diversity)
 - Sampling efficiency (NFE, time)
 - Human evaluation (if budget allows)
 
 **For biological data**:
+
 - Statistical fidelity (correlations, distributions)
 - Biological validity (pathways, markers)
 - Downstream utility (classification, prediction)
 - Epiplexity (learnable structure)
 
 **For general generative models**:
+
 - Quality metric (FID, IS, or domain-specific)
 - Diversity metric (Recall, mode coverage)
 - Likelihood (if tractable)

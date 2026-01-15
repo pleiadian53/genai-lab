@@ -136,9 +136,11 @@ If you skip these, NB models will look worse than they are:
 - **Library size factor** (must-have): Total counts per sample/cell
   
   Typical NB parameterization:
+
   $$
   \mu_g = \ell \cdot \exp(\eta_g)
   $$
+
   where $\ell$ is library size and $\eta_g$ is what the decoder predicts from $(z, y)$.
 
 - **Batch covariate**: Include batch in $y$ if present (even if you later want invariance)

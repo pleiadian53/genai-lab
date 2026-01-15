@@ -11,6 +11,7 @@ This document explains how to train Diffusion Transformers (DiT) with rectified 
 Training DiT with rectified flow is remarkably simple compared to DDPM:
 
 **Key advantages**:
+
 - No noise schedules to tune
 - No variance parameterization
 - Direct regression on velocity
@@ -57,6 +58,7 @@ dataloader = DataLoader(dataset, batch_size=256, shuffle=True, num_workers=4)
 ```
 
 **Key points**:
+
 - Normalize to `[-1, 1]` (not `[0, 1]`)
 - Use data augmentation (flips, crops)
 - Batch size as large as GPU memory allows
@@ -185,6 +187,7 @@ $$
 $$
 
 where:
+
 - $x_0 \sim p_{\text{data}}$ (real data)
 - $x_1 \sim \mathcal{N}(0, I)$ (noise)
 - $x_t = t x_1 + (1-t) x_0$ (linear interpolation)
@@ -401,6 +404,7 @@ for epoch in range(num_epochs):
 ```
 
 **Benefits**:
+
 - 2× faster training
 - 2× less memory
 - Minimal quality loss
@@ -484,6 +488,7 @@ for epoch in range(num_epochs):
 ```
 
 **Typical values**:
+
 - Base LR: `1e-4` (DiT-B/L/XL)
 - Warmup: 5-10 epochs
 - Decay: Cosine to `1e-6`
@@ -552,6 +557,7 @@ torch.nn.utils.clip_grad_norm_(model.parameters(), max_norm=1.0)
 **Solution**: Maintain moving average of weights
 
 **Benefits**:
+
 - Smoother convergence
 - Better sample quality
 - Minimal overhead
@@ -683,16 +689,19 @@ if epoch % 10 == 0:
 ### 7.3 Common Issues
 
 **Loss not decreasing**:
+
 - Check data normalization (should be [-1, 1])
 - Verify learning rate (try 1e-4)
 - Check model initialization
 
 **Gradient explosion**:
+
 - Use gradient clipping (max_norm=1.0)
 - Reduce learning rate
 - Check for NaN in data
 
 **Poor sample quality**:
+
 - Train longer (DiT needs 400K+ steps)
 - Use EMA
 - Try smaller patch size (better quality, slower)
@@ -796,6 +805,7 @@ loss = compute_loss(model, latents)
 ```
 
 **Benefits**:
+
 - 4-8× faster training
 - 4-8× less memory
 - Similar quality

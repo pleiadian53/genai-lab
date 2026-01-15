@@ -38,6 +38,7 @@ class SimpleScoreNetwork(nn.Module):
 ```
 
 **This works for 2D toy data because**:
+
 - Only 2 dimensions to model
 - Simple distributions (e.g., mixture of Gaussians)
 - No spatial structure to capture

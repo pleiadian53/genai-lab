@@ -23,6 +23,7 @@ We'll derive the **exact DDIM update formula** through a clean "dictionary deriv
 
 - Time: $t \in [0, T]$
 - **VP-SDE forward**:
+
   $$
   dx = -\frac{1}{2}\beta(t) x\,dt + \sqrt{\beta(t)}\,dw
   $$
@@ -279,12 +280,15 @@ Now we see the complete picture:
 ### The Chain
 
 1. **Continuous-time VP-SDE** gives:
+
    $$
    \bar{\alpha}(t) = \exp\left(-\int_0^t \beta(s)\,ds\right)
    $$
 
 2. **Discrete sampler** chooses a grid $t_k$ and uses:
+
    $$
+
    \bar{\alpha}_k = \bar{\alpha}(t_k)
    $$
 

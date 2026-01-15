@@ -296,6 +296,7 @@ config = Config(device="cuda")  # or "mps" or "cpu"
 ## Summary
 
 **Key Benefits**:
+
 - ✅ No more `sys.path` hacks in notebooks
 - ✅ Centralized configuration for paths and settings
 - ✅ Auto-detection of project root and device

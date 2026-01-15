@@ -46,11 +46,13 @@ where $z \sim \mathcal{N}(0, I)$ is fresh noise at each step.
 ### Properties
 
 **Pros**:
+
 - Theoretically grounded
 - High sample quality
 - Diverse samples
 
 **Cons**:
+
 - Slow (1000 steps)
 - Stochastic
 
@@ -75,11 +77,13 @@ where $\hat{x}_0 = \frac{x_t - \sqrt{1 - \bar{\alpha}_t} \epsilon_\theta(x_t, t)
 ### Properties
 
 **Pros**:
+
 - Deterministic
 - Fast (can skip steps)
 - Smooth interpolation
 
 **Cons**:
+
 - Slightly lower diversity
 
 **When to use**: Speed, reproducibility, or interpolation needed
@@ -93,6 +97,7 @@ where $\hat{x}_0 = \frac{x_t - \sqrt{1 - \bar{\alpha}_t} \epsilon_\theta(x_t, t)
 Use a subsequence of timesteps: $\{t_S, t_{S-1}, \ldots, t_0\}$ where $S \ll T$.
 
 **Quality vs. Speed**:
+
 - 1000 steps: Best quality
 - 250 steps: Excellent
 - 50 steps: Very good
@@ -106,6 +111,8 @@ Use a subsequence of timesteps: $\{t_S, t_{S-1}, \ldots, t_0\}$ where $S \ll T$.
 
 ### Classifier-Free Guidance
 
+Enables high-quality conditional generation without a separate classifier.
+
 **Training**: Randomly drop conditioning with probability $p$ (e.g., 0.1)
 
 **Sampling**: Interpolate predictions:
@@ -117,10 +124,13 @@ $$
 where $w$ is the guidance scale (typically 3-10).
 
 **Effect**:
+
 - $w = 1$: Standard conditional
 - $w > 1$: Stronger conditioning, less diversity
 
 **Best practice**: $w = 7.5$ for text-to-image, $w = 3-5$ for class-conditional
+
+> **Comprehensive guide**: For detailed implementation with code examples, training procedures, and troubleshooting, see [04_classifier_free_guidance.md](04_classifier_free_guidance.md). For theoretical foundations, see [classifier_free_guidance.md](../diffusion/classifier_free_guidance.md).
 
 ---
 
@@ -134,6 +144,7 @@ where $w$ is the guidance scale (typically 3-10).
 4. **With guidance**: Better conditioning control
 
 **Recommendations**:
+
 - Default: DDIM with 50 steps
 - High quality: DDPM with 1000 steps
 - Fast: DDIM with 10-20 steps

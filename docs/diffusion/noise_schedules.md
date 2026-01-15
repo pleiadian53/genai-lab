@@ -50,6 +50,7 @@ x_t = \underbrace{\sqrt{\bar{\alpha}_t}}_{\text{signal scale}} x_0 + \underbrace
 $$
 
 **Interpretation**:
+
 - When $\bar{\alpha}_t = 1$: Pure signal ($x_t = x_0$)
 - When $\bar{\alpha}_t = 0$: Pure noise ($x_t = \varepsilon$)
 - The schedule $\beta(t)$ determines how $\bar{\alpha}_t$ decays from 1 to 0
@@ -61,6 +62,7 @@ $$
 $$
 
 **In practice**:
+
 - You **choose** $\beta(t)$ (the noise schedule)
 - This **determines** $\bar{\alpha}_t$ via integration
 - Alternatively, you can **choose** $\bar{\alpha}_t$ directly and derive $\beta(t)$ from it
@@ -78,11 +80,14 @@ $$
 ### 1. Linear Schedule
 
 **Formula**:
+
 $$
+
 \beta(t) = \beta_{\min} + (\beta_{\max} - \beta_{\min}) \cdot t
 $$
 
 **Properties**:
+
 - Simple and interpretable
 - Noise increases linearly from $\beta_{\min}$ to $\beta_{\max}$
 - Used in early DDPM papers (Ho et al., 2020)
@@ -90,7 +95,9 @@ $$
 **Typical values**: $\beta_{\min} = 0.0001$, $\beta_{\max} = 0.02$
 
 **Cumulative**:
+
 $$
+
 \bar{\alpha}_t = \exp\left(-\frac{1}{2}(\beta_{\min} t + \frac{1}{2}(\beta_{\max} - \beta_{\min}) t^2)\right)
 $$
 
@@ -101,16 +108,21 @@ $$
 ### 2. Cosine Schedule
 
 **Formula**:
+
 $$
+
 \beta(t) = 1 - \cos\left(\frac{\pi t}{2}\right)
 $$
 
 Or in terms of $\bar{\alpha}_t$ directly:
+
 $$
+
 \bar{\alpha}_t = \cos\left(\frac{\pi t}{2}\right)^2
 $$
 
 **Properties**:
+
 - Noise increases slowly at first, then accelerates
 - Better preserves signal at early timesteps
 - Often produces higher quality samples
@@ -125,17 +137,22 @@ $$
 ### 3. Polynomial Schedule
 
 **Formula**:
+
 $$
+
 \beta(t) = t^n, \quad n > 0
 $$
 
 **Properties**:
+
 - $n < 1$: Noise added faster at the beginning
 - $n = 1$: Linear schedule
 - $n > 1$: Noise added faster at the end
 
 **Cumulative**:
+
 $$
+
 \bar{\alpha}_t = \exp\left(-\frac{t^{n+1}}{2(n+1)}\right)
 $$
 
@@ -146,16 +163,20 @@ $$
 ### 4. Sigmoid Schedule
 
 **Formula**:
+
 $$
+
 \beta(t) = \frac{\beta_{\max}}{1 + \exp(-k(t - t_0))}
 $$
 
 **Properties**:
+
 - S-shaped curve
 - Slow at beginning and end, fast in the middle
 - Less commonly used
 
 **Parameters**:
+
 - $k$: Controls steepness of transition
 - $t_0$: Center point of transition
 
@@ -168,10 +189,12 @@ $$
 Some recent work learns $\beta(t)$ as a neural network parameter, but this is still experimental.
 
 **Advantages**:
+
 - Potentially optimal for specific datasets
 - Can adapt to data characteristics
 
 **Disadvantages**:
+
 - Adds complexity to training
 - May overfit
 - Less interpretable

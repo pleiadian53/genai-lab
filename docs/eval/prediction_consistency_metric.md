@@ -31,6 +31,7 @@ Traditional evaluation metrics focus on statistical properties:
 - **Marginals**: Per-gene statistics
 
 **But these don't directly test**:
+
 - Does generated data obey biological laws?
 - Would generated data be useful for downstream tasks?
 - Does it capture causal relationships?
@@ -139,6 +140,7 @@ def distribution_consistency(predictor, X_real, X_gen):
 ```
 
 **Interpretation**:
+
 - **Wasserstein distance**: Lower is better (0 = identical distributions)
 - **KS p-value**: Higher is better (>0.05 suggests distributions are similar)
 - **Mean difference**: Should be small
@@ -322,6 +324,7 @@ print(f"Mean difference: {consistency['mean_diff']:.4f}")
 ```
 
 **Interpretation**:
+
 - Wasserstein < 0.1: Excellent consistency
 - KS p-value > 0.05: Distributions statistically similar
 - Mean difference < 0.05: Predictions well-calibrated
@@ -420,6 +423,7 @@ Easy to explain: "Do generated samples produce the same predictions as real samp
 **Issue**: Consistency is only meaningful if the predictor is accurate.
 
 **Solutions**:
+
 - Validate predictor performance on held-out real data first
 - Use multiple predictors (ensemble approach)
 - Report predictor accuracy alongside consistency scores
@@ -437,6 +441,7 @@ if predictor_r2 < 0.7:
 **Issue**: If the generative model was explicitly trained to match the predictor, high consistency is expected but not informative.
 
 **Solutions**:
+
 - Use predictors trained independently
 - Use held-out predictors not seen during generative model training
 - Test on orthogonal prediction tasks
@@ -448,6 +453,7 @@ if predictor_r2 < 0.7:
 **Example**: A generative model discovers a new cell state that the predictor hasn't seen.
 
 **Solutions**:
+
 - Distinguish "inconsistent with predictor" from "biologically invalid"
 - Investigate low-consistency samples manually
 - Use multiple predictors covering different aspects of biology
@@ -457,6 +463,7 @@ if predictor_r2 < 0.7:
 **Issue**: High consistency could result from generating only "safe" samples the predictor handles well.
 
 **Solutions**:
+
 - Also measure diversity (epiplexity, coverage metrics)
 - Check prediction variance on generated samples
 - Visualize generated sample distribution
@@ -474,6 +481,7 @@ if consistency['wasserstein'] < 0.1 and diversity_score < 0.5:
 **Issue**: Predictor may have learned $p(Y|X)$ under specific conditions not present in generated data.
 
 **Solutions**:
+
 - Match conditions between training and generation
 - Use conditional generation with explicit condition control
 - Stratify analysis by condition
@@ -563,6 +571,7 @@ for condition in conditions:
 ### 6. Report Comprehensive Metrics
 
 **Minimum reporting**:
+
 - Predictor performance (R², accuracy, etc.)
 - Consistency metric values
 - Number of samples used
@@ -594,6 +603,7 @@ predictions similar to real data.
 ### Combining with Epiplexity
 
 **Complementary insights**:
+
 - **Epiplexity**: Does generated data teach learnable structure?
 - **Prediction consistency**: Does it obey learned relationships?
 
@@ -609,6 +619,7 @@ predictions similar to real data.
 ### Combining with FID
 
 **Complementary insights**:
+
 - **FID**: Statistical distribution matching
 - **Prediction consistency**: Biological relationship matching
 

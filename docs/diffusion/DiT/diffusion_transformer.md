@@ -124,6 +124,8 @@ $$
 \tau = \text{TimeEmbed}(t) \quad \rightarrow \quad (\gamma, \beta) = \text{MLP}(\tau)
 $$
 
+> **Deep dive**: For a detailed explanation of how time embeddings work and why the MLP doesn't "perturb ordering," see [time_embeddings_explained.md](time_embeddings_explained.md).
+
 **Key insight**: Time controls the *behavior* of the network at every layer, not just its input.
 
 This is the **FiLM (Feature-wise Linear Modulation)** pattern, which is much cleaner than concatenating $t$ to inputs.

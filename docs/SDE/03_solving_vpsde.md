@@ -34,9 +34,11 @@ and show how $\bar{\alpha}_t$ in DDPM corresponds to $\exp\left(-\int_0^t \beta(
 
 - Time: $t \in [0, T]$
 - **VP-SDE**:
+
   $$
   dx(t) = -\frac{1}{2}\beta(t) x(t)\,dt + \sqrt{\beta(t)}\,dw(t)
   $$
+
   where $w(t)$ is Brownian motion and $\beta(t) \geq 0$
 
 ### DDPM Discrete Time
