@@ -169,6 +169,18 @@ nav:
       - 'Overview': SDE/README.md
   - 'Datasets':
       - 'Overview': datasets/README.md
+  - 'Diffusion (Technical Deep Dives)':
+      - 'DDPM Basics':
+          - 'Notebook': diffusion/01_ddpm/01_ddpm_basics.ipynb
+      - 'SDE Formulation':
+          - 'Overview': diffusion/02_sde_formulation/README.md
+          - 'Notebook': diffusion/02_sde_formulation/02_sde_formulation.ipynb
+      - 'Medical Imaging Diffusion':
+          - 'Overview': diffusion/03_medical_imaging_diffusion/README.md
+          - 'Notebook': diffusion/03_medical_imaging_diffusion/03_medical_imaging_diffusion.ipynb
+      - 'Gene Expression Diffusion':
+          - 'Overview': diffusion/04_gene_expression_diffusion/README.md
+          - 'Notebook': diffusion/04_gene_expression_diffusion/04_gene_expression_diffusion.ipynb
   - 'Notebooks':
       - 'Overview': notebooks/README.md
   - 'About':
