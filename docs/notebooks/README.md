@@ -20,8 +20,15 @@ Notebooks are organized by topic:
 ### **Option 1: GitHub Pages (Best Rendering)** ⭐ **Recommended**
 
 View rendered notebooks with proper math and plots:
-- 📊 [Diffusion Notebooks](https://pleiadian53.github.io/genai-lab/notebooks/diffusion/)
-- 📊 [VAE Notebooks](https://pleiadian53.github.io/genai-lab/notebooks/vae/)
+
+**Diffusion Models:**
+- 📊 [DDPM Basics](https://pleiadian53.github.io/genai-lab/diffusion/01_ddpm/01_ddpm_basics/)
+- 📊 [SDE Formulation](https://pleiadian53.github.io/genai-lab/diffusion/02_sde_formulation/02_sde_formulation/)
+- 📊 [Medical Imaging Diffusion](https://pleiadian53.github.io/genai-lab/diffusion/03_medical_imaging_diffusion/03_medical_imaging_diffusion/)
+- 📊 [Gene Expression Diffusion](https://pleiadian53.github.io/genai-lab/diffusion/04_gene_expression_diffusion/04_gene_expression_diffusion/)
+
+**VAE Series:**
+- 📋 Coming soon
 
 **Advantages:**
 
@@ -111,12 +118,12 @@ This dual-location approach:
 
 ### **Diffusion Models** ✅ Available Now!
 
-| Notebook | Description | Local Link | Status |
-|----------|-------------|------------|--------|
-| **DDPM Basics** | Introduction to Denoising Diffusion Probabilistic Models | [View Notebook](../diffusion/01_ddpm/01_ddpm_basics.ipynb) | ✅ Available |
-| **SDE Formulation** | Stochastic Differential Equations for diffusion | [View Notebook](../diffusion/02_sde_formulation/02_sde_formulation.ipynb) | ✅ Available |
-| **Medical Imaging Diffusion** | Diffusion models for medical images | [View Notebook](../diffusion/03_medical_imaging_diffusion/03_medical_imaging_diffusion.ipynb) | ✅ Available |
-| **Gene Expression Diffusion** | Applying diffusion to gene expression data | [View Notebook](../diffusion/04_gene_expression_diffusion/04_gene_expression_diffusion.ipynb) | ✅ Available |
+| Notebook | Description | Link | Status |
+|----------|-------------|------|--------|
+| **DDPM Basics** | Introduction to Denoising Diffusion Probabilistic Models | [View Notebook](../diffusion/01_ddpm/01_ddpm_basics/) | ✅ Available |
+| **SDE Formulation** | Stochastic Differential Equations for diffusion | [View Notebook](../diffusion/02_sde_formulation/02_sde_formulation/) | ✅ Available |
+| **Medical Imaging Diffusion** | Diffusion models for medical images | [View Notebook](../diffusion/03_medical_imaging_diffusion/03_medical_imaging_diffusion/) | ✅ Available |
+| **Gene Expression Diffusion** | Applying diffusion to gene expression data | [View Notebook](../diffusion/04_gene_expression_diffusion/04_gene_expression_diffusion/) | ✅ Available |
 
 **Quick access:** Navigate to **"Diffusion (Technical Deep Dives)"** in the top navigation tabs or sidebar!
 
