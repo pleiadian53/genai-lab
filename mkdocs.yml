@@ -1,0 +1,176 @@
+site_name: GenAI Lab
+site_description: Generative AI for computational biology - diffusion models, VAEs, and foundation models for gene expression
+site_author: GenAI Lab Research Team
+site_url: https://pleiadian53.github.io/genai-lab/
+# Note: For local development, MkDocs ignores site_url and serves at http://127.0.0.1:8000/
+
+repo_name: pleiadian53/genai-lab
+repo_url: https://github.com/pleiadian53/genai-lab
+edit_uri: edit/main/docs/
+
+# Copyright
+copyright: Copyright &copy; 2026 GenAI Lab Research Team
+
+# Theme configuration
+theme:
+  name: material
+  language: en
+  palette:
+    # Light mode
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      primary: deep-purple
+      accent: deep-purple
+      toggle:
+        icon: material/brightness-7
+        name: Switch to dark mode
+    # Dark mode
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      primary: deep-purple
+      accent: deep-purple
+      toggle:
+        icon: material/brightness-4
+        name: Switch to light mode
+  font:
+    text: Roboto
+    code: Roboto Mono
+  features:
+    - navigation.instant        # Instant loading
+    - navigation.tracking       # Anchor tracking
+    - navigation.tabs           # Top-level navigation tabs
+    - navigation.tabs.sticky    # Sticky tabs
+    - navigation.sections       # Section navigation
+    - navigation.expand         # Expand sections by default
+    - navigation.top            # Back to top button
+    - search.suggest            # Search suggestions
+    - search.highlight          # Highlight search results
+    - content.code.copy         # Copy button for code blocks
+    - content.action.edit       # Edit button (links to GitHub)
+  icon:
+    repo: fontawesome/brands/github
+    edit: material/pencil
+
+# Extensions
+markdown_extensions:
+  # Python Markdown
+  - abbr
+  - admonition
+  - attr_list
+  - def_list
+  - footnotes
+  - md_in_html
+  - tables
+  - toc:
+      permalink: true
+      toc_depth: 3
+  
+  # Python Markdown Extensions (pymdownx)
+  - pymdownx.arithmatex:
+      generic: true
+  - pymdownx.betterem:
+      smart_enable: all
+  - pymdownx.caret
+  - pymdownx.details
+  - pymdownx.emoji:
+      emoji_index: !!python/name:material.extensions.emoji.twemoji
+      emoji_generator: !!python/name:material.extensions.emoji.to_svg
+  - pymdownx.highlight:
+      anchor_linenums: true
+      line_spans: __span
+      pygments_lang_class: true
+  - pymdownx.inlinehilite
+  - pymdownx.keys
+  - pymdownx.mark
+  - pymdownx.smartsymbols
+  - pymdownx.superfences:
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+          format: !!python/name:pymdownx.superfences.fence_code_format
+  - pymdownx.tabbed:
+      alternate_style: true
+  - pymdownx.tasklist:
+      custom_checkbox: true
+  - pymdownx.tilde
+
+# Extra JavaScript for MathJax
+extra_javascript:
+  - javascripts/mathjax.js
+  - https://polyfill.io/v3/polyfill.min.js?features=es6
+  - https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js
+
+# Extra CSS
+extra_css:
+  - stylesheets/extra.css
+
+# Plugins
+plugins:
+  - search:
+      lang: en
+      separator: '[\s\-\.]+'
+  - tags
+
+# Navigation structure
+nav:
+  - Home: index.md
+  - 'Roadmap': ROADMAP.md
+  - 'Foundation Models':
+      - 'Overview': foundation_models/README.md
+      - 'Leveraging Foundation Models': foundation_models/leveraging_foundation_models_v2.md
+      - 'Data Shape & Tensors': foundation_models/data_shape_v2.md
+      - 'Implementation Guide': foundation_models/IMPLEMENTATION_GUIDE.md
+  - 'Diffusion Transformers (DiT)':
+      - 'Series Overview': DiT/README.md
+      - '00: DiT Overview': DiT/00_dit_overview.md
+      - '01: Foundations': DiT/01_dit_foundations.md
+      - '02: Training': DiT/02_dit_training.md
+      - '03: Sampling': DiT/03_dit_sampling.md
+      - 'Research: Tokenization': DiT/open_research_tokenization.md
+  - 'JEPA (Joint Embedding)':
+      - 'Series Overview': JEPA/README.md
+      - '00: JEPA Overview': JEPA/00_jepa_overview.md
+      - '01: Foundations': JEPA/01_jepa_foundations.md
+      - '02: Training': JEPA/02_jepa_training.md
+      - '03: Applications': JEPA/03_jepa_applications.md
+      - '04: Perturb-seq': JEPA/04_jepa_perturbseq.md
+      - 'Research: Joint Latent': JEPA/open_research_joint_latent.md
+  - 'Latent Diffusion':
+      - 'Series Overview': latent_diffusion/README.md
+      - '00: Overview': latent_diffusion/00_latent_diffusion_overview.md
+      - '01: Foundations': latent_diffusion/01_latent_diffusion_foundations.md
+      - '02: Training': latent_diffusion/02_latent_diffusion_training.md
+      - '03: Applications': latent_diffusion/03_latent_diffusion_applications.md
+      - '04: ComBio Implementation': latent_diffusion/04_latent_diffusion_combio.md
+  - 'DDPM (Denoising Diffusion)':
+      - 'Overview': DDPM/README.md
+      - 'Architectures for Gene Expression': DDPM/02a_diffusion_arch_gene_expression.md
+      - 'Architecture Q&A': DDPM/02b_diffusion_arch_qa.md
+  - 'VAE (Variational Autoencoders)':
+      - '01: Overview': VAE/VAE-01-overview.md
+      - '02: ELBO': VAE/VAE-02-elbo.md
+      - '03: Inference': VAE/VAE-03-inference.md
+      - 'VAE for Prediction': VAE/VAE-for-prediction.md
+      - 'Model Training': VAE/VAE-model-training.md
+      - 'Beta-VAE': beta-VAE/beta_vae.md
+  - 'Score Matching & EBM':
+      - 'Score Matching': score_matching/README.md
+      - 'Energy-Based Models': EBM/README.md
+      - 'Stein vs Fisher Score': EBM/EBM-stein-vs-fisher-score.md
+  - 'Flow Matching':
+      - 'Overview': flow_matching/README.md
+  - 'SDE (Stochastic Differential Equations)':
+      - 'Overview': SDE/README.md
+  - 'Datasets':
+      - 'Overview': datasets/README.md
+  - 'About':
+      - 'Setup & Installation': SETUP.md
+      - 'Industry Landscape': INDUSTRY_LANDSCAPE.md
+
+# Extra configuration
+extra:
+  social:
+    - icon: fontawesome/brands/github
+      link: https://github.com/pleiadian53/genai-lab
+  version:
+    provider: mike
