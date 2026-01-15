@@ -110,6 +110,12 @@ plugins:
       lang: en
       separator: '[\s\-\.]+'
   - tags
+  - mkdocs-jupyter:
+      include_source: True           # Include source code in rendered output
+      execute: False                 # Don't re-run notebooks (use saved outputs)
+      allow_errors: False            # Stop build if notebook has errors
+      ignore_h1_titles: True         # Use filename as title, not first H1
+      theme: dark                    # Code theme (dark/light)
 
 # Navigation structure
 nav:
@@ -163,6 +169,8 @@ nav:
       - 'Overview': SDE/README.md
   - 'Datasets':
       - 'Overview': datasets/README.md
+  - 'Notebooks':
+      - 'Overview': notebooks/README.md
   - 'About':
       - 'Setup & Installation': SETUP.md
       - 'Industry Landscape': INDUSTRY_LANDSCAPE.md
