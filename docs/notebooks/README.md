@@ -109,11 +109,16 @@ This dual-location approach:
 
 ## 🚀 Available Notebooks
 
-### **Diffusion Models**
+### **Diffusion Models** ✅ Available Now!
 
-| Notebook | Description | Status |
-|----------|-------------|--------|
-| Coming soon | DDPM basics | 📋 Planned |
+| Notebook | Description | Local Link | Status |
+|----------|-------------|------------|--------|
+| **DDPM Basics** | Introduction to Denoising Diffusion Probabilistic Models | [View Notebook](../diffusion/01_ddpm/01_ddpm_basics.ipynb) | ✅ Available |
+| **SDE Formulation** | Stochastic Differential Equations for diffusion | [View Notebook](../diffusion/02_sde_formulation/02_sde_formulation.ipynb) | ✅ Available |
+| **Medical Imaging Diffusion** | Diffusion models for medical images | [View Notebook](../diffusion/03_medical_imaging_diffusion/03_medical_imaging_diffusion.ipynb) | ✅ Available |
+| **Gene Expression Diffusion** | Applying diffusion to gene expression data | [View Notebook](../diffusion/04_gene_expression_diffusion/04_gene_expression_diffusion.ipynb) | ✅ Available |
+
+**Quick access:** Navigate to **"Diffusion (Technical Deep Dives)"** in the top navigation tabs or sidebar!
 
 ### **VAE Series**
 
