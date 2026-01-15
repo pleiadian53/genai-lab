@@ -115,7 +115,10 @@ plugins:
       execute: False                 # Don't re-run notebooks (use saved outputs)
       allow_errors: False            # Stop build if notebook has errors
       ignore_h1_titles: True         # Use filename as title, not first H1
-      theme: dark                    # Code theme (dark/light)
+      theme: light                   # Code theme (light for better readability)
+      include_requirejs: True        # Enable RequireJS for interactive outputs
+      show_input: True               # Show code cells
+      no_input: False                # Don't hide input cells
 
 # Navigation structure
 nav:
