@@ -18,7 +18,7 @@ This project investigates generative modeling approaches across computational bi
 3. **Explore** causal inference methods for predicting treatment responses and perturbation effects
 4. **Contribute** to the growing field of generative biology with reproducible implementations and benchmarks
 
-See [docs/INDUSTRY_LANDSCAPE.md](docs/INDUSTRY_LANDSCAPE.md) for a comprehensive survey of companies and technologies in this space.
+See [docs/INDUSTRY_LANDSCAPE.md](INDUSTRY_LANDSCAPE.md) for a comprehensive survey of companies and technologies in this space.
 
 ## Project Structure
 
@@ -78,18 +78,18 @@ Detailed theory, derivations, and mathematical foundations:
 
 | Topic | Description | Start Here |
 |-------|-------------|------------|
-| 🆕 [foundation_models](docs/foundation_models/) | Foundation model adaptation (LoRA, adapters, freezing) | [leveraging_foundation_models_v2.md](docs/foundation_models/leveraging_foundation_models_v2.md) |
-| 🆕 [DiT](docs/DiT/) | Diffusion Transformers (architecture, training, sampling) | [README.md](docs/DiT/README.md) |
-| 🆕 [JEPA](docs/JEPA/) | Joint Embedding Predictive Architecture | [README.md](docs/JEPA/README.md) |
-| 🆕 [latent_diffusion](docs/latent_diffusion/) | Latent diffusion with NB/ZINB decoders | [README.md](docs/latent_diffusion/README.md) |
-| [DDPM](docs/DDPM/) | Denoising Diffusion Probabilistic Models | [README.md](docs/DDPM/README.md) |
-| [VAE](docs/VAE/) | Variational Autoencoders (ELBO, inference, training) | [VAE-01-overview.md](docs/VAE/VAE-01-overview.md) |
-| [beta-VAE](docs/beta-VAE/) | VAE with disentanglement (β parameter) | [beta_vae.md](docs/beta-VAE/beta_vae.md) |
-| [EBM](docs/EBM/) | Energy-Based Models (Boltzmann, partition functions) | [README.md](docs/EBM/README.md) |
-| [score_matching](docs/score_matching/) | Score functions, Fisher vs Stein scores | [README.md](docs/score_matching/README.md) |
-| [flow_matching](docs/flow_matching/) | Flow matching & rectified flow | [README.md](docs/flow_matching/README.md) |
-| [datasets](docs/datasets/) | Datasets & preprocessing pipelines | [README.md](docs/datasets/README.md) |
-| [incubation](docs/incubation/) | Ideas under development | [README.md](docs/incubation/README.md) |
+| 🆕 [foundation_models](foundation_models/) | Foundation model adaptation (LoRA, adapters, freezing) | [leveraging_foundation_models_v2.md](foundation_models/leveraging_foundation_models_v2.md) |
+| 🆕 [DiT](DiT/) | Diffusion Transformers (architecture, training, sampling) | [README.md](DiT/README.md) |
+| 🆕 [JEPA](JEPA/) | Joint Embedding Predictive Architecture | [README.md](JEPA/README.md) |
+| 🆕 [latent_diffusion](latent_diffusion/) | Latent diffusion with NB/ZINB decoders | [README.md](latent_diffusion/README.md) |
+| [DDPM](DDPM/) | Denoising Diffusion Probabilistic Models | [README.md](DDPM/README.md) |
+| [VAE](VAE/) | Variational Autoencoders (ELBO, inference, training) | [VAE-01-overview.md](VAE/VAE-01-overview.md) |
+| [beta-VAE](beta-VAE/) | VAE with disentanglement (β parameter) | [beta_vae.md](beta-VAE/beta_vae.md) |
+| [EBM](EBM/) | Energy-Based Models (Boltzmann, partition functions) | [README.md](EBM/README.md) |
+| [score_matching](score_matching/) | Score functions, Fisher vs Stein scores | [README.md](score_matching/README.md) |
+| [flow_matching](flow_matching/) | Flow matching & rectified flow | [README.md](flow_matching/README.md) |
+| [datasets](datasets/) | Datasets & preprocessing pipelines | [README.md](datasets/README.md) |
+| [incubation](incubation/) | Ideas under development | [README.md](incubation/README.md) |
 
 ### Ideas Under Incubation (`docs/incubation/`)
 
@@ -97,9 +97,9 @@ Exploratory architectural proposals and application ideas not yet implemented:
 
 | Document | Focus |
 |----------|-------|
-| [joint_latent_space_and_JEPA.md](docs/incubation/joint_latent_space_and_JEPA.md) | Joint latent spaces for static/dynamic data, JEPA for Perturb-seq |
-| [generative-ai-for-gene-expression-prediction.md](docs/incubation/generative-ai-for-gene-expression-prediction.md) | Diffusion/VAE/Flow for gene expression with uncertainty |
-| [generative-ai-for-perturbation-modeling.md](docs/incubation/generative-ai-for-perturbation-modeling.md) | Generative approaches for scPerturb, beyond GEM-1 |
+| [joint_latent_space_and_JEPA.md](incubation/joint_latent_space_and_JEPA.md) | Joint latent spaces for static/dynamic data, JEPA for Perturb-seq |
+| [generative-ai-for-gene-expression-prediction.md](incubation/generative-ai-for-gene-expression-prediction.md) | Diffusion/VAE/Flow for gene expression with uncertainty |
+| [generative-ai-for-perturbation-modeling.md](incubation/generative-ai-for-perturbation-modeling.md) | Generative approaches for scPerturb, beyond GEM-1 |
 
 **Key insights from incubation:**
 
@@ -133,7 +133,7 @@ Ready-to-use Python scripts for real-world applications:
 - **Learning**: Start with `notebooks/` for interactive tutorials
 - **Theory**: Reference `docs/` for detailed derivations
 - **Application**: Use `examples/` for production workflows
-- Follow the [ROADMAP](docs/ROADMAP.md) for structured progression
+- Follow the [ROADMAP](ROADMAP.md) for structured progression
 
 ## Installation
 
