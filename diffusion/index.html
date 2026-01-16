@@ -1,0 +1,3959 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Generative AI for computational biology - diffusion models, VAEs, and foundation models for gene expression">
+      
+      
+        <meta name="author" content="GenAI Lab Research Team">
+      
+      
+        <link rel="canonical" href="https://pleiadian53.github.io/genai-lab/diffusion/">
+      
+      
+      
+      
+        
+      
+      
+      <link rel="icon" href="../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.1">
+    
+    
+      
+        <title>Diffusion Models: Theory and Background - GenAI Lab</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.484c7ddc.min.css">
+      
+        
+        <link rel="stylesheet" href="../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../stylesheets/extra.css">
+    
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="deep-purple" data-md-color-accent="deep-purple">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#diffusion-models-theory-and-background" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+      <div data-md-color-scheme="default" data-md-component="outdated" hidden>
+        
+      </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow md-header--lifted" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href=".." title="GenAI Lab" class="md-header__button md-logo" aria-label="GenAI Lab" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            GenAI Lab
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Diffusion Models: Theory and Background
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="deep-purple" data-md-color-accent="deep-purple"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="deep-purple" data-md-color-accent="deep-purple"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/pleiadian53/genai-lab" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+  </div>
+  <div class="md-source__repository">
+    pleiadian53/genai-lab
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+    
+      
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href=".." class="md-tabs__link">
+        
+  
+  
+    
+  
+  Home
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../ROADMAP/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Roadmap
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../foundation_models/" class="md-tabs__link">
+          
+  
+  
+  Foundation Models
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../DiT/" class="md-tabs__link">
+          
+  
+  
+  Diffusion Transformers (DiT)
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../JEPA/" class="md-tabs__link">
+          
+  
+  
+  JEPA (Joint Embedding)
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../latent_diffusion/" class="md-tabs__link">
+          
+  
+  
+  Latent Diffusion
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../DDPM/" class="md-tabs__link">
+          
+  
+  
+  DDPM (Denoising Diffusion)
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../VAE/VAE-01-overview/" class="md-tabs__link">
+          
+  
+  
+  VAE (Variational Autoencoders)
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../score_matching/" class="md-tabs__link">
+          
+  
+  
+  Score Matching & EBM
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../flow_matching/" class="md-tabs__link">
+          
+  
+  
+  Flow Matching
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../SDE/" class="md-tabs__link">
+          
+  
+  
+  SDE (Stochastic Differential Equations)
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../datasets/" class="md-tabs__link">
+          
+  
+  
+  Datasets
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="01_ddpm/01_ddpm_basics/" class="md-tabs__link">
+          
+  
+  
+  Diffusion (Technical Deep Dives)
+
+        </a>
+      </li>
+    
+  
+
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../notebooks/" class="md-tabs__link">
+          
+  
+  
+  Notebooks
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../SETUP/" class="md-tabs__link">
+          
+  
+  
+  About
+
+        </a>
+      </li>
+    
+  
+
+      
+    </ul>
+  </div>
+</nav>
+    
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="GenAI Lab" class="md-nav__button md-logo" aria-label="GenAI Lab" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    GenAI Lab
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/pleiadian53/genai-lab" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+  </div>
+  <div class="md-source__repository">
+    pleiadian53/genai-lab
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href=".." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ROADMAP/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Roadmap
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Foundation Models
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Foundation Models
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../foundation_models/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../foundation_models/leveraging_foundation_models_v2/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Leveraging Foundation Models
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../foundation_models/data_shape_v2/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Data Shape & Tensors
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../foundation_models/IMPLEMENTATION_GUIDE/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Implementation Guide
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Diffusion Transformers (DiT)
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Diffusion Transformers (DiT)
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../DiT/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Series Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../DiT/00_dit_overview/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    00: DiT Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../DiT/01_dit_foundations/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    01: Foundations
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../DiT/02_dit_training/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    02: Training
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../DiT/03_dit_sampling/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    03: Sampling
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../DiT/open_research_tokenization/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Research: Tokenization
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    JEPA (Joint Embedding)
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    JEPA (Joint Embedding)
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../JEPA/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Series Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../JEPA/00_jepa_overview/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    00: JEPA Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../JEPA/01_jepa_foundations/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    01: Foundations
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../JEPA/02_jepa_training/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    02: Training
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../JEPA/03_jepa_applications/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    03: Applications
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../JEPA/04_jepa_perturbseq/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    04: Perturb-seq
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../JEPA/open_research_joint_latent/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Research: Joint Latent
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_6" >
+        
+          
+          <label class="md-nav__link" for="__nav_6" id="__nav_6_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Latent Diffusion
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Latent Diffusion
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../latent_diffusion/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Series Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../latent_diffusion/00_latent_diffusion_overview/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    00: Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../latent_diffusion/01_latent_diffusion_foundations/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    01: Foundations
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../latent_diffusion/02_latent_diffusion_training/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    02: Training
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../latent_diffusion/03_latent_diffusion_applications/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    03: Applications
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../latent_diffusion/04_latent_diffusion_combio/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    04: ComBio Implementation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_7" >
+        
+          
+          <label class="md-nav__link" for="__nav_7" id="__nav_7_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    DDPM (Denoising Diffusion)
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_7_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_7">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    DDPM (Denoising Diffusion)
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../DDPM/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../DDPM/02a_diffusion_arch_gene_expression/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Architectures for Gene Expression
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../DDPM/02b_diffusion_arch_qa/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Architecture Q&A
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_8" >
+        
+          
+          <label class="md-nav__link" for="__nav_8" id="__nav_8_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    VAE (Variational Autoencoders)
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_8_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_8">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    VAE (Variational Autoencoders)
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../VAE/VAE-01-overview/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    01: Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../VAE/VAE-02-elbo/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    02: ELBO
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../VAE/VAE-03-inference/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    03: Inference
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../VAE/VAE-for-prediction/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    VAE for Prediction
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../VAE/VAE-model-training/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Model Training
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../beta-VAE/beta_vae/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Beta-VAE
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_9" >
+        
+          
+          <label class="md-nav__link" for="__nav_9" id="__nav_9_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Score Matching & EBM
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_9_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_9">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Score Matching & EBM
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../score_matching/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Score Matching
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../EBM/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Energy-Based Models
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../EBM/EBM-stein-vs-fisher-score/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Stein vs Fisher Score
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_10" >
+        
+          
+          <label class="md-nav__link" for="__nav_10" id="__nav_10_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Flow Matching
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_10_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_10">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Flow Matching
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../flow_matching/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_11" >
+        
+          
+          <label class="md-nav__link" for="__nav_11" id="__nav_11_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    SDE (Stochastic Differential Equations)
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_11_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_11">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    SDE (Stochastic Differential Equations)
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../SDE/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_12" >
+        
+          
+          <label class="md-nav__link" for="__nav_12" id="__nav_12_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Datasets
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_12_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_12">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Datasets
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../datasets/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_13" >
+        
+          
+          <label class="md-nav__link" for="__nav_13" id="__nav_13_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Diffusion (Technical Deep Dives)
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_13_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_13">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Diffusion (Technical Deep Dives)
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_13_1" >
+        
+          
+          <label class="md-nav__link" for="__nav_13_1" id="__nav_13_1_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    DDPM Basics
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_13_1_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_13_1">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    DDPM Basics
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="01_ddpm/01_ddpm_basics/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Notebook
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_13_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_13_2" id="__nav_13_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    SDE Formulation
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_13_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_13_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    SDE Formulation
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="02_sde_formulation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="02_sde_formulation/02_sde_formulation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Notebook
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_13_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_13_3" id="__nav_13_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Medical Imaging Diffusion
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_13_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_13_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Medical Imaging Diffusion
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="03_medical_imaging_diffusion/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="03_medical_imaging_diffusion/03_medical_imaging_diffusion/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Notebook
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_13_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_13_4" id="__nav_13_4_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Gene Expression Diffusion
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_13_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_13_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Gene Expression Diffusion
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="04_gene_expression_diffusion/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="04_gene_expression_diffusion/04_gene_expression_diffusion/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Notebook
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_14" >
+        
+          
+          <label class="md-nav__link" for="__nav_14" id="__nav_14_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Notebooks
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_14_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_14">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Notebooks
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../notebooks/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_15" >
+        
+          
+          <label class="md-nav__link" for="__nav_15" id="__nav_15_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    About
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_15_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_15">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    About
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../SETUP/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Setup & Installation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../INDUSTRY_LANDSCAPE/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Industry Landscape
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#looking-for-sde-supplements" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        🎯 Looking for SDE Supplements?
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#purpose" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Purpose
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#documents" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Documents
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Documents">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#brownian_motion_tutorialmd-comprehensive-introduction" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        brownian_motion_tutorial.md — Comprehensive Introduction
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#brownian_motionmd-original-notes-archive" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        brownian_motion.md — Original Notes (Archive)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#brownian_motion_qamd-original-qa-archive" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        brownian_motion_QA.md — Original Q&amp;A (Archive)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#sde_qamd-sde-questions-draft" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        sde_QA.md — SDE Questions (Draft)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#reverse_process-reverse-time-sde-theory" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        reverse_process/ — Reverse-Time SDE Theory
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#score_network-score-network-architecture-components" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        score_network/ — Score Network Architecture Components
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#forward_process_derivationmd-forward-sde-solution" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        forward_process_derivation.md — Forward SDE Solution
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#noise_schedulesmd-noise-schedule-design" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        noise_schedules.md — Noise Schedule Design
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#integrating_factormd-integrating-factor-technique" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        integrating_factor.md — Integrating Factor Technique
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#alpha_definitions_derivationmd-origin-of-alpha-definitions" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        alpha_definitions_derivation.md — Origin of Alpha Definitions
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#classifier_free_guidancemd-conditional-generation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        classifier_free_guidance.md — Conditional Generation
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#history-historical-development" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        history/ — Historical Development
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#organization-strategy" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Organization Strategy
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Organization Strategy">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#docsdiffusion-vs-notebooksdiffusion" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        docs/diffusion/ vs notebooks/diffusion/
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#recommended-reading-order" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Recommended Reading Order
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Recommended Reading Order">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#for-understanding-brownian-motion" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        For Understanding Brownian Motion
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#for-understanding-sdes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        For Understanding SDEs
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#for-understanding-forward-process-data-noise" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        For Understanding Forward Process (Data → Noise)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#for-understanding-reverse-process-noise-data" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        For Understanding Reverse Process (Noise → Data)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#for-implementing-score-networks" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        For Implementing Score Networks
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#related-resources" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Related Resources
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Related Resources">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#in-this-repository" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        In This Repository
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#external-references" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        External References
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#contributing" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Contributing
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#status" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Status
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Status">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#core-theory-documents" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Core Theory Documents
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#supplement-documents" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Supplement Documents
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#archived-documents" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Archived Documents
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+    <a href="https://github.com/pleiadian53/genai-lab/edit/main/docs/diffusion/README.md" title="Edit this page" class="md-content__button md-icon" rel="edit">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20.71 7.04c.39-.39.39-1.04 0-1.41l-2.34-2.34c-.37-.39-1.02-.39-1.41 0l-1.84 1.83 3.75 3.75M3 17.25V21h3.75L17.81 9.93l-3.75-3.75z"/></svg>
+    </a>
+  
+  
+
+
+<h1 id="diffusion-models-theory-and-background">Diffusion Models: Theory and Background<a class="headerlink" href="#diffusion-models-theory-and-background" title="Permanent link">&para;</a></h1>
+<p>Reference materials and deep-dive documents for understanding diffusion models from first principles.</p>
+<hr />
+<h2 id="looking-for-sde-supplements">🎯 Looking for SDE Supplements?<a class="headerlink" href="#looking-for-sde-supplements" title="Permanent link">&para;</a></h2>
+<p><strong>Most comprehensive SDE materials are now in</strong>: <a href="../../notebooks/diffusion/02_sde_formulation/supplements/"><code>notebooks/diffusion/02_sde_formulation/supplements/</code></a></p>
+<p><strong>8 focused supplements covering</strong>:</p>
+<ul>
+<li>Forward SDE design choices (VP/VE/sub-VP)</li>
+<li>Fokker-Planck equation and probability evolution</li>
+<li>Dimensional analysis and units</li>
+<li>Training loss, reverse SDEs, and more</li>
+</ul>
+<p><strong>Start here</strong>: <a href="../../notebooks/diffusion/02_sde_formulation/README.md"><code>notebooks/diffusion/02_sde_formulation/README.md</code></a></p>
+<hr />
+<h2 id="purpose">Purpose<a class="headerlink" href="#purpose" title="Permanent link">&para;</a></h2>
+<p>This directory contains <strong>theoretical background</strong> and <strong>mathematical foundations</strong> for diffusion models. These documents complement the interactive tutorials in <code>notebooks/diffusion/</code> with deeper mathematical rigor and historical context.</p>
+<p><strong>For learning</strong>: Start with <code>notebooks/diffusion/</code> for hands-on tutorials, then return here for deeper understanding.</p>
+<hr />
+<h2 id="documents">Documents<a class="headerlink" href="#documents" title="Permanent link">&para;</a></h2>
+<h3 id="brownian_motion_tutorialmd-comprehensive-introduction"><strong><a href="brownian_motion_tutorial/">brownian_motion_tutorial.md</a></strong> — Comprehensive Introduction<a class="headerlink" href="#brownian_motion_tutorialmd-comprehensive-introduction" title="Permanent link">&para;</a></h3>
+<p><strong>Complete tutorial on Brownian motion from physical origins to diffusion models</strong></p>
+<p><strong>Topics covered</strong>:</p>
+<ul>
+<li>Physical origin story (Robert Brown, Einstein, Wiener)</li>
+<li>Random walks vs Brownian motion</li>
+<li>The four defining properties (and what they really mean)</li>
+<li>The mysterious <span class="arithmatex">\(\sqrt{dt}\)</span> scaling explained</li>
+<li>Scaling limit: from discrete to continuous (Donsker's theorem)</li>
+<li>Why Brownian motion powers diffusion models</li>
+</ul>
+<p><strong>When to read</strong>: After understanding basic SDEs, before diving deep into score matching</p>
+<p><strong>Key takeaway</strong>: Brownian motion is the universal limit of random walks and the mathematical foundation that makes diffusion models work.</p>
+<hr />
+<h3 id="brownian_motionmd-original-notes-archive"><strong><a href="./brownian_motion.md">brownian_motion.md</a></strong> — Original Notes (Archive)<a class="headerlink" href="#brownian_motionmd-original-notes-archive" title="Permanent link">&para;</a></h3>
+<p><strong>Original Q&amp;A-style notes on Brownian motion</strong></p>
+<p><strong>Status</strong>: Archived. See <code>brownian_motion_tutorial.md</code> for the comprehensive rewrite.</p>
+<p><strong>Contents</strong>:</p>
+<ul>
+<li>Random walk vs Brownian motion comparison</li>
+<li>Scaling limit derivation</li>
+<li>Origin story and physical interpretation</li>
+</ul>
+<hr />
+<h3 id="brownian_motion_qamd-original-qa-archive"><strong><a href="./brownian_motion_QA.md">brownian_motion_QA.md</a></strong> — Original Q&amp;A (Archive)<a class="headerlink" href="#brownian_motion_qamd-original-qa-archive" title="Permanent link">&para;</a></h3>
+<p><strong>Original Q&amp;A focusing on the <span class="arithmatex">\(\sqrt{dt}\)</span> scaling</strong></p>
+<p><strong>Status</strong>: Archived. Content integrated into <code>brownian_motion_tutorial.md</code>.</p>
+<p><strong>Contents</strong>:</p>
+<ul>
+<li>Why <span class="arithmatex">\(dw(t) \propto \sqrt{dt} \cdot \varepsilon\)</span></li>
+<li>Step-by-step explanation of variance scaling</li>
+<li>Connection to Euler-Maruyama numerics</li>
+</ul>
+<hr />
+<h3 id="sde_qamd-sde-questions-draft"><strong><a href="./sde_QA.md">sde_QA.md</a></strong> — SDE Questions (Draft)<a class="headerlink" href="#sde_qamd-sde-questions-draft" title="Permanent link">&para;</a></h3>
+<p><strong>Draft Q&amp;A on SDE concepts</strong></p>
+<p><strong>Status</strong>: Draft/archive. For comprehensive SDE coverage, see <code>notebooks/diffusion/02_sde_formulation/</code>.</p>
+<p><strong>Contents</strong>:</p>
+<ul>
+<li>How SDEs are solved</li>
+<li>What models are learned</li>
+<li>Wiener process alternatives</li>
+</ul>
+<p><strong>Note</strong>: This content overlaps with <code>notebooks/diffusion/02_sde_formulation/sde_QA.md</code> which is the canonical version.</p>
+<hr />
+<h3 id="reverse_process-reverse-time-sde-theory"><strong>reverse_process/</strong> — Reverse-Time SDE Theory<a class="headerlink" href="#reverse_process-reverse-time-sde-theory" title="Permanent link">&para;</a></h3>
+<p><strong>Complete mathematical treatment of reversing diffusion processes</strong></p>
+<p>This directory contains the theoretical foundation for generating samples from noise in diffusion models—the reverse-time SDE and its derivation.</p>
+<h4 id="reverse_processreverse_process_derivationmd-main-derivation"><strong><a href="reverse_process/reverse_process_derivation/">reverse_process/reverse_process_derivation.md</a></strong> — Main Derivation<a class="headerlink" href="#reverse_processreverse_process_derivationmd-main-derivation" title="Permanent link">&para;</a></h4>
+<p><strong>Complete derivation of the reverse-time SDE from first principles</strong></p>
+<p><strong>Topics covered</strong>:</p>
+<ul>
+<li>Anderson's theorem (1982) — the mathematical key to reversing SDEs</li>
+<li>Derivation via Fokker-Planck equation</li>
+<li>Why the score function <span class="arithmatex">\(\nabla_x \log p_t(x)\)</span> appears</li>
+<li>Physical intuition: drift, diffusion, and effective drift</li>
+<li>Connection to generative modeling</li>
+</ul>
+<p><strong>When to read</strong>: After understanding forward SDEs and Fokker-Planck equations</p>
+<p><strong>Key result</strong>: <span class="arithmatex">\(dx = [f(x,t) - g(t)^2 \nabla_x \log p_t(x)]\,dt + g(t)\,d\bar{w}(t)\)</span></p>
+<h4 id="reverse_processreverse_process_examplemd-concrete-example"><strong><a href="reverse_process/reverse_process_example/">reverse_process/reverse_process_example.md</a></strong> — Concrete Example<a class="headerlink" href="#reverse_processreverse_process_examplemd-concrete-example" title="Permanent link">&para;</a></h4>
+<p><strong>Detailed worked example: reversing a 1D Gaussian diffusion</strong></p>
+<p><strong>Topics covered</strong>:</p>
+<ul>
+<li>Complete setup: forward Brownian motion</li>
+<li>Step-by-step score calculation for Gaussian</li>
+<li>Physical interpretation of the score</li>
+<li>Reverse SDE with explicit coefficients</li>
+<li>Numerical verification with Python code</li>
+<li>Why the drift points outward (paradox explained)</li>
+</ul>
+<p><strong>When to read</strong>: After reading the main derivation, for concrete intuition</p>
+<p><strong>Key insight</strong>: For <span class="arithmatex">\(p_t(x) = \mathcal{N}(0, 2Dt)\)</span>, the score is <span class="arithmatex">\(\nabla \log p_t = -x/(2Dt)\)</span>, which guides particles back to the origin.</p>
+<h4 id="reverse_processfokker_planck_derivationmd-fokker-planck-equation"><strong><a href="reverse_process/fokker_planck_derivation/">reverse_process/fokker_planck_derivation.md</a></strong> — Fokker-Planck Equation<a class="headerlink" href="#reverse_processfokker_planck_derivationmd-fokker-planck-equation" title="Permanent link">&para;</a></h4>
+<p><strong>Derivation of the probability evolution equation from first principles</strong></p>
+<p><strong>Topics covered</strong>:</p>
+<ul>
+<li>Chapman-Kolmogorov equation</li>
+<li>Kramers-Moyal expansion</li>
+<li>Physical interpretation: drift vs. diffusion</li>
+<li>Conservation laws and probability current</li>
+<li>Examples: pure diffusion, Ornstein-Uhlenbeck</li>
+<li>Connection to reverse SDEs</li>
+</ul>
+<p><strong>When to read</strong>: Before the reverse process derivation, as foundational background</p>
+<p><strong>Key result</strong>: <span class="arithmatex">\(\frac{\partial p_t}{\partial t} = -\nabla \cdot (f p_t) + \frac{1}{2}g^2 \nabla^2 p_t\)</span></p>
+<hr />
+<h3 id="score_network-score-network-architecture-components"><strong>score_network/</strong> — Score Network Architecture Components<a class="headerlink" href="#score_network-score-network-architecture-components" title="Permanent link">&para;</a></h3>
+<p><strong>Deep-dive into the architectural components of modern score networks</strong></p>
+<p>This directory explains how to build neural networks that estimate <span class="arithmatex">\(\nabla_x \log p_t(x)\)</span> across different noise levels—the core of diffusion models.</p>
+<h4 id="score_networkadvanced_architecturesmd-architectures-for-realistic-data"><strong><a href="score_network/advanced_architectures/">score_network/advanced_architectures.md</a></strong> — Architectures for Realistic Data<a class="headerlink" href="#score_networkadvanced_architecturesmd-architectures-for-realistic-data" title="Permanent link">&para;</a></h4>
+<p><strong>Advanced neural network architectures for complex, real-world data</strong></p>
+<p><strong>Topics covered</strong>:</p>
+<ul>
+<li><strong>U-Net</strong>: Dominant architecture for images and medical imaging</li>
+<li>Multi-scale processing, skip connections</li>
+<li>Residual blocks with time conditioning</li>
+<li>Attention layers for long-range dependencies</li>
+<li><strong>Vision Transformer (DiT)</strong>: Scalable transformer-based architecture</li>
+<li>Adaptive Layer Normalization (AdaLN)</li>
+<li>When to use DiT vs U-Net</li>
+<li><strong>Networks for Biological Data</strong>: Gene expression, scRNA-seq</li>
+<li>Deep residual MLPs for tabular data</li>
+<li>Graph Neural Networks for pathway structure</li>
+<li>Handling sparsity in single-cell data</li>
+</ul>
+<p><strong>When to read</strong>: When moving beyond toy examples to realistic data</p>
+<p><strong>Key insight</strong>: Match the architecture's inductive biases to your data's structure.</p>
+<hr />
+<h4 id="score_networktime_embedding_and_filmmd-time-conditioning-components"><strong><a href="score_network/time_embedding_and_film/">score_network/time_embedding_and_film.md</a></strong> — Time Conditioning Components<a class="headerlink" href="#score_networktime_embedding_and_filmmd-time-conditioning-components" title="Permanent link">&para;</a></h4>
+<p><strong>Deep-dive into time conditioning mechanisms used in score networks</strong></p>
+<p><strong>Topics covered</strong>:</p>
+<ul>
+<li><strong>Time Embedding</strong>: Transform scalar <span class="arithmatex">\(t\)</span> to high-dimensional representation</li>
+<li>Sinusoidal embeddings (multiple frequencies)</li>
+<li>Why networks struggle with raw scalar inputs</li>
+<li>Connection to Fourier basis</li>
+<li><strong>FiLM (Feature-wise Linear Modulation)</strong>: Condition layers on time</li>
+<li>Affine transformations: <span class="arithmatex">\(\gamma_{\text{scale}} \odot h + \gamma_{\text{shift}}\)</span></li>
+<li>Why FiLM is more effective than concatenation</li>
+<li>Implementation patterns for MLPs and CNNs</li>
+<li><strong>Comparison</strong>: FiLM vs. concatenation vs. attention</li>
+<li><strong>Advanced topics</strong>: Adaptive Group Normalization, multi-scale embeddings</li>
+</ul>
+<p><strong>When to read</strong>: When implementing score networks and needing to understand components</p>
+<p><strong>Key insight</strong>: Time embedding provides multiple frequencies for the network to understand time at different scales, while FiLM allows layer-wise adaptation to noise levels.</p>
+<hr />
+<h3 id="forward_process_derivationmd-forward-sde-solution"><strong><a href="./forward_process_derivation.md">forward_process_derivation.md</a></strong> — Forward SDE Solution<a class="headerlink" href="#forward_process_derivationmd-forward-sde-solution" title="Permanent link">&para;</a></h3>
+<p><strong>Deriving the forward diffusion process: from clean data to noise</strong></p>
+<p><strong>Topics covered</strong>:</p>
+<ul>
+<li>VP-SDE (Variance Preserving) as the canonical example</li>
+<li>Solution using integrating factors</li>
+<li>Derivation of <span class="arithmatex">\(x_t = \sqrt{\bar{\alpha}_t}\,x_0 + \sqrt{1-\bar{\alpha}_t}\,\varepsilon\)</span></li>
+<li>Connection to noise schedules <span class="arithmatex">\(\beta(t)\)</span></li>
+</ul>
+<p><strong>When to read</strong>: After understanding basic SDEs, before reverse processes</p>
+<p><strong>Supplements</strong>:</p>
+<ul>
+<li><a href="noise_schedules/"><code>noise_schedules.md</code></a> — Common noise schedule choices</li>
+<li><a href="integrating_factor/"><code>integrating_factor.md</code></a> — Integrating factor technique</li>
+<li><a href="alpha_definitions_derivation/"><code>alpha_definitions_derivation.md</code></a> — Origin of <span class="arithmatex">\(\alpha(t)\)</span> and <span class="arithmatex">\(\bar{\alpha}_t\)</span></li>
+</ul>
+<hr />
+<h3 id="noise_schedulesmd-noise-schedule-design"><strong><a href="noise_schedules/">noise_schedules.md</a></strong> — Noise Schedule Design<a class="headerlink" href="#noise_schedulesmd-noise-schedule-design" title="Permanent link">&para;</a></h3>
+<p><strong>Comprehensive guide to noise schedules in diffusion models</strong></p>
+<p><strong>Topics covered</strong>:</p>
+<ul>
+<li>Mathematical background: <span class="arithmatex">\(\beta(t)\)</span>, <span class="arithmatex">\(\alpha(t)\)</span>, <span class="arithmatex">\(\bar{\alpha}_t\)</span></li>
+<li>Common schedules: linear, cosine, polynomial, sigmoid</li>
+<li>Properties and trade-offs</li>
+<li>Why cosine often works better</li>
+</ul>
+<p><strong>When to read</strong>: When implementing diffusion models or tuning performance</p>
+<hr />
+<h3 id="integrating_factormd-integrating-factor-technique"><strong><a href="integrating_factor/">integrating_factor.md</a></strong> — Integrating Factor Technique<a class="headerlink" href="#integrating_factormd-integrating-factor-technique" title="Permanent link">&para;</a></h3>
+<p><strong>Explanation of integrating factors for solving linear differential equations</strong></p>
+<p><strong>Topics covered</strong>:</p>
+<ul>
+<li>What is an integrating factor</li>
+<li>How it simplifies differential equations</li>
+<li>Derivation of <span class="arithmatex">\(\frac{d\mu}{dt}\)</span> for exponential integrating factors</li>
+<li>Application to the forward SDE</li>
+</ul>
+<p><strong>When to read</strong>: When studying the forward process derivation</p>
+<hr />
+<h3 id="alpha_definitions_derivationmd-origin-of-alpha-definitions"><strong><a href="alpha_definitions_derivation/">alpha_definitions_derivation.md</a></strong> — Origin of Alpha Definitions<a class="headerlink" href="#alpha_definitions_derivationmd-origin-of-alpha-definitions" title="Permanent link">&para;</a></h3>
+<p><strong>How <span class="arithmatex">\(\alpha(t)\)</span> and <span class="arithmatex">\(\bar{\alpha}_t\)</span> definitions arise from integrating factors</strong></p>
+<p><strong>Topics covered</strong>:</p>
+<ul>
+<li>Connection between integrating factor and signal coefficients</li>
+<li>Why <span class="arithmatex">\(\bar{\alpha}_t = \exp(-\int_0^t \beta(s)\,ds)\)</span></li>
+<li>Physical meaning of alpha decay</li>
+</ul>
+<p><strong>When to read</strong>: After forward process derivation, when seeking deeper understanding</p>
+<hr />
+<h3 id="classifier_free_guidancemd-conditional-generation"><strong><a href="classifier_free_guidance/">classifier_free_guidance.md</a></strong> — Conditional Generation<a class="headerlink" href="#classifier_free_guidancemd-conditional-generation" title="Permanent link">&para;</a></h3>
+<p><strong>Comprehensive guide to classifier-free guidance for conditional diffusion models</strong></p>
+<p><strong>Topics covered</strong>:</p>
+<ul>
+<li>Problem: Why naive conditioning doesn't work well</li>
+<li>Classifier guidance (original approach with separate classifier)</li>
+<li>Classifier-free guidance (elegant solution without classifier)</li>
+<li>Training procedure (condition dropping)</li>
+<li>Guidance scale and fidelity vs. diversity trade-off</li>
+<li>Implementation in both DDPM and SDE views</li>
+<li>Variants: dynamic guidance, multi-conditional, negative prompting</li>
+</ul>
+<p><strong>When to read</strong>: When building conditional diffusion models (text-to-image, class-conditional, etc.)</p>
+<p><strong>Key insight</strong>: Train one model for both conditional and unconditional generation by randomly dropping conditions during training, then amplify the difference at sampling time.</p>
+<hr />
+<h3 id="history-historical-development"><strong>history/</strong> — Historical Development<a class="headerlink" href="#history-historical-development" title="Permanent link">&para;</a></h3>
+<p><strong>How diffusion models evolved and unified</strong></p>
+<h4 id="historydiffusion_models_developmentmd-complete-historical-timeline"><strong><a href="./history/diffusion_models_development.md">history/diffusion_models_development.md</a></strong> — Complete Historical Timeline<a class="headerlink" href="#historydiffusion_models_developmentmd-complete-historical-timeline" title="Permanent link">&para;</a></h4>
+<p><strong>Traces the development of diffusion models from multiple perspectives</strong></p>
+<p><strong>Topics covered</strong>:</p>
+<ul>
+<li>Timeline: Score matching (2005) → DDPM (2020) → SDE view (2021)</li>
+<li>Was DDPM derived from SDEs? (No—retrospective unification)</li>
+<li>Three views: Variational, Score-Based, Flow-Based</li>
+<li>How the SDE view unified them all</li>
+<li>Why understanding history clarifies the "multiple views" confusion</li>
+</ul>
+<p><strong>When to read</strong>: After understanding both DDPM and SDE views, when seeking big-picture understanding</p>
+<p><strong>Key insight</strong>: DDPM was developed independently as a discrete-time model. The SDE view came later and revealed that DDPM, NCSN, and flow-based models are all the same underlying process.</p>
+<p><strong>Includes</strong>: Diagram showing the convergence of three perspectives to continuous-time formulation</p>
+<hr />
+<h2 id="organization-strategy">Organization Strategy<a class="headerlink" href="#organization-strategy" title="Permanent link">&para;</a></h2>
+<h3 id="docsdiffusion-vs-notebooksdiffusion"><code>docs/diffusion/</code> vs <code>notebooks/diffusion/</code><a class="headerlink" href="#docsdiffusion-vs-notebooksdiffusion" title="Permanent link">&para;</a></h3>
+<p><strong>This directory (<code>docs/diffusion/</code>)</strong>:</p>
+<ul>
+<li><strong>Purpose</strong>: Reference materials, mathematical deep-dives, historical context</li>
+<li><strong>Format</strong>: Markdown documents with rigorous derivations</li>
+<li><strong>Style</strong>: Tutorial/blog style but with more mathematical detail</li>
+<li><strong>Audience</strong>: Researchers, those seeking deeper understanding</li>
+</ul>
+<p><strong><code>notebooks/diffusion/</code></strong>:</p>
+<ul>
+<li><strong>Purpose</strong>: Interactive learning, hands-on coding, visualization</li>
+<li><strong>Format</strong>: Jupyter notebooks with executable code</li>
+<li><strong>Style</strong>: Step-by-step tutorials with examples</li>
+<li><strong>Audience</strong>: Practitioners, those learning by doing</li>
+</ul>
+<p><strong>Relationship</strong>: These directories complement each other. Start with notebooks for intuition, come here for rigor.</p>
+<hr />
+<h2 id="recommended-reading-order">Recommended Reading Order<a class="headerlink" href="#recommended-reading-order" title="Permanent link">&para;</a></h2>
+<h3 id="for-understanding-brownian-motion">For Understanding Brownian Motion<a class="headerlink" href="#for-understanding-brownian-motion" title="Permanent link">&para;</a></h3>
+<ol>
+<li><strong>Start</strong>: <code>brownian_motion_tutorial.md</code> (this directory)</li>
+<li>Complete introduction from physics to mathematics</li>
+<li>Explains the <span class="arithmatex">\(\sqrt{dt}\)</span> scaling thoroughly</li>
+<li>
+<p>Connects to diffusion models</p>
+</li>
+<li>
+<p><strong>Practice</strong>: <code>notebooks/diffusion/02_sde_formulation/02_sde_formulation.ipynb</code></p>
+</li>
+<li>Visualize Brownian motion paths</li>
+<li>
+<p>See the scaling in action with code</p>
+</li>
+<li>
+<p><strong>Deep dive</strong>: <code>notebooks/diffusion/02_sde_formulation/supplements/02_brownian_motion_dimensionality.md</code></p>
+</li>
+<li>Why <span class="arithmatex">\(w(t) \in \mathbb{R}^d\)</span>, not scalar</li>
+</ol>
+<h3 id="for-understanding-sdes">For Understanding SDEs<a class="headerlink" href="#for-understanding-sdes" title="Permanent link">&para;</a></h3>
+<ol>
+<li><strong>Start</strong>: <code>notebooks/diffusion/02_sde_formulation/sde_formulation.md</code></li>
+<li>
+<p>Core SDE theory for diffusion models</p>
+</li>
+<li>
+<p><strong>Clarify</strong>: <code>notebooks/diffusion/02_sde_formulation/sde_QA.md</code></p>
+</li>
+<li>
+<p>Common questions answered</p>
+</li>
+<li>
+<p><strong>Supplements</strong>: <code>notebooks/diffusion/02_sde_formulation/supplements/</code></p>
+</li>
+<li>Eight focused deep-dives on specific topics</li>
+</ol>
+<h3 id="for-understanding-forward-process-data-noise">For Understanding Forward Process (Data → Noise)<a class="headerlink" href="#for-understanding-forward-process-data-noise" title="Permanent link">&para;</a></h3>
+<ol>
+<li><strong>Start</strong>: <code>forward_process_derivation.md</code> (this directory)</li>
+<li>
+<p>Complete derivation of <span class="arithmatex">\(x_t = \sqrt{\bar{\alpha}_t}\,x_0 + \sqrt{1-\bar{\alpha}_t}\,\varepsilon\)</span></p>
+</li>
+<li>
+<p><strong>Background</strong>: <code>integrating_factor.md</code> (this directory)</p>
+</li>
+<li>
+<p>Mathematical technique used in the derivation</p>
+</li>
+<li>
+<p><strong>Deep dive</strong>: <code>alpha_definitions_derivation.md</code> (this directory)</p>
+</li>
+<li>
+<p>Why the definitions look the way they do</p>
+</li>
+<li>
+<p><strong>Practice</strong>: <code>noise_schedules.md</code> (this directory)</p>
+</li>
+<li>Choosing and tuning noise schedules</li>
+</ol>
+<h3 id="for-understanding-reverse-process-noise-data">For Understanding Reverse Process (Noise → Data)<a class="headerlink" href="#for-understanding-reverse-process-noise-data" title="Permanent link">&para;</a></h3>
+<ol>
+<li><strong>Foundation</strong>: <code>reverse_process/fokker_planck_derivation.md</code></li>
+<li>How probability distributions evolve under SDEs</li>
+<li>
+<p>Essential background for understanding reverse processes</p>
+</li>
+<li>
+<p><strong>Main theory</strong>: <code>reverse_process/reverse_process_derivation.md</code></p>
+</li>
+<li>Complete derivation of the reverse-time SDE</li>
+<li>
+<p>Anderson's theorem and the score function</p>
+</li>
+<li>
+<p><strong>Concrete example</strong>: <code>reverse_process/reverse_process_example.md</code></p>
+</li>
+<li>Worked example with explicit calculations</li>
+<li>
+<p>Numerical verification code</p>
+</li>
+<li>
+<p><strong>Practice</strong>: <code>notebooks/diffusion/02_sde_formulation/supplements/</code></p>
+</li>
+<li>Supplement 03: Training loss and denoising</li>
+<li>Supplement 04: Score matching</li>
+<li>Supplement 05: Reverse SDE implementation</li>
+</ol>
+<h3 id="for-implementing-score-networks">For Implementing Score Networks<a class="headerlink" href="#for-implementing-score-networks" title="Permanent link">&para;</a></h3>
+<ol>
+<li><strong>Architecture basics</strong>: <code>dev/notebooks/diffusion/02_sde_formulation/score_network_architecture.md</code></li>
+<li>Activation functions (SiLU)</li>
+<li>Basic MLP implementation</li>
+<li>
+<p>Why <code>y.sum().backward()</code></p>
+</li>
+<li>
+<p><strong>Advanced architectures</strong>: <code>score_network/advanced_architectures.md</code> (this directory)</p>
+</li>
+<li>U-Net for images and medical imaging</li>
+<li>Vision Transformer (DiT) for large-scale training</li>
+<li>Architectures for gene expression and scRNA-seq</li>
+<li>
+<p>When to use which architecture</p>
+</li>
+<li>
+<p><strong>Component deep-dive</strong>: <code>score_network/time_embedding_and_film.md</code> (this directory)</p>
+</li>
+<li>Time embedding: sinusoidal representations</li>
+<li>FiLM: feature-wise linear modulation</li>
+<li>
+<p>Implementation patterns and debugging tips</p>
+</li>
+<li>
+<p><strong>Practice</strong>: <code>notebooks/diffusion/02_sde_formulation/02_sde_formulation.ipynb</code></p>
+</li>
+<li>Train a score network on toy 2D data</li>
+<li>See time conditioning in action</li>
+<li>Sample from the reverse SDE</li>
+</ol>
+<hr />
+<h2 id="related-resources">Related Resources<a class="headerlink" href="#related-resources" title="Permanent link">&para;</a></h2>
+<h3 id="in-this-repository">In This Repository<a class="headerlink" href="#in-this-repository" title="Permanent link">&para;</a></h3>
+<ul>
+<li><strong>Interactive tutorials</strong>: <code>notebooks/diffusion/</code></li>
+<li><code>01_ddpm_basics.ipynb</code>: DDPM on gene expression</li>
+<li>
+<p><code>02_sde_formulation/</code>: Complete SDE tutorial package</p>
+</li>
+<li>
+<p><strong>Theory documents</strong>: <code>docs/</code></p>
+</li>
+<li><code>score_matching/</code>: Score functions and Fisher/Stein scores</li>
+<li><code>EBM/</code>: Energy-based models</li>
+</ul>
+<h3 id="external-references">External References<a class="headerlink" href="#external-references" title="Permanent link">&para;</a></h3>
+<ul>
+<li><strong>Einstein (1905)</strong>: Investigations on the Theory of the Brownian Movement</li>
+<li><strong>Donsker (1951)</strong>: Invariance principle for random walks</li>
+<li><strong>Song et al. (2021)</strong>: Score-Based Generative Modeling through SDEs</li>
+<li><strong>Øksendal (2003)</strong>: Stochastic Differential Equations textbook</li>
+</ul>
+<hr />
+<h2 id="contributing">Contributing<a class="headerlink" href="#contributing" title="Permanent link">&para;</a></h2>
+<p>When adding new documents to this directory:</p>
+<ol>
+<li><strong>Check for overlap</strong>: See if content fits better in <code>notebooks/diffusion/</code></li>
+<li><strong>Maintain style</strong>: Tutorial/blog style with rigorous mathematics</li>
+<li><strong>Add to this README</strong>: Update the documents list and reading order</li>
+<li><strong>Cross-reference</strong>: Link to related notebooks and docs</li>
+</ol>
+<hr />
+<h2 id="status">Status<a class="headerlink" href="#status" title="Permanent link">&para;</a></h2>
+<h3 id="core-theory-documents">Core Theory Documents<a class="headerlink" href="#core-theory-documents" title="Permanent link">&para;</a></h3>
+<ul>
+<li>✅ <strong>brownian_motion_tutorial.md</strong>: Complete comprehensive tutorial</li>
+<li>✅ <strong>forward_process_derivation.md</strong>: Complete with supplements</li>
+<li>✅ <strong>reverse_process/</strong>: Complete directory with all three documents</li>
+<li>✅ reverse_process_derivation.md: Full reverse SDE derivation</li>
+<li>✅ reverse_process_example.md: Worked 1D Gaussian example</li>
+<li>✅ fokker_planck_derivation.md: Probability evolution equation</li>
+<li>✅ <strong>score_network/</strong>: Architecture components directory</li>
+<li>✅ advanced_architectures.md: U-Net, DiT, and architectures for realistic data</li>
+<li>✅ time_embedding_and_film.md: Time embedding and FiLM conditioning components</li>
+</ul>
+<h3 id="supplement-documents">Supplement Documents<a class="headerlink" href="#supplement-documents" title="Permanent link">&para;</a></h3>
+<ul>
+<li>✅ <strong>noise_schedules.md</strong>: Complete guide to noise schedules</li>
+<li>✅ <strong>integrating_factor.md</strong>: Mathematical technique explained</li>
+<li>✅ <strong>alpha_definitions_derivation.md</strong>: Origin of alpha definitions</li>
+</ul>
+<h3 id="archived-documents">Archived Documents<a class="headerlink" href="#archived-documents" title="Permanent link">&para;</a></h3>
+<ul>
+<li>📦 <strong>brownian_motion.md</strong>: Archived (superseded by tutorial)</li>
+<li>📦 <strong>brownian_motion_QA.md</strong>: Archived (content integrated into tutorial)</li>
+<li>📝 <strong>sde_QA.md</strong>: Draft (see notebooks version for canonical content)</li>
+</ul>
+<hr />
+<p><strong>Next Steps</strong>:</p>
+<ul>
+<li>After understanding Brownian motion → <code>notebooks/diffusion/02_sde_formulation/</code> for SDE basics</li>
+<li>After understanding forward/reverse processes → <code>notebooks/diffusion/02_sde_formulation/supplements/</code> for implementation details</li>
+<li>For practical implementation → Start with DDPM notebook, then move to SDE formulation</li>
+</ul>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">
+      Copyright &copy; 2026 GenAI Lab Research Team
+    </div>
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+        
+<div class="md-social">
+  
+    
+    
+    
+    
+      
+      
+    
+    <a href="https://github.com/pleiadian53/genai-lab" target="_blank" rel="noopener" title="github.com" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["navigation.instant", "navigation.tracking", "navigation.tabs", "navigation.tabs.sticky", "navigation.sections", "navigation.expand", "navigation.top", "search.suggest", "search.highlight", "content.code.copy", "content.action.edit"], "search": "../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"provider": "mike"}}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+        <script src="../javascripts/mathjax.js"></script>
+      
+        <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+      
+        <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+      
+    
+  </body>
+</html>

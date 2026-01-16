@@ -1,0 +1,4171 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Generative AI for computational biology - diffusion models, VAEs, and foundation models for gene expression">
+      
+      
+        <meta name="author" content="GenAI Lab Research Team">
+      
+      
+        <link rel="canonical" href="https://pleiadian53.github.io/genai-lab/diffusion/reverse_process/fokker_planck_derivation/">
+      
+      
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.1">
+    
+    
+      
+        <title>Fokker-Planck Equation: Derivation and Intuition - GenAI Lab</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../../assets/stylesheets/main.484c7ddc.min.css">
+      
+        
+        <link rel="stylesheet" href="../../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../../../stylesheets/extra.css">
+    
+    <script>__md_scope=new URL("../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="deep-purple" data-md-color-accent="deep-purple">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#fokker-planck-equation-derivation-and-intuition" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+      <div data-md-color-scheme="default" data-md-component="outdated" hidden>
+        
+      </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow md-header--lifted" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../../.." title="GenAI Lab" class="md-header__button md-logo" aria-label="GenAI Lab" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            GenAI Lab
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Fokker-Planck Equation: Derivation and Intuition
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="deep-purple" data-md-color-accent="deep-purple"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="deep-purple" data-md-color-accent="deep-purple"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/pleiadian53/genai-lab" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+  </div>
+  <div class="md-source__repository">
+    pleiadian53/genai-lab
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+    
+      
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../.." class="md-tabs__link">
+        
+  
+  
+    
+  
+  Home
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../../ROADMAP/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Roadmap
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../../foundation_models/" class="md-tabs__link">
+          
+  
+  
+  Foundation Models
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../../DiT/" class="md-tabs__link">
+          
+  
+  
+  Diffusion Transformers (DiT)
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../../JEPA/" class="md-tabs__link">
+          
+  
+  
+  JEPA (Joint Embedding)
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../../latent_diffusion/" class="md-tabs__link">
+          
+  
+  
+  Latent Diffusion
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../../DDPM/" class="md-tabs__link">
+          
+  
+  
+  DDPM (Denoising Diffusion)
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../../VAE/VAE-01-overview/" class="md-tabs__link">
+          
+  
+  
+  VAE (Variational Autoencoders)
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../../score_matching/" class="md-tabs__link">
+          
+  
+  
+  Score Matching & EBM
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../../flow_matching/" class="md-tabs__link">
+          
+  
+  
+  Flow Matching
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../../SDE/" class="md-tabs__link">
+          
+  
+  
+  SDE (Stochastic Differential Equations)
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../../datasets/" class="md-tabs__link">
+          
+  
+  
+  Datasets
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../01_ddpm/01_ddpm_basics/" class="md-tabs__link">
+          
+  
+  
+  Diffusion (Technical Deep Dives)
+
+        </a>
+      </li>
+    
+  
+
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../../notebooks/" class="md-tabs__link">
+          
+  
+  
+  Notebooks
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../../SETUP/" class="md-tabs__link">
+          
+  
+  
+  About
+
+        </a>
+      </li>
+    
+  
+
+      
+    </ul>
+  </div>
+</nav>
+    
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../../.." title="GenAI Lab" class="md-nav__button md-logo" aria-label="GenAI Lab" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    GenAI Lab
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/pleiadian53/genai-lab" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+  </div>
+  <div class="md-source__repository">
+    pleiadian53/genai-lab
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../ROADMAP/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Roadmap
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Foundation Models
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Foundation Models
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../foundation_models/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../foundation_models/leveraging_foundation_models_v2/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Leveraging Foundation Models
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../foundation_models/data_shape_v2/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Data Shape & Tensors
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../foundation_models/IMPLEMENTATION_GUIDE/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Implementation Guide
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Diffusion Transformers (DiT)
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Diffusion Transformers (DiT)
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../DiT/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Series Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../DiT/00_dit_overview/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    00: DiT Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../DiT/01_dit_foundations/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    01: Foundations
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../DiT/02_dit_training/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    02: Training
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../DiT/03_dit_sampling/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    03: Sampling
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../DiT/open_research_tokenization/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Research: Tokenization
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    JEPA (Joint Embedding)
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    JEPA (Joint Embedding)
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../JEPA/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Series Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../JEPA/00_jepa_overview/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    00: JEPA Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../JEPA/01_jepa_foundations/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    01: Foundations
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../JEPA/02_jepa_training/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    02: Training
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../JEPA/03_jepa_applications/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    03: Applications
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../JEPA/04_jepa_perturbseq/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    04: Perturb-seq
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../JEPA/open_research_joint_latent/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Research: Joint Latent
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_6" >
+        
+          
+          <label class="md-nav__link" for="__nav_6" id="__nav_6_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Latent Diffusion
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Latent Diffusion
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../latent_diffusion/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Series Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../latent_diffusion/00_latent_diffusion_overview/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    00: Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../latent_diffusion/01_latent_diffusion_foundations/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    01: Foundations
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../latent_diffusion/02_latent_diffusion_training/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    02: Training
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../latent_diffusion/03_latent_diffusion_applications/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    03: Applications
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../latent_diffusion/04_latent_diffusion_combio/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    04: ComBio Implementation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_7" >
+        
+          
+          <label class="md-nav__link" for="__nav_7" id="__nav_7_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    DDPM (Denoising Diffusion)
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_7_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_7">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    DDPM (Denoising Diffusion)
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../DDPM/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../DDPM/02a_diffusion_arch_gene_expression/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Architectures for Gene Expression
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../DDPM/02b_diffusion_arch_qa/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Architecture Q&A
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_8" >
+        
+          
+          <label class="md-nav__link" for="__nav_8" id="__nav_8_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    VAE (Variational Autoencoders)
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_8_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_8">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    VAE (Variational Autoencoders)
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../VAE/VAE-01-overview/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    01: Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../VAE/VAE-02-elbo/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    02: ELBO
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../VAE/VAE-03-inference/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    03: Inference
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../VAE/VAE-for-prediction/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    VAE for Prediction
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../VAE/VAE-model-training/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Model Training
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../beta-VAE/beta_vae/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Beta-VAE
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_9" >
+        
+          
+          <label class="md-nav__link" for="__nav_9" id="__nav_9_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Score Matching & EBM
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_9_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_9">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Score Matching & EBM
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../score_matching/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Score Matching
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../EBM/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Energy-Based Models
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../EBM/EBM-stein-vs-fisher-score/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Stein vs Fisher Score
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_10" >
+        
+          
+          <label class="md-nav__link" for="__nav_10" id="__nav_10_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Flow Matching
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_10_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_10">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Flow Matching
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../flow_matching/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_11" >
+        
+          
+          <label class="md-nav__link" for="__nav_11" id="__nav_11_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    SDE (Stochastic Differential Equations)
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_11_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_11">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    SDE (Stochastic Differential Equations)
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../SDE/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_12" >
+        
+          
+          <label class="md-nav__link" for="__nav_12" id="__nav_12_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Datasets
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_12_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_12">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Datasets
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../datasets/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_13" >
+        
+          
+          <label class="md-nav__link" for="__nav_13" id="__nav_13_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Diffusion (Technical Deep Dives)
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_13_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_13">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Diffusion (Technical Deep Dives)
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_13_1" >
+        
+          
+          <label class="md-nav__link" for="__nav_13_1" id="__nav_13_1_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    DDPM Basics
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_13_1_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_13_1">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    DDPM Basics
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../01_ddpm/01_ddpm_basics/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Notebook
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_13_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_13_2" id="__nav_13_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    SDE Formulation
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_13_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_13_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    SDE Formulation
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../02_sde_formulation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../02_sde_formulation/02_sde_formulation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Notebook
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_13_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_13_3" id="__nav_13_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Medical Imaging Diffusion
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_13_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_13_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Medical Imaging Diffusion
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../03_medical_imaging_diffusion/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../03_medical_imaging_diffusion/03_medical_imaging_diffusion/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Notebook
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_13_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_13_4" id="__nav_13_4_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Gene Expression Diffusion
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_13_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_13_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Gene Expression Diffusion
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../04_gene_expression_diffusion/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../04_gene_expression_diffusion/04_gene_expression_diffusion/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Notebook
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_14" >
+        
+          
+          <label class="md-nav__link" for="__nav_14" id="__nav_14_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Notebooks
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_14_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_14">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Notebooks
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../notebooks/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_15" >
+        
+          
+          <label class="md-nav__link" for="__nav_15" id="__nav_15_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    About
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_15_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_15">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    About
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../SETUP/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Setup & Installation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../INDUSTRY_LANDSCAPE/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Industry Landscape
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#overview" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Overview
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#referenced-from" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Referenced From
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#table-of-contents" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Table of Contents
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#the-setting" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The Setting
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="The Setting">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#stochastic-differential-equation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Stochastic Differential Equation
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#probability-distribution" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Probability Distribution
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#the-question" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The Question
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#intuitive-picture" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Intuitive Picture
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Intuitive Picture">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#what-changes-probability-at-a-point" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What Changes Probability at a Point?
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#analogy-heat-equation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Analogy: Heat Equation
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#derivation-via-infinitesimal-evolution" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Derivation via Infinitesimal Evolution
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Derivation via Infinitesimal Evolution">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#step-1-chapman-kolmogorov-equation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 1: Chapman-Kolmogorov Equation
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#step-2-taylor-expand-the-left-side" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 2: Taylor Expand the Left Side
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#step-3-understand-the-transition-probability" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 3: Understand the Transition Probability
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#step-4-express-transition-probability" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 4: Express Transition Probability
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#step-5-substitute-into-chapman-kolmogorov" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 5: Substitute into Chapman-Kolmogorov
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#step-6-taylor-expand-p_tx-delta-x" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 6: Taylor Expand \(p_t(x - \delta x)\)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#step-7-compute-moments-of-delta-x" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 7: Compute Moments of \(\delta x\)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#step-8-substitute-moments" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 8: Substitute Moments
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#step-9-rearrange-and-take-limit" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 9: Rearrange and Take Limit
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#step-10-vector-notation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 10: Vector Notation
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#kramers-moyal-expansion-rigorous" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Kramers-Moyal Expansion (Rigorous)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Kramers-Moyal Expansion (Rigorous)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#jump-moments" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Jump Moments
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kramers-moyal-theorem" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Kramers-Moyal Theorem
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#fokker-planck-approximation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Fokker-Planck Approximation
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#for-our-sde" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        For Our SDE
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#physical-interpretation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Physical Interpretation
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Physical Interpretation">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#the-full-equation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The Full Equation
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#term-1-rate-of-change" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Term 1: Rate of Change
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#term-2-drift-advection" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Term 2: Drift (Advection)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#term-3-diffusion-spreading" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Term 3: Diffusion (Spreading)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#connection-to-conservation-laws" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Connection to Conservation Laws
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Connection to Conservation Laws">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#continuity-equation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Continuity Equation
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#conservation-of-probability" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Conservation of Probability
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#example-simple-diffusion" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Example: Simple Diffusion
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Example: Simple Diffusion">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#setup" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Setup
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#fokker-planck-equation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Fokker-Planck Equation
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#solution" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Solution
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#example-ornstein-uhlenbeck-process" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Example: Ornstein-Uhlenbeck Process
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Example: Ornstein-Uhlenbeck Process">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#setup_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Setup
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#fokker-planck-equation_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Fokker-Planck Equation
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#stationary-distribution" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Stationary Distribution
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#why-this-matters-for-reverse-sdes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Why This Matters for Reverse SDEs
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Why This Matters for Reverse SDEs">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#forward-process" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Forward Process
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#reverse-process" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Reverse Process
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#key-insight" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Key Insight
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#summary" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Summary
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Summary">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#what-we-learned" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What We Learned
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#the-equation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The Equation
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#references" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        References
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="References">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#classic-texts" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Classic Texts
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#papers" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Papers
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#related-documents" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Related Documents
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+    <a href="https://github.com/pleiadian53/genai-lab/edit/main/docs/diffusion/reverse_process/fokker_planck_derivation.md" title="Edit this page" class="md-content__button md-icon" rel="edit">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20.71 7.04c.39-.39.39-1.04 0-1.41l-2.34-2.34c-.37-.39-1.02-.39-1.41 0l-1.84 1.83 3.75 3.75M3 17.25V21h3.75L17.81 9.93l-3.75-3.75z"/></svg>
+    </a>
+  
+  
+
+
+<h1 id="fokker-planck-equation-derivation-and-intuition">Fokker-Planck Equation: Derivation and Intuition<a class="headerlink" href="#fokker-planck-equation-derivation-and-intuition" title="Permanent link">&para;</a></h1>
+<h2 id="overview">Overview<a class="headerlink" href="#overview" title="Permanent link">&para;</a></h2>
+<p>The <strong>Fokker-Planck equation</strong> (also called the <strong>forward Kolmogorov equation</strong>) describes how the probability distribution of a stochastic process evolves over time. It is the bridge between individual particle dynamics (described by SDEs) and collective probability evolution.</p>
+<p>This document derives the Fokker-Planck equation from first principles and explains why probability distributions must obey it.</p>
+<hr />
+<h2 id="referenced-from">Referenced From<a class="headerlink" href="#referenced-from" title="Permanent link">&para;</a></h2>
+<ul>
+<li><strong>Main Document</strong>: <a href="../reverse_process_derivation/"><code>docs/diffusion/reverse_process/reverse_process_derivation.md</code></a> — Uses the Fokker-Planck equation to derive the reverse SDE</li>
+<li><strong>Related</strong>: <a href="../../../notebooks/diffusion/02_sde_formulation/supplements/07_fokker_planck_equation.md"><code>notebooks/diffusion/02_sde_formulation/supplements/07_fokker_planck_equation.md</code></a></li>
+</ul>
+<hr />
+<h2 id="table-of-contents">Table of Contents<a class="headerlink" href="#table-of-contents" title="Permanent link">&para;</a></h2>
+<ol>
+<li><a href="#the-setting">The Setting</a></li>
+<li><a href="#intuitive-picture">Intuitive Picture</a></li>
+<li><a href="#derivation-via-infinitesimal-evolution">Derivation via Infinitesimal Evolution</a></li>
+<li><a href="#kramers-moyal-expansion-rigorous">Kramers-Moyal Expansion (Rigorous)</a></li>
+<li><a href="#physical-interpretation">Physical Interpretation</a></li>
+<li><a href="#connection-to-conservation-laws">Connection to Conservation Laws</a></li>
+<li><a href="#example-simple-diffusion">Example: Simple Diffusion</a></li>
+<li><a href="#why-this-matters-for-reverse-sdes">Why This Matters for Reverse SDEs</a></li>
+</ol>
+<hr />
+<h2 id="the-setting">The Setting<a class="headerlink" href="#the-setting" title="Permanent link">&para;</a></h2>
+<h3 id="stochastic-differential-equation">Stochastic Differential Equation<a class="headerlink" href="#stochastic-differential-equation" title="Permanent link">&para;</a></h3>
+<p>Consider a <span class="arithmatex">\(d\)</span>-dimensional stochastic process <span class="arithmatex">\(x(t) \in \mathbb{R}^d\)</span> governed by:</p>
+<div class="arithmatex">\[
+dx = f(x,t)\,dt + g(t)\,dw
+\]</div>
+<p>where:</p>
+<ul>
+<li><span class="arithmatex">\(f(x,t) \in \mathbb{R}^d\)</span> is the <strong>drift</strong> (deterministic force)</li>
+<li><span class="arithmatex">\(g(t) \in \mathbb{R}\)</span> is the <strong>diffusion coefficient</strong> (noise amplitude)</li>
+<li><span class="arithmatex">\(w(t) \in \mathbb{R}^d\)</span> is standard Brownian motion</li>
+</ul>
+<h3 id="probability-distribution">Probability Distribution<a class="headerlink" href="#probability-distribution" title="Permanent link">&para;</a></h3>
+<p>At each time <span class="arithmatex">\(t\)</span>, the random variable <span class="arithmatex">\(x(t)\)</span> has a probability distribution:</p>
+<div class="arithmatex">\[
+p_t(x) = p(x, t)
+\]</div>
+<p>where <span class="arithmatex">\(\int p_t(x)\,dx = 1\)</span>.</p>
+<h3 id="the-question">The Question<a class="headerlink" href="#the-question" title="Permanent link">&para;</a></h3>
+<p><strong>How does <span class="arithmatex">\(p_t(x)\)</span> evolve over time?</strong></p>
+<p>The Fokker-Planck equation answers this:</p>
+<div class="arithmatex">\[
+\boxed{\frac{\partial p_t}{\partial t} = -\nabla \cdot (f p_t) + \frac{1}{2}g(t)^2 \nabla^2 p_t}
+\]</div>
+<hr />
+<h2 id="intuitive-picture">Intuitive Picture<a class="headerlink" href="#intuitive-picture" title="Permanent link">&para;</a></h2>
+<p>Before diving into the math, let's build intuition.</p>
+<h3 id="what-changes-probability-at-a-point">What Changes Probability at a Point?<a class="headerlink" href="#what-changes-probability-at-a-point" title="Permanent link">&para;</a></h3>
+<p>Imagine a point <span class="arithmatex">\(x\)</span> in space. The probability density <span class="arithmatex">\(p_t(x)\)</span> at this point can change due to:</p>
+<ol>
+<li><strong>Drift (advection)</strong>: Particles drift from nearby points to <span class="arithmatex">\(x\)</span>, or from <span class="arithmatex">\(x\)</span> to elsewhere</li>
+<li><strong>Diffusion (spreading)</strong>: Particles randomly wander in and out of <span class="arithmatex">\(x\)</span></li>
+</ol>
+<p>These two mechanisms give rise to the two terms in the Fokker-Planck equation.</p>
+<h3 id="analogy-heat-equation">Analogy: Heat Equation<a class="headerlink" href="#analogy-heat-equation" title="Permanent link">&para;</a></h3>
+<p>You can think of probability like heat:
+- <strong>Drift term</strong>: Like a wind blowing heat from one place to another
+- <strong>Diffusion term</strong>: Like heat spreading from hot to cold regions</p>
+<p>The Fokker-Planck equation is essentially a heat equation with an additional drift/advection term.</p>
+<hr />
+<h2 id="derivation-via-infinitesimal-evolution">Derivation via Infinitesimal Evolution<a class="headerlink" href="#derivation-via-infinitesimal-evolution" title="Permanent link">&para;</a></h2>
+<p>We'll derive the equation by considering how probability evolves over an infinitesimal time step <span class="arithmatex">\(\Delta t\)</span>.</p>
+<h3 id="step-1-chapman-kolmogorov-equation">Step 1: Chapman-Kolmogorov Equation<a class="headerlink" href="#step-1-chapman-kolmogorov-equation" title="Permanent link">&para;</a></h3>
+<p>The probability at time <span class="arithmatex">\(t + \Delta t\)</span> is related to the probability at time <span class="arithmatex">\(t\)</span> by:</p>
+<div class="arithmatex">\[
+p_{t+\Delta t}(x) = \int p_t(x') \, p(x, t+\Delta t \mid x', t) \, dx'
+\]</div>
+<p>where <span class="arithmatex">\(p(x, t+\Delta t \mid x', t)\)</span> is the <strong>transition probability</strong> from <span class="arithmatex">\(x'\)</span> at time <span class="arithmatex">\(t\)</span> to <span class="arithmatex">\(x\)</span> at time <span class="arithmatex">\(t + \Delta t\)</span>.</p>
+<p><strong>Interpretation</strong>: To find the probability of being at <span class="arithmatex">\(x\)</span> at time <span class="arithmatex">\(t + \Delta t\)</span>, we sum over all possible starting points <span class="arithmatex">\(x'\)</span> at time <span class="arithmatex">\(t\)</span>, weighted by their probability.</p>
+<h3 id="step-2-taylor-expand-the-left-side">Step 2: Taylor Expand the Left Side<a class="headerlink" href="#step-2-taylor-expand-the-left-side" title="Permanent link">&para;</a></h3>
+<div class="arithmatex">\[
+p_{t+\Delta t}(x) = p_t(x) + \frac{\partial p_t}{\partial t} \Delta t + O(\Delta t^2)
+\]</div>
+<h3 id="step-3-understand-the-transition-probability">Step 3: Understand the Transition Probability<a class="headerlink" href="#step-3-understand-the-transition-probability" title="Permanent link">&para;</a></h3>
+<p>For the SDE <span class="arithmatex">\(dx = f(x,t)\,dt + g(t)\,dw\)</span>, the change over <span class="arithmatex">\(\Delta t\)</span> is:</p>
+<div class="arithmatex">\[
+\Delta x = x(t + \Delta t) - x(t) = f(x,t) \Delta t + g(t) \sqrt{\Delta t} \, \xi
+\]</div>
+<p>where <span class="arithmatex">\(\xi \sim \mathcal{N}(0, I)\)</span> is a standard normal random variable.</p>
+<p>This means:
+- <strong>Mean displacement</strong>: <span class="arithmatex">\(\mathbb{E}[\Delta x \mid x] = f(x,t) \Delta t\)</span>
+- <strong>Covariance</strong>: <span class="arithmatex">\(\text{Cov}[\Delta x \mid x] = g(t)^2 \Delta t \, I\)</span></p>
+<h3 id="step-4-express-transition-probability">Step 4: Express Transition Probability<a class="headerlink" href="#step-4-express-transition-probability" title="Permanent link">&para;</a></h3>
+<p>For small <span class="arithmatex">\(\Delta t\)</span>, the transition from <span class="arithmatex">\(x'\)</span> to <span class="arithmatex">\(x\)</span> is approximately:</p>
+<div class="arithmatex">\[
+p(x \mid x', \Delta t) \approx \delta(x - x' - f(x',t)\Delta t) * \mathcal{N}(0, g(t)^2 \Delta t \, I)
+\]</div>
+<p>where <span class="arithmatex">\(*\)</span> denotes convolution.</p>
+<p>More precisely, using Gaussian approximation:</p>
+<div class="arithmatex">\[
+p(x \mid x', \Delta t) \approx \frac{1}{(2\pi g^2 \Delta t)^{d/2}} \exp\left(-\frac{|x - x' - f(x',t)\Delta t|^2}{2g^2 \Delta t}\right)
+\]</div>
+<h3 id="step-5-substitute-into-chapman-kolmogorov">Step 5: Substitute into Chapman-Kolmogorov<a class="headerlink" href="#step-5-substitute-into-chapman-kolmogorov" title="Permanent link">&para;</a></h3>
+<div class="arithmatex">\[
+p_{t+\Delta t}(x) = \int p_t(x') \, p(x \mid x', \Delta t) \, dx'
+\]</div>
+<p>Now we use a clever trick: expand around <span class="arithmatex">\(x' = x\)</span> (nearby points contribute most).</p>
+<p>Let <span class="arithmatex">\(\delta x = x - x'\)</span>, so <span class="arithmatex">\(x' = x - \delta x\)</span>:</p>
+<div class="arithmatex">\[
+p_{t+\Delta t}(x) = \int p_t(x - \delta x) \, p(x \mid x - \delta x, \Delta t) \, d(\delta x)
+\]</div>
+<h3 id="step-6-taylor-expand-p_tx-delta-x">Step 6: Taylor Expand <span class="arithmatex">\(p_t(x - \delta x)\)</span><a class="headerlink" href="#step-6-taylor-expand-p_tx-delta-x" title="Permanent link">&para;</a></h3>
+<div class="arithmatex">\[
+p_t(x - \delta x) = p_t(x) - \delta x \cdot \nabla p_t(x) + \frac{1}{2} \sum_{i,j} \delta x_i \delta x_j \frac{\partial^2 p_t}{\partial x_i \partial x_j} + \ldots
+\]</div>
+<p>Using index notation:</p>
+<div class="arithmatex">\[
+p_t(x - \delta x) \approx p_t(x) - \sum_i \delta x_i \frac{\partial p_t}{\partial x_i} + \frac{1}{2} \sum_{i,j} \delta x_i \delta x_j \frac{\partial^2 p_t}{\partial x_i \partial x_j}
+\]</div>
+<h3 id="step-7-compute-moments-of-delta-x">Step 7: Compute Moments of <span class="arithmatex">\(\delta x\)</span><a class="headerlink" href="#step-7-compute-moments-of-delta-x" title="Permanent link">&para;</a></h3>
+<p>From the transition probability, conditioned on starting at <span class="arithmatex">\(x' = x - \delta x \approx x\)</span>:</p>
+<p><strong>First moment</strong>:</p>
+<p>$$</p>
+<p>\mathbb{E}[\delta x] = f(x,t) \Delta t + O(\Delta t^2)
+$$</p>
+<p><strong>Second moment</strong> (each component):</p>
+<p>$$</p>
+<p>\mathbb{E}[\delta x_i \delta x_j] = \begin{cases}
+g(t)^2 \Delta t + f_i f_j \Delta t^2 &amp; \text{if } i = j \
+f_i f_j \Delta t^2 &amp; \text{if } i \neq j
+\end{cases}
+$$</p>
+<p>For small <span class="arithmatex">\(\Delta t\)</span>, the <span class="arithmatex">\(\Delta t^2\)</span> terms are negligible, so:</p>
+<div class="arithmatex">\[
+\mathbb{E}[\delta x_i \delta x_j] \approx g(t)^2 \Delta t \, \delta_{ij}
+\]</div>
+<p>where <span class="arithmatex">\(\delta_{ij}\)</span> is the Kronecker delta.</p>
+<h3 id="step-8-substitute-moments">Step 8: Substitute Moments<a class="headerlink" href="#step-8-substitute-moments" title="Permanent link">&para;</a></h3>
+<div class="arithmatex">\[
+p_{t+\Delta t}(x) = \int \left[p_t(x) - \sum_i \delta x_i \frac{\partial p_t}{\partial x_i} + \frac{1}{2} \sum_{i,j} \delta x_i \delta x_j \frac{\partial^2 p_t}{\partial x_i \partial x_j}\right] p(\delta x \mid x, \Delta t) \, d(\delta x)
+\]</div>
+<p>Taking expectations over <span class="arithmatex">\(\delta x\)</span>:</p>
+<div class="arithmatex">\[
+p_{t+\Delta t}(x) = p_t(x) - \sum_i \mathbb{E}[\delta x_i] \frac{\partial p_t}{\partial x_i} + \frac{1}{2} \sum_{i,j} \mathbb{E}[\delta x_i \delta x_j] \frac{\partial^2 p_t}{\partial x_i \partial x_j}
+\]</div>
+<p>Substitute the moments:</p>
+<div class="arithmatex">\[
+p_{t+\Delta t}(x) = p_t(x) - \sum_i f_i(x,t) \Delta t \frac{\partial p_t}{\partial x_i} + \frac{1}{2} \sum_i g(t)^2 \Delta t \frac{\partial^2 p_t}{\partial x_i^2}
+\]</div>
+<h3 id="step-9-rearrange-and-take-limit">Step 9: Rearrange and Take Limit<a class="headerlink" href="#step-9-rearrange-and-take-limit" title="Permanent link">&para;</a></h3>
+<div class="arithmatex">\[
+p_{t+\Delta t}(x) - p_t(x) = -\sum_i f_i(x,t) \frac{\partial p_t}{\partial x_i} \Delta t + \frac{1}{2} g(t)^2 \sum_i \frac{\partial^2 p_t}{\partial x_i^2} \Delta t
+\]</div>
+<p>Divide by <span class="arithmatex">\(\Delta t\)</span> and take <span class="arithmatex">\(\Delta t \to 0\)</span>:</p>
+<div class="arithmatex">\[
+\frac{\partial p_t}{\partial t} = -\sum_i \frac{\partial}{\partial x_i} \left[f_i(x,t) p_t(x)\right] + \frac{1}{2} g(t)^2 \sum_i \frac{\partial^2 p_t}{\partial x_i^2}
+\]</div>
+<h3 id="step-10-vector-notation">Step 10: Vector Notation<a class="headerlink" href="#step-10-vector-notation" title="Permanent link">&para;</a></h3>
+<p>Using <span class="arithmatex">\(\nabla \cdot\)</span> for divergence and <span class="arithmatex">\(\nabla^2\)</span> for Laplacian:</p>
+<div class="arithmatex">\[
+\boxed{\frac{\partial p_t}{\partial t} = -\nabla \cdot (f p_t) + \frac{1}{2}g(t)^2 \nabla^2 p_t}
+\]</div>
+<p><strong>This is the Fokker-Planck equation!</strong></p>
+<hr />
+<h2 id="kramers-moyal-expansion-rigorous">Kramers-Moyal Expansion (Rigorous)<a class="headerlink" href="#kramers-moyal-expansion-rigorous" title="Permanent link">&para;</a></h2>
+<p>The derivation above can be made rigorous using the <strong>Kramers-Moyal expansion</strong>.</p>
+<h3 id="jump-moments">Jump Moments<a class="headerlink" href="#jump-moments" title="Permanent link">&para;</a></h3>
+<p>Define the <strong>jump moments</strong>:</p>
+<div class="arithmatex">\[
+M^{(n)}_i(x, t) = \lim_{\Delta t \to 0} \frac{1}{\Delta t} \mathbb{E}\left[(\Delta x_i)^n \mid x(t) = x\right]
+\]</div>
+<h3 id="kramers-moyal-theorem">Kramers-Moyal Theorem<a class="headerlink" href="#kramers-moyal-theorem" title="Permanent link">&para;</a></h3>
+<p>The evolution of the probability distribution is:</p>
+<div class="arithmatex">\[
+\frac{\partial p_t}{\partial t} = \sum_{n=1}^\infty \frac{(-1)^n}{n!} \sum_{i_1, \ldots, i_n} \frac{\partial^n}{\partial x_{i_1} \cdots \partial x_{i_n}} \left[M^{(n)}_{i_1 \cdots i_n} p_t\right]
+\]</div>
+<h3 id="fokker-planck-approximation">Fokker-Planck Approximation<a class="headerlink" href="#fokker-planck-approximation" title="Permanent link">&para;</a></h3>
+<p>For <strong>continuous diffusion processes</strong> (like those generated by SDEs with smooth coefficients), the Kramers-Moyal expansion terminates at <span class="arithmatex">\(n=2\)</span>:</p>
+<div class="arithmatex">\[
+M^{(n)} = 0 \quad \text{for } n \geq 3
+\]</div>
+<p>This gives:</p>
+<div class="arithmatex">\[
+\frac{\partial p_t}{\partial t} = -\sum_i \frac{\partial}{\partial x_i} [M^{(1)}_i p_t] + \frac{1}{2} \sum_{i,j} \frac{\partial^2}{\partial x_i \partial x_j} [M^{(2)}_{ij} p_t]
+\]</div>
+<h3 id="for-our-sde">For Our SDE<a class="headerlink" href="#for-our-sde" title="Permanent link">&para;</a></h3>
+<p>From <span class="arithmatex">\(dx = f(x,t)\,dt + g(t)\,dw\)</span>:</p>
+<div class="arithmatex">\[
+M^{(1)}_i = f_i(x,t)
+\]</div>
+<div class="arithmatex">\[
+M^{(2)}_{ij} = g(t)^2 \delta_{ij}
+\]</div>
+<p>Substituting:</p>
+<div class="arithmatex">\[
+\frac{\partial p_t}{\partial t} = -\sum_i \frac{\partial}{\partial x_i} [f_i p_t] + \frac{1}{2} g(t)^2 \sum_i \frac{\partial^2 p_t}{\partial x_i^2}
+\]</div>
+<p>This is the Fokker-Planck equation.</p>
+<hr />
+<h2 id="physical-interpretation">Physical Interpretation<a class="headerlink" href="#physical-interpretation" title="Permanent link">&para;</a></h2>
+<p>Let's break down each term:</p>
+<h3 id="the-full-equation">The Full Equation<a class="headerlink" href="#the-full-equation" title="Permanent link">&para;</a></h3>
+<div class="arithmatex">\[
+\frac{\partial p_t}{\partial t} = -\nabla \cdot (f p_t) + \frac{1}{2}g(t)^2 \nabla^2 p_t
+\]</div>
+<h3 id="term-1-rate-of-change">Term 1: Rate of Change<a class="headerlink" href="#term-1-rate-of-change" title="Permanent link">&para;</a></h3>
+<div class="arithmatex">\[
+\frac{\partial p_t}{\partial t}
+\]</div>
+<p><strong>Meaning</strong>: How fast probability density is changing at point <span class="arithmatex">\(x\)</span> at time <span class="arithmatex">\(t\)</span>.</p>
+<h3 id="term-2-drift-advection">Term 2: Drift (Advection)<a class="headerlink" href="#term-2-drift-advection" title="Permanent link">&para;</a></h3>
+<div class="arithmatex">\[
+-\nabla \cdot (f p_t) = -\sum_i \frac{\partial}{\partial x_i} [f_i(x,t) p_t(x)]
+\]</div>
+<p><strong>Meaning</strong>: Probability flux due to deterministic drift.</p>
+<p><strong>Expanded form</strong>:</p>
+<div class="arithmatex">\[
+-\nabla \cdot (f p_t) = -f \cdot \nabla p_t - p_t \nabla \cdot f
+\]</div>
+<ul>
+<li><span class="arithmatex">\(-f \cdot \nabla p_t\)</span>: Advection of probability along the drift field</li>
+<li><span class="arithmatex">\(-p_t \nabla \cdot f\)</span>: Change in probability due to compression/expansion of the drift field</li>
+</ul>
+<p><strong>Physical picture</strong>: Probability "flows" along the drift field <span class="arithmatex">\(f(x,t)\)</span>, like wind blowing particles.</p>
+<h3 id="term-3-diffusion-spreading">Term 3: Diffusion (Spreading)<a class="headerlink" href="#term-3-diffusion-spreading" title="Permanent link">&para;</a></h3>
+<div class="arithmatex">\[
+\frac{1}{2}g(t)^2 \nabla^2 p_t = \frac{1}{2}g(t)^2 \sum_i \frac{\partial^2 p_t}{\partial x_i^2}
+\]</div>
+<p><strong>Meaning</strong>: Probability spreads from high-density to low-density regions.</p>
+<p><strong>Sign convention</strong>:</p>
+<ul>
+<li><span class="arithmatex">\(\nabla^2 p_t &gt; 0\)</span>: Concave up → probability flows <em>in</em> (increases)</li>
+<li><span class="arithmatex">\(\nabla^2 p_t &lt; 0\)</span>: Concave down → probability flows <em>out</em> (decreases)</li>
+</ul>
+<p><strong>Physical picture</strong>: Random motion causes probability to diffuse, like heat spreading in a metal rod.</p>
+<hr />
+<h2 id="connection-to-conservation-laws">Connection to Conservation Laws<a class="headerlink" href="#connection-to-conservation-laws" title="Permanent link">&para;</a></h2>
+<h3 id="continuity-equation">Continuity Equation<a class="headerlink" href="#continuity-equation" title="Permanent link">&para;</a></h3>
+<p>The Fokker-Planck equation can be written as a <strong>continuity equation</strong>:</p>
+<div class="arithmatex">\[
+\frac{\partial p_t}{\partial t} + \nabla \cdot J = 0
+\]</div>
+<p>where <span class="arithmatex">\(J\)</span> is the <strong>probability current</strong> (flux):</p>
+<div class="arithmatex">\[
+J = f p_t - \frac{1}{2}g(t)^2 \nabla p_t
+\]</div>
+<p><strong>Components</strong>:</p>
+<ul>
+<li><span class="arithmatex">\(f p_t\)</span>: Drift current (probability flowing along drift)</li>
+<li><span class="arithmatex">\(-\frac{1}{2}g(t)^2 \nabla p_t\)</span>: Diffusion current (Fick's law, probability flowing down gradients)</li>
+</ul>
+<h3 id="conservation-of-probability">Conservation of Probability<a class="headerlink" href="#conservation-of-probability" title="Permanent link">&para;</a></h3>
+<p>Integrating over all space:</p>
+<div class="arithmatex">\[
+\frac{d}{dt} \int p_t(x)\,dx = \int \frac{\partial p_t}{\partial t}\,dx = -\int \nabla \cdot J\,dx = 0
+\]</div>
+<p>(using divergence theorem, assuming <span class="arithmatex">\(J \to 0\)</span> at infinity).</p>
+<p><strong>Result</strong>: Total probability is conserved, as it must be!</p>
+<hr />
+<h2 id="example-simple-diffusion">Example: Simple Diffusion<a class="headerlink" href="#example-simple-diffusion" title="Permanent link">&para;</a></h2>
+<h3 id="setup">Setup<a class="headerlink" href="#setup" title="Permanent link">&para;</a></h3>
+<p>Consider pure diffusion with no drift:</p>
+<div class="arithmatex">\[
+dx = \sigma \, dw
+\]</div>
+<p>where <span class="arithmatex">\(\sigma\)</span> is constant.</p>
+<h3 id="fokker-planck-equation">Fokker-Planck Equation<a class="headerlink" href="#fokker-planck-equation" title="Permanent link">&para;</a></h3>
+<div class="arithmatex">\[
+\frac{\partial p_t}{\partial t} = \frac{\sigma^2}{2} \nabla^2 p_t
+\]</div>
+<p>This is the <strong>heat equation</strong>!</p>
+<h3 id="solution">Solution<a class="headerlink" href="#solution" title="Permanent link">&para;</a></h3>
+<p>Starting from a point mass <span class="arithmatex">\(p_0(x) = \delta(x - x_0)\)</span>, the solution is:</p>
+<div class="arithmatex">\[
+p_t(x) = \frac{1}{(2\pi \sigma^2 t)^{d/2}} \exp\left(-\frac{|x - x_0|^2}{2\sigma^2 t}\right)
+\]</div>
+<p>This is a Gaussian with:
+- Mean: <span class="arithmatex">\(x_0\)</span> (stays at starting point)
+- Variance: <span class="arithmatex">\(\sigma^2 t\)</span> (spreads linearly with time)</p>
+<p><strong>Verification</strong>: Substitute this solution into the heat equation — it works!</p>
+<hr />
+<h2 id="example-ornstein-uhlenbeck-process">Example: Ornstein-Uhlenbeck Process<a class="headerlink" href="#example-ornstein-uhlenbeck-process" title="Permanent link">&para;</a></h2>
+<h3 id="setup_1">Setup<a class="headerlink" href="#setup_1" title="Permanent link">&para;</a></h3>
+<p>Consider the SDE:</p>
+<div class="arithmatex">\[
+dx = -\theta x \, dt + \sigma \, dw
+\]</div>
+<p>where:</p>
+<ul>
+<li><span class="arithmatex">\(-\theta x\)</span>: Drift toward origin (like a spring)</li>
+<li><span class="arithmatex">\(\sigma\)</span>: Constant diffusion</li>
+</ul>
+<h3 id="fokker-planck-equation_1">Fokker-Planck Equation<a class="headerlink" href="#fokker-planck-equation_1" title="Permanent link">&para;</a></h3>
+<div class="arithmatex">\[
+\frac{\partial p_t}{\partial t} = \nabla \cdot (\theta x p_t) + \frac{\sigma^2}{2} \nabla^2 p_t
+\]</div>
+<h3 id="stationary-distribution">Stationary Distribution<a class="headerlink" href="#stationary-distribution" title="Permanent link">&para;</a></h3>
+<p>At equilibrium (<span class="arithmatex">\(\partial p / \partial t = 0\)</span>):</p>
+<div class="arithmatex">\[
+0 = \nabla \cdot (\theta x p) + \frac{\sigma^2}{2} \nabla^2 p
+\]</div>
+<p>Solving this ODE:</p>
+<div class="arithmatex">\[
+p_\infty(x) = \mathcal{N}\left(0, \frac{\sigma^2}{2\theta}\right)
+\]</div>
+<p><strong>Interpretation</strong>: The drift pulls particles toward the origin, while diffusion spreads them out. The equilibrium is a balance between these forces.</p>
+<hr />
+<h2 id="why-this-matters-for-reverse-sdes">Why This Matters for Reverse SDEs<a class="headerlink" href="#why-this-matters-for-reverse-sdes" title="Permanent link">&para;</a></h2>
+<h3 id="forward-process">Forward Process<a class="headerlink" href="#forward-process" title="Permanent link">&para;</a></h3>
+<p>The forward SDE:</p>
+<div class="arithmatex">\[
+dx = f(x,t)\,dt + g(t)\,dw
+\]</div>
+<p>generates a probability evolution governed by:</p>
+<div class="arithmatex">\[
+\frac{\partial p_t}{\partial t} = -\nabla \cdot (f p_t) + \frac{1}{2}g(t)^2 \nabla^2 p_t
+\]</div>
+<h3 id="reverse-process">Reverse Process<a class="headerlink" href="#reverse-process" title="Permanent link">&para;</a></h3>
+<p>To reverse the process, we need to find an SDE whose Fokker-Planck equation gives <strong>backward</strong> evolution:</p>
+<div class="arithmatex">\[
+\frac{\partial p_t}{\partial t} = +\nabla \cdot (f p_t) - \frac{1}{2}g(t)^2 \nabla^2 p_t
+\]</div>
+<p>(note the sign flips).</p>
+<h3 id="key-insight">Key Insight<a class="headerlink" href="#key-insight" title="Permanent link">&para;</a></h3>
+<p>The Fokker-Planck equation can be rewritten using the <strong>score function</strong> <span class="arithmatex">\(\nabla \log p_t\)</span>:</p>
+<div class="arithmatex">\[
+\nabla^2 p_t = \nabla \cdot (\nabla p_t) = \nabla \cdot (p_t \nabla \log p_t)
+\]</div>
+<p>This allows us to express the diffusion term in terms of the score, leading to the <strong>effective drift</strong>:</p>
+<div class="arithmatex">\[
+\tilde{f} = f - \frac{1}{2}g^2 \nabla \log p_t
+\]</div>
+<p>The reverse SDE uses this effective drift to reverse the probability evolution.</p>
+<p><strong>See</strong>: <a href="../reverse_process_derivation/"><code>reverse_process_derivation.md</code></a> for the full derivation.</p>
+<hr />
+<h2 id="summary">Summary<a class="headerlink" href="#summary" title="Permanent link">&para;</a></h2>
+<h3 id="what-we-learned">What We Learned<a class="headerlink" href="#what-we-learned" title="Permanent link">&para;</a></h3>
+<ol>
+<li><strong>Fokker-Planck Equation</strong>: Describes how probability distributions evolve for stochastic processes</li>
+<li><strong>Two Mechanisms</strong>: Drift (advection) and diffusion (spreading)</li>
+<li><strong>Derivation</strong>: From infinitesimal evolution using Chapman-Kolmogorov and Taylor expansion</li>
+<li><strong>Physical Meaning</strong>: Continuity equation for probability flux</li>
+<li><strong>Connection to Reverse SDEs</strong>: The score function appears when rewriting the diffusion term</li>
+</ol>
+<h3 id="the-equation">The Equation<a class="headerlink" href="#the-equation" title="Permanent link">&para;</a></h3>
+<div class="arithmatex">\[
+\boxed{\frac{\partial p_t}{\partial t} = -\nabla \cdot (f p_t) + \frac{1}{2}g(t)^2 \nabla^2 p_t}
+\]</div>
+<p><strong>Drift term</strong>: <span class="arithmatex">\(-\nabla \cdot (f p_t)\)</span> — Probability flows along <span class="arithmatex">\(f\)</span></p>
+<p><strong>Diffusion term</strong>: <span class="arithmatex">\(\frac{1}{2}g^2 \nabla^2 p_t\)</span> — Probability spreads</p>
+<hr />
+<h2 id="references">References<a class="headerlink" href="#references" title="Permanent link">&para;</a></h2>
+<h3 id="classic-texts">Classic Texts<a class="headerlink" href="#classic-texts" title="Permanent link">&para;</a></h3>
+<ul>
+<li><strong>Risken (1989)</strong>: "The Fokker-Planck Equation: Methods of Solution and Applications"</li>
+<li><strong>Gardiner (2009)</strong>: "Stochastic Methods: A Handbook for the Natural and Social Sciences"</li>
+<li><strong>Øksendal (2003)</strong>: "Stochastic Differential Equations: An Introduction with Applications"</li>
+</ul>
+<h3 id="papers">Papers<a class="headerlink" href="#papers" title="Permanent link">&para;</a></h3>
+<ul>
+<li><strong>Fokker (1914)</strong>: "Die mittlere Energie rotierender elektrischer Dipole im Strahlungsfeld" — Original work</li>
+<li><strong>Planck (1917)</strong>: "Über einen Satz der statistischen Dynamik und seine Erweiterung in der Quantentheorie"</li>
+<li><strong>Kolmogorov (1931)</strong>: "Über die analytischen Methoden in der Wahrscheinlichkeitsrechnung" — Forward equation</li>
+</ul>
+<h3 id="related-documents">Related Documents<a class="headerlink" href="#related-documents" title="Permanent link">&para;</a></h3>
+<ul>
+<li><strong>Reverse Process</strong>: <a href="../reverse_process_derivation/"><code>reverse_process_derivation.md</code></a></li>
+<li><strong>Forward Process</strong>: <a href="../forward_process_derivation.md"><code>forward_process_derivation.md</code></a></li>
+<li><strong>Supplement in Notebook</strong>: <a href="../../../notebooks/diffusion/02_sde_formulation/supplements/07_fokker_planck_equation.md"><code>notebooks/diffusion/02_sde_formulation/supplements/07_fokker_planck_equation.md</code></a></li>
+</ul>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">
+      Copyright &copy; 2026 GenAI Lab Research Team
+    </div>
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+        
+<div class="md-social">
+  
+    
+    
+    
+    
+      
+      
+    
+    <a href="https://github.com/pleiadian53/genai-lab" target="_blank" rel="noopener" title="github.com" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../../..", "features": ["navigation.instant", "navigation.tracking", "navigation.tabs", "navigation.tabs.sticky", "navigation.sections", "navigation.expand", "navigation.top", "search.suggest", "search.highlight", "content.code.copy", "content.action.edit"], "search": "../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"provider": "mike"}}</script>
+    
+    
+      <script src="../../../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+        <script src="../../../javascripts/mathjax.js"></script>
+      
+        <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+      
+        <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+      
+    
+  </body>
+</html>

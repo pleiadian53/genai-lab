@@ -1,0 +1,4323 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Generative AI for computational biology - diffusion models, VAEs, and foundation models for gene expression">
+      
+      
+        <meta name="author" content="GenAI Lab Research Team">
+      
+      
+        <link rel="canonical" href="https://pleiadian53.github.io/genai-lab/math/differential_geometry/01_tensor_calculus_and_curved_spaces/">
+      
+      
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.1">
+    
+    
+      
+        <title>Tensor Calculus and Curved Spaces: A Tutorial for Machine Learning - GenAI Lab</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../../assets/stylesheets/main.484c7ddc.min.css">
+      
+        
+        <link rel="stylesheet" href="../../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../../../stylesheets/extra.css">
+    
+    <script>__md_scope=new URL("../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="deep-purple" data-md-color-accent="deep-purple">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#tensor-calculus-and-curved-spaces-a-tutorial-for-machine-learning" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+      <div data-md-color-scheme="default" data-md-component="outdated" hidden>
+        
+      </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow md-header--lifted" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../../.." title="GenAI Lab" class="md-header__button md-logo" aria-label="GenAI Lab" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            GenAI Lab
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Tensor Calculus and Curved Spaces: A Tutorial for Machine Learning
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="deep-purple" data-md-color-accent="deep-purple"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="deep-purple" data-md-color-accent="deep-purple"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/pleiadian53/genai-lab" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+  </div>
+  <div class="md-source__repository">
+    pleiadian53/genai-lab
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+    
+      
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../.." class="md-tabs__link">
+        
+  
+  
+    
+  
+  Home
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../../ROADMAP/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Roadmap
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../../foundation_models/" class="md-tabs__link">
+          
+  
+  
+  Foundation Models
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../../DiT/" class="md-tabs__link">
+          
+  
+  
+  Diffusion Transformers (DiT)
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../../JEPA/" class="md-tabs__link">
+          
+  
+  
+  JEPA (Joint Embedding)
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../../latent_diffusion/" class="md-tabs__link">
+          
+  
+  
+  Latent Diffusion
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../../DDPM/" class="md-tabs__link">
+          
+  
+  
+  DDPM (Denoising Diffusion)
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../../VAE/VAE-01-overview/" class="md-tabs__link">
+          
+  
+  
+  VAE (Variational Autoencoders)
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../../score_matching/" class="md-tabs__link">
+          
+  
+  
+  Score Matching & EBM
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../../flow_matching/" class="md-tabs__link">
+          
+  
+  
+  Flow Matching
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../../SDE/" class="md-tabs__link">
+          
+  
+  
+  SDE (Stochastic Differential Equations)
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../../datasets/" class="md-tabs__link">
+          
+  
+  
+  Datasets
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../../diffusion/01_ddpm/01_ddpm_basics/" class="md-tabs__link">
+          
+  
+  
+  Diffusion (Technical Deep Dives)
+
+        </a>
+      </li>
+    
+  
+
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../../notebooks/" class="md-tabs__link">
+          
+  
+  
+  Notebooks
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../../SETUP/" class="md-tabs__link">
+          
+  
+  
+  About
+
+        </a>
+      </li>
+    
+  
+
+      
+    </ul>
+  </div>
+</nav>
+    
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../../.." title="GenAI Lab" class="md-nav__button md-logo" aria-label="GenAI Lab" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    GenAI Lab
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/pleiadian53/genai-lab" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+  </div>
+  <div class="md-source__repository">
+    pleiadian53/genai-lab
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../ROADMAP/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Roadmap
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Foundation Models
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Foundation Models
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../foundation_models/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../foundation_models/leveraging_foundation_models_v2/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Leveraging Foundation Models
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../foundation_models/data_shape_v2/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Data Shape & Tensors
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../foundation_models/IMPLEMENTATION_GUIDE/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Implementation Guide
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Diffusion Transformers (DiT)
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Diffusion Transformers (DiT)
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../DiT/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Series Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../DiT/00_dit_overview/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    00: DiT Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../DiT/01_dit_foundations/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    01: Foundations
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../DiT/02_dit_training/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    02: Training
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../DiT/03_dit_sampling/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    03: Sampling
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../DiT/open_research_tokenization/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Research: Tokenization
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    JEPA (Joint Embedding)
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    JEPA (Joint Embedding)
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../JEPA/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Series Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../JEPA/00_jepa_overview/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    00: JEPA Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../JEPA/01_jepa_foundations/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    01: Foundations
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../JEPA/02_jepa_training/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    02: Training
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../JEPA/03_jepa_applications/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    03: Applications
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../JEPA/04_jepa_perturbseq/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    04: Perturb-seq
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../JEPA/open_research_joint_latent/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Research: Joint Latent
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_6" >
+        
+          
+          <label class="md-nav__link" for="__nav_6" id="__nav_6_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Latent Diffusion
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Latent Diffusion
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../latent_diffusion/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Series Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../latent_diffusion/00_latent_diffusion_overview/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    00: Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../latent_diffusion/01_latent_diffusion_foundations/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    01: Foundations
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../latent_diffusion/02_latent_diffusion_training/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    02: Training
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../latent_diffusion/03_latent_diffusion_applications/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    03: Applications
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../latent_diffusion/04_latent_diffusion_combio/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    04: ComBio Implementation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_7" >
+        
+          
+          <label class="md-nav__link" for="__nav_7" id="__nav_7_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    DDPM (Denoising Diffusion)
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_7_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_7">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    DDPM (Denoising Diffusion)
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../DDPM/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../DDPM/02a_diffusion_arch_gene_expression/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Architectures for Gene Expression
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../DDPM/02b_diffusion_arch_qa/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Architecture Q&A
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_8" >
+        
+          
+          <label class="md-nav__link" for="__nav_8" id="__nav_8_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    VAE (Variational Autoencoders)
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_8_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_8">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    VAE (Variational Autoencoders)
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../VAE/VAE-01-overview/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    01: Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../VAE/VAE-02-elbo/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    02: ELBO
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../VAE/VAE-03-inference/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    03: Inference
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../VAE/VAE-for-prediction/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    VAE for Prediction
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../VAE/VAE-model-training/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Model Training
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../beta-VAE/beta_vae/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Beta-VAE
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_9" >
+        
+          
+          <label class="md-nav__link" for="__nav_9" id="__nav_9_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Score Matching & EBM
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_9_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_9">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Score Matching & EBM
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../score_matching/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Score Matching
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../EBM/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Energy-Based Models
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../EBM/EBM-stein-vs-fisher-score/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Stein vs Fisher Score
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_10" >
+        
+          
+          <label class="md-nav__link" for="__nav_10" id="__nav_10_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Flow Matching
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_10_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_10">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Flow Matching
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../flow_matching/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_11" >
+        
+          
+          <label class="md-nav__link" for="__nav_11" id="__nav_11_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    SDE (Stochastic Differential Equations)
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_11_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_11">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    SDE (Stochastic Differential Equations)
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../SDE/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_12" >
+        
+          
+          <label class="md-nav__link" for="__nav_12" id="__nav_12_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Datasets
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_12_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_12">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Datasets
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../datasets/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_13" >
+        
+          
+          <label class="md-nav__link" for="__nav_13" id="__nav_13_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Diffusion (Technical Deep Dives)
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_13_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_13">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Diffusion (Technical Deep Dives)
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_13_1" >
+        
+          
+          <label class="md-nav__link" for="__nav_13_1" id="__nav_13_1_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    DDPM Basics
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_13_1_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_13_1">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    DDPM Basics
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../diffusion/01_ddpm/01_ddpm_basics/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Notebook
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_13_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_13_2" id="__nav_13_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    SDE Formulation
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_13_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_13_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    SDE Formulation
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../diffusion/02_sde_formulation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../diffusion/02_sde_formulation/02_sde_formulation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Notebook
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_13_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_13_3" id="__nav_13_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Medical Imaging Diffusion
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_13_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_13_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Medical Imaging Diffusion
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../diffusion/03_medical_imaging_diffusion/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../diffusion/03_medical_imaging_diffusion/03_medical_imaging_diffusion/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Notebook
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_13_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_13_4" id="__nav_13_4_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Gene Expression Diffusion
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_13_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_13_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Gene Expression Diffusion
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../diffusion/04_gene_expression_diffusion/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../diffusion/04_gene_expression_diffusion/04_gene_expression_diffusion/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Notebook
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_14" >
+        
+          
+          <label class="md-nav__link" for="__nav_14" id="__nav_14_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Notebooks
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_14_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_14">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Notebooks
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../notebooks/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_15" >
+        
+          
+          <label class="md-nav__link" for="__nav_15" id="__nav_15_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    About
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_15_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_15">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    About
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../SETUP/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Setup & Installation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../INDUSTRY_LANDSCAPE/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Industry Landscape
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#overview" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Overview
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#part-1-from-euclidean-to-curved-spaces" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Part 1: From Euclidean to Curved Spaces
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Part 1: From Euclidean to Curved Spaces">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#11-euclidean-space-what-were-used-to" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1.1 Euclidean Space: What We're Used To
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#12-curvilinear-coordinates-first-step-beyond-cartesian" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1.2 Curvilinear Coordinates: First Step Beyond Cartesian
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#13-curved-spaces-intrinsic-curvature" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1.3 Curved Spaces: Intrinsic Curvature
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#part-2-the-metric-tensor" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Part 2: The Metric Tensor
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Part 2: The Metric Tensor">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#21-definition" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.1 Definition
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#22-examples" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.2 Examples
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#23-raising-and-lowering-indices" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.3 Raising and Lowering Indices
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#part-3-covariant-derivatives-and-christoffel-symbols" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Part 3: Covariant Derivatives and Christoffel Symbols
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Part 3: Covariant Derivatives and Christoffel Symbols">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#31-the-problem-with-ordinary-derivatives" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.1 The Problem with Ordinary Derivatives
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#32-covariant-derivative" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.2 Covariant Derivative
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#33-christoffel-symbols" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.3 Christoffel Symbols
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#34-example-sphere" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.4 Example: Sphere
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#part-4-gradient-on-curved-spaces" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Part 4: Gradient on Curved Spaces
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Part 4: Gradient on Curved Spaces">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#41-definition" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.1 Definition
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#42-formula" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.2 Formula
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#43-example-polar-coordinates" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.3 Example: Polar Coordinates
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#part-5-connection-to-probability-and-score-functions" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Part 5: Connection to Probability and Score Functions
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Part 5: Connection to Probability and Score Functions">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#51-score-function-on-euclidean-space" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.1 Score Function on Euclidean Space
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#52-score-function-on-curved-spaces" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.2 Score Function on Curved Spaces
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#53-why-this-matters" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.3 Why This Matters
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#part-6-diffusion-on-manifolds" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Part 6: Diffusion on Manifolds
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Part 6: Diffusion on Manifolds">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#61-heat-equation-on-manifolds" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6.1 Heat Equation on Manifolds
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#62-brownian-motion-on-manifolds" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6.2 Brownian Motion on Manifolds
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#63-score-based-diffusion-on-manifolds" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6.3 Score-Based Diffusion on Manifolds
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#part-7-current-research-and-applications" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Part 7: Current Research and Applications
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Part 7: Current Research and Applications">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#71-riemannian-score-based-generative-models" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7.1 Riemannian Score-Based Generative Models
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#72-geometric-deep-learning" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7.2 Geometric Deep Learning
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#73-proteins-and-molecular-generation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7.3 Proteins and Molecular Generation
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#74-robotics-and-motion-planning" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7.4 Robotics and Motion Planning
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#part-8-practical-considerations" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Part 8: Practical Considerations
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Part 8: Practical Considerations">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#81-choosing-coordinates" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8.1 Choosing Coordinates
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#82-computing-christoffel-symbols" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8.2 Computing Christoffel Symbols
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#83-neural-network-architectures" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8.3 Neural Network Architectures
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#part-9-code-example-diffusion-on-a-circle" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Part 9: Code Example - Diffusion on a Circle
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Part 9: Code Example - Diffusion on a Circle">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#91-setup" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        9.1 Setup
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#92-ambient-space-approach" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        9.2 Ambient Space Approach
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#93-intrinsic-coordinates-approach" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        9.3 Intrinsic Coordinates Approach
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#part-10-resources-and-next-steps" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Part 10: Resources and Next Steps
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Part 10: Resources and Next Steps">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#101-essential-textbooks" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        10.1 Essential Textbooks
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#102-software-libraries" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        10.2 Software Libraries
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#103-paper-reading-list" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        10.3 Paper Reading List
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#104-future-directions" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        10.4 Future Directions
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#summary-key-concepts" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Summary: Key Concepts
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#related-documents" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Related Documents
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+    <a href="https://github.com/pleiadian53/genai-lab/edit/main/docs/math/differential_geometry/01_tensor_calculus_and_curved_spaces.md" title="Edit this page" class="md-content__button md-icon" rel="edit">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20.71 7.04c.39-.39.39-1.04 0-1.41l-2.34-2.34c-.37-.39-1.02-.39-1.41 0l-1.84 1.83 3.75 3.75M3 17.25V21h3.75L17.81 9.93l-3.75-3.75z"/></svg>
+    </a>
+  
+  
+
+
+<h1 id="tensor-calculus-and-curved-spaces-a-tutorial-for-machine-learning">Tensor Calculus and Curved Spaces: A Tutorial for Machine Learning<a class="headerlink" href="#tensor-calculus-and-curved-spaces-a-tutorial-for-machine-learning" title="Permanent link">&para;</a></h1>
+<h2 id="overview">Overview<a class="headerlink" href="#overview" title="Permanent link">&para;</a></h2>
+<p>This tutorial introduces tensor calculus and differential geometry on curved spaces, motivated by their emerging applications in machine learning. We'll build from first principles to modern applications in diffusion models, geometric deep learning, and beyond.</p>
+<p><strong>Why this matters for ML</strong>:</p>
+<ul>
+<li>Protein structures live on curved spaces (torsion angles on tori)</li>
+<li>Molecular conformations are constrained to manifolds</li>
+<li>Robotic joint configurations form non-Euclidean spaces</li>
+<li>Many ML problems have natural geometric structure that Euclidean methods ignore</li>
+</ul>
+<hr />
+<h2 id="part-1-from-euclidean-to-curved-spaces">Part 1: From Euclidean to Curved Spaces<a class="headerlink" href="#part-1-from-euclidean-to-curved-spaces" title="Permanent link">&para;</a></h2>
+<h3 id="11-euclidean-space-what-were-used-to">1.1 Euclidean Space: What We're Used To<a class="headerlink" href="#11-euclidean-space-what-were-used-to" title="Permanent link">&para;</a></h3>
+<p>In <strong>Euclidean space</strong> <span class="arithmatex">\(\mathbb{R}^d\)</span> with <strong>Cartesian coordinates</strong> <span class="arithmatex">\((x_1, x_2, \ldots, x_d)\)</span>:</p>
+<p><strong>Distance</strong> (Pythagorean theorem):</p>
+<div class="arithmatex">\[
+ds^2 = dx_1^2 + dx_2^2 + \cdots + dx_d^2
+\]</div>
+<p><strong>Gradient</strong> (just partial derivatives):</p>
+<p>$$</p>
+<p>\nabla f = \begin{bmatrix}
+\frac{\partial f}{\partial x_1} \
+\vdots \
+\frac{\partial f}{\partial x_d}
+\end{bmatrix}
+$$</p>
+<p><strong>Dot product</strong>:</p>
+<p>$$</p>
+<p>\mathbf{u} \cdot \mathbf{v} = \sum_{i=1}^d u_i v_i
+$$</p>
+<p><strong>Key property</strong>: All these operations are <strong>coordinate-independent</strong> in Cartesian coordinates.</p>
+<h3 id="12-curvilinear-coordinates-first-step-beyond-cartesian">1.2 Curvilinear Coordinates: First Step Beyond Cartesian<a class="headerlink" href="#12-curvilinear-coordinates-first-step-beyond-cartesian" title="Permanent link">&para;</a></h3>
+<p>Even in <strong>flat</strong> (Euclidean) space, using different coordinates changes how we compute distances and gradients.</p>
+<p><strong>Example: Polar Coordinates in 2D</strong></p>
+<p>Cartesian: <span class="arithmatex">\((x, y)\)</span><br />
+Polar: <span class="arithmatex">\((r, \theta)\)</span> where <span class="arithmatex">\(x = r\cos\theta\)</span>, <span class="arithmatex">\(y = r\sin\theta\)</span></p>
+<p><strong>Distance element</strong>:</p>
+<p>$$</p>
+<p>ds^2 = dr^2 + r^2 d\theta^2
+$$</p>
+<p>Notice: Not <span class="arithmatex">\(dr^2 + d\theta^2\)</span> because angles and radii have different units!</p>
+<p><strong>Gradient</strong>:</p>
+<p>$$</p>
+<p>\nabla f = \frac{\partial f}{\partial r} \hat{e}<em>r + \frac{1}{r} \frac{\partial f}{\partial \theta} \hat{e}</em>\theta
+$$</p>
+<p>Notice: The <span class="arithmatex">\(1/r\)</span> factor! This comes from the coordinate system.</p>
+<h3 id="13-curved-spaces-intrinsic-curvature">1.3 Curved Spaces: Intrinsic Curvature<a class="headerlink" href="#13-curved-spaces-intrinsic-curvature" title="Permanent link">&para;</a></h3>
+<p>A <strong>curved space</strong> (manifold) is one where you <strong>cannot</strong> find coordinates that make distances Pythagorean everywhere.</p>
+<p><strong>Example: Sphere <span class="arithmatex">\(S^2\)</span></strong></p>
+<p>Using spherical coordinates <span class="arithmatex">\((\theta, \phi)\)</span>:</p>
+<div class="arithmatex">\[
+ds^2 = R^2(d\theta^2 + \sin^2\theta \, d\phi^2)
+\]</div>
+<p><strong>Key difference</strong>: The coefficient <span class="arithmatex">\(\sin^2\theta\)</span> depends on position—this is <strong>intrinsic curvature</strong>.</p>
+<p><strong>Physical intuition</strong>: </p>
+<ul>
+<li>Near the equator, longitude lines are far apart</li>
+<li>Near the poles, they converge</li>
+<li>This affects distances and gradients</li>
+</ul>
+<hr />
+<h2 id="part-2-the-metric-tensor">Part 2: The Metric Tensor<a class="headerlink" href="#part-2-the-metric-tensor" title="Permanent link">&para;</a></h2>
+<h3 id="21-definition">2.1 Definition<a class="headerlink" href="#21-definition" title="Permanent link">&para;</a></h3>
+<p>The <strong>metric tensor</strong> <span class="arithmatex">\(g_{ij}\)</span> encodes how to measure distances in arbitrary coordinates.</p>
+<p><strong>Distance element</strong>:</p>
+<p>$$</p>
+<p>ds^2 = \sum_{i,j=1}^d g_{ij} \, dx^i \, dx^j = g_{ij} \, dx^i \, dx^j
+$$</p>
+<p>(Using Einstein summation: repeated indices are summed)</p>
+<p><strong>Matrix form</strong>:</p>
+<p>$$</p>
+<p>ds^2 = (dx)^T G \, dx
+$$</p>
+<p>where <span class="arithmatex">\(G = [g_{ij}]\)</span> is the <strong>metric tensor matrix</strong>.</p>
+<h3 id="22-examples">2.2 Examples<a class="headerlink" href="#22-examples" title="Permanent link">&para;</a></h3>
+<p><strong>Euclidean space</strong> (Cartesian):</p>
+<p>$$</p>
+<p>G = I = \begin{bmatrix}
+1 &amp; 0 &amp; \cdots &amp; 0 \
+0 &amp; 1 &amp; \cdots &amp; 0 \
+\vdots &amp; \vdots &amp; \ddots &amp; \vdots \
+0 &amp; 0 &amp; \cdots &amp; 1
+\end{bmatrix}
+$$</p>
+<p><strong>Polar coordinates</strong> (in 2D):</p>
+<p>$$</p>
+<p>G = \begin{bmatrix}
+1 &amp; 0 \
+0 &amp; r^2
+\end{bmatrix}
+$$</p>
+<p><strong>Sphere</strong> <span class="arithmatex">\(S^2\)</span> (radius <span class="arithmatex">\(R\)</span>):</p>
+<p>$$</p>
+<p>G = \begin{bmatrix}
+R^2 &amp; 0 \
+0 &amp; R<sup>2\sin</sup>2\theta
+\end{bmatrix}
+$$</p>
+<p><strong>Minkowski spacetime</strong> (special relativity):</p>
+<p>$$</p>
+<p>G = \begin{bmatrix}
+-c^2 &amp; 0 &amp; 0 &amp; 0 \
+0 &amp; 1 &amp; 0 &amp; 0 \
+0 &amp; 0 &amp; 1 &amp; 0 \
+0 &amp; 0 &amp; 0 &amp; 1
+\end{bmatrix}
+$$</p>
+<h3 id="23-raising-and-lowering-indices">2.3 Raising and Lowering Indices<a class="headerlink" href="#23-raising-and-lowering-indices" title="Permanent link">&para;</a></h3>
+<p>The metric tensor relates <strong>contravariant</strong> (upper index) and <strong>covariant</strong> (lower index) vectors.</p>
+<p><strong>Lowering an index</strong>:</p>
+<p>$$</p>
+<p>v_i = g_{ij} v^j
+$$</p>
+<p><strong>Raising an index</strong>:</p>
+<p>$$</p>
+<p>v^i = g^{ij} v_j
+$$</p>
+<p>where <span class="arithmatex">\(g^{ij}\)</span> is the <strong>inverse metric tensor</strong>: <span class="arithmatex">\(g^{ik} g_{kj} = \delta^i_j\)</span>.</p>
+<p><strong>In Euclidean space</strong>: <span class="arithmatex">\(g_{ij} = g^{ij} = \delta_{ij}\)</span>, so there's no difference between upper and lower indices.</p>
+<p><strong>In curved space</strong>: Upper and lower indices are genuinely different!</p>
+<hr />
+<h2 id="part-3-covariant-derivatives-and-christoffel-symbols">Part 3: Covariant Derivatives and Christoffel Symbols<a class="headerlink" href="#part-3-covariant-derivatives-and-christoffel-symbols" title="Permanent link">&para;</a></h2>
+<h3 id="31-the-problem-with-ordinary-derivatives">3.1 The Problem with Ordinary Derivatives<a class="headerlink" href="#31-the-problem-with-ordinary-derivatives" title="Permanent link">&para;</a></h3>
+<p>In curved space, <strong>partial derivatives of vectors are not tensors</strong>!</p>
+<p><strong>Why?</strong> Because basis vectors <span class="arithmatex">\(\hat{e}_i\)</span> themselves change from point to point.</p>
+<p><strong>Example on a sphere</strong>: </p>
+<ul>
+<li>The "north" direction at one point is different from "north" at another point</li>
+<li>Taking <span class="arithmatex">\(\frac{\partial \mathbf{v}}{\partial \theta}\)</span> mixes the change in vector components with the change in basis vectors</li>
+</ul>
+<h3 id="32-covariant-derivative">3.2 Covariant Derivative<a class="headerlink" href="#32-covariant-derivative" title="Permanent link">&para;</a></h3>
+<p>The <strong>covariant derivative</strong> <span class="arithmatex">\(\nabla_i\)</span> is the correct way to differentiate in curved spaces.</p>
+<p><strong>For a scalar</strong> (easy):</p>
+<div class="arithmatex">\[
+\nabla_i f = \frac{\partial f}{\partial x^i}
+\]</div>
+<p><strong>For a vector</strong> (requires correction):</p>
+<p>$$</p>
+<p>\nabla_i v^j = \frac{\partial v^j}{\partial x^i} + \Gamma^j_{ik} v^k
+$$</p>
+<p>where <span class="arithmatex">\(\Gamma^j_{ik}\)</span> are the <strong>Christoffel symbols</strong> (connection coefficients).</p>
+<h3 id="33-christoffel-symbols">3.3 Christoffel Symbols<a class="headerlink" href="#33-christoffel-symbols" title="Permanent link">&para;</a></h3>
+<p>The Christoffel symbols encode how basis vectors change:</p>
+<div class="arithmatex">\[
+\frac{\partial \hat{e}_i}{\partial x^j} = \Gamma^k_{ij} \hat{e}_k
+\]</div>
+<p><strong>Formula in terms of metric</strong>:</p>
+<p>$$</p>
+<p>\Gamma^k_{ij} = \frac{1}{2} g^{k\ell} \left(\frac{\partial g_{\ell i}}{\partial x^j} + \frac{\partial g_{\ell j}}{\partial x^i} - \frac{\partial g_{ij}}{\partial x^\ell}\right)
+$$</p>
+<p><strong>Key properties</strong>:</p>
+<ul>
+<li><span class="arithmatex">\(\Gamma^k_{ij} = \Gamma^k_{ji}\)</span> (symmetric in lower indices)</li>
+<li><span class="arithmatex">\(\Gamma^k_{ij} = 0\)</span> in Cartesian coordinates on flat space</li>
+<li>Nonzero in curvilinear coordinates or curved spaces</li>
+</ul>
+<h3 id="34-example-sphere">3.4 Example: Sphere<a class="headerlink" href="#34-example-sphere" title="Permanent link">&para;</a></h3>
+<p>For a sphere <span class="arithmatex">\(S^2\)</span> with metric <span class="arithmatex">\(ds^2 = R^2(d\theta^2 + \sin^2\theta \, d\phi^2)\)</span>:</p>
+<p><strong>Non-zero Christoffel symbols</strong>:</p>
+<p>$$</p>
+<p>\Gamma^\theta_{\phi\phi} = -\sin\theta \cos\theta
+$$
+$$</p>
+<p>\Gamma^\phi_{\theta\phi} = \Gamma^\phi_{\phi\theta} = \frac{\cos\theta}{\sin\theta} = \cot\theta
+$$</p>
+<p><strong>Interpretation</strong>: </p>
+<ul>
+<li>Moving in <span class="arithmatex">\(\phi\)</span> (longitude) changes your <span class="arithmatex">\(\theta\)</span> (latitude) direction</li>
+<li>This is the geometric "correction" needed on a curved surface</li>
+</ul>
+<hr />
+<h2 id="part-4-gradient-on-curved-spaces">Part 4: Gradient on Curved Spaces<a class="headerlink" href="#part-4-gradient-on-curved-spaces" title="Permanent link">&para;</a></h2>
+<h3 id="41-definition">4.1 Definition<a class="headerlink" href="#41-definition" title="Permanent link">&para;</a></h3>
+<p>The <strong>gradient</strong> of a scalar function <span class="arithmatex">\(f\)</span> is the vector that satisfies:</p>
+<div class="arithmatex">\[
+df = \nabla f \cdot d\mathbf{x}
+\]</div>
+<p>for any displacement <span class="arithmatex">\(d\mathbf{x}\)</span>.</p>
+<h3 id="42-formula">4.2 Formula<a class="headerlink" href="#42-formula" title="Permanent link">&para;</a></h3>
+<p>In arbitrary coordinates:</p>
+<div class="arithmatex">\[
+(\nabla f)^i = g^{ij} \frac{\partial f}{\partial x^j}
+\]</div>
+<p><strong>Key insight</strong>: The <strong>inverse metric</strong> <span class="arithmatex">\(g^{ij}\)</span> couples dimensions!</p>
+<h3 id="43-example-polar-coordinates">4.3 Example: Polar Coordinates<a class="headerlink" href="#43-example-polar-coordinates" title="Permanent link">&para;</a></h3>
+<p>Metric: <span class="arithmatex">\(g_{ij} = \text{diag}(1, r^2)\)</span><br />
+Inverse metric: <span class="arithmatex">\(g^{ij} = \text{diag}(1, 1/r^2)\)</span></p>
+<div class="arithmatex">\[
+\nabla f = \begin{bmatrix}
+g^{rr} \frac{\partial f}{\partial r} \\
+g^{\phi\phi} \frac{\partial f}{\partial \phi}
+\end{bmatrix} = \begin{bmatrix}
+\frac{\partial f}{\partial r} \\
+\frac{1}{r^2} \frac{\partial f}{\partial \phi}
+\end{bmatrix}
+\]</div>
+<p><strong>In orthonormal basis</strong> <span class="arithmatex">\((\hat{e}_r, \hat{e}_\phi)\)</span>:</p>
+<p>$$</p>
+<p>\nabla f = \frac{\partial f}{\partial r} \hat{e}<em>r + \frac{1}{r} \frac{\partial f}{\partial \phi} \hat{e}</em>\phi
+$$</p>
+<p>(The <span class="arithmatex">\(1/r\)</span> factor accounts for the stretched basis vector)</p>
+<hr />
+<h2 id="part-5-connection-to-probability-and-score-functions">Part 5: Connection to Probability and Score Functions<a class="headerlink" href="#part-5-connection-to-probability-and-score-functions" title="Permanent link">&para;</a></h2>
+<h3 id="51-score-function-on-euclidean-space">5.1 Score Function on Euclidean Space<a class="headerlink" href="#51-score-function-on-euclidean-space" title="Permanent link">&para;</a></h3>
+<p>In standard diffusion models:</p>
+<div class="arithmatex">\[
+s(x) = \nabla_x \log p(x) = \begin{bmatrix}
+\frac{\partial \log p}{\partial x_1} \\
+\vdots \\
+\frac{\partial \log p}{\partial x_d}
+\end{bmatrix}
+\]</div>
+<p><strong>This is straightforward because we're in Euclidean space.</strong></p>
+<h3 id="52-score-function-on-curved-spaces">5.2 Score Function on Curved Spaces<a class="headerlink" href="#52-score-function-on-curved-spaces" title="Permanent link">&para;</a></h3>
+<p>On a <strong>Riemannian manifold</strong> <span class="arithmatex">\(\mathcal{M}\)</span> with metric <span class="arithmatex">\(g_{ij}\)</span>:</p>
+<div class="arithmatex">\[
+s(x)^i = g^{ij} \frac{\partial \log p(x)}{\partial x^j}
+\]</div>
+<p><strong>Key difference</strong>: The inverse metric <span class="arithmatex">\(g^{ij}\)</span> can couple dimensions!</p>
+<p><strong>Example on a sphere</strong>: The score in the <span class="arithmatex">\(\theta\)</span> direction depends on both <span class="arithmatex">\(\frac{\partial \log p}{\partial \theta}\)</span> and <span class="arithmatex">\(\frac{\partial \log p}{\partial \phi}\)</span> if the metric has off-diagonal terms.</p>
+<h3 id="53-why-this-matters">5.3 Why This Matters<a class="headerlink" href="#53-why-this-matters" title="Permanent link">&para;</a></h3>
+<p>Many real-world problems involve data on manifolds:</p>
+<ol>
+<li><strong>Protein backbone angles</strong>: Torsion angles <span class="arithmatex">\((\phi, \psi)\)</span> live on a <strong>torus</strong> <span class="arithmatex">\(T^2 = S^1 \times S^1\)</span></li>
+<li><strong>Molecular conformations</strong>: Constrained to energy manifolds</li>
+<li><strong>Rotations</strong>: SO(3) is a 3D manifold (not <span class="arithmatex">\(\mathbb{R}^3\)</span>!)</li>
+<li><strong>Directional data</strong>: Unit vectors live on a sphere <span class="arithmatex">\(S^{d-1}\)</span></li>
+</ol>
+<p><strong>Standard Euclidean diffusion models</strong> can violate these constraints or produce invalid samples.</p>
+<p><strong>Riemannian diffusion models</strong> respect the geometry.</p>
+<hr />
+<h2 id="part-6-diffusion-on-manifolds">Part 6: Diffusion on Manifolds<a class="headerlink" href="#part-6-diffusion-on-manifolds" title="Permanent link">&para;</a></h2>
+<h3 id="61-heat-equation-on-manifolds">6.1 Heat Equation on Manifolds<a class="headerlink" href="#61-heat-equation-on-manifolds" title="Permanent link">&para;</a></h3>
+<p>The <strong>heat equation</strong> (diffusion) on a Riemannian manifold:</p>
+<div class="arithmatex">\[
+\frac{\partial p(x,t)}{\partial t} = \Delta_g p(x,t)
+\]</div>
+<p>where <span class="arithmatex">\(\Delta_g\)</span> is the <strong>Laplace-Beltrami operator</strong>:</p>
+<div class="arithmatex">\[
+\Delta_g f = \frac{1}{\sqrt{\det g}} \frac{\partial}{\partial x^i} \left(\sqrt{\det g} \, g^{ij} \frac{\partial f}{\partial x^j}\right)
+\]</div>
+<p><strong>In Euclidean space</strong>: <span class="arithmatex">\(g_{ij} = \delta_{ij}\)</span>, <span class="arithmatex">\(\det g = 1\)</span>, so <span class="arithmatex">\(\Delta_g = \nabla^2\)</span> (standard Laplacian).</p>
+<p><strong>In curved space</strong>: The metric and its determinant affect how diffusion spreads.</p>
+<h3 id="62-brownian-motion-on-manifolds">6.2 Brownian Motion on Manifolds<a class="headerlink" href="#62-brownian-motion-on-manifolds" title="Permanent link">&para;</a></h3>
+<p><strong>Euclidean Brownian motion</strong>:</p>
+<p>$$</p>
+<p>dx = \sigma \, dw
+$$</p>
+<p>where <span class="arithmatex">\(dw \sim \mathcal{N}(0, dt \cdot I)\)</span>.</p>
+<p><strong>Riemannian Brownian motion</strong>:</p>
+<p>$$</p>
+<p>dx^i = \sqrt{g^{ij}} \sigma \, dw_j - \frac{1}{2} \Gamma^i_{jk} g^{jk} \sigma^2 \, dt
+$$</p>
+<p><strong>Key differences</strong>:
+1. The <strong>metric</strong> <span class="arithmatex">\(g^{ij}\)</span> scales the noise
+2. The <strong>Christoffel symbols</strong> <span class="arithmatex">\(\Gamma^i_{jk}\)</span> add a drift term</p>
+<p><strong>Physical interpretation</strong>: The drift term prevents the process from "bunching up" in regions where the coordinate system is compressed.</p>
+<h3 id="63-score-based-diffusion-on-manifolds">6.3 Score-Based Diffusion on Manifolds<a class="headerlink" href="#63-score-based-diffusion-on-manifolds" title="Permanent link">&para;</a></h3>
+<p><strong>Forward SDE on manifold <span class="arithmatex">\(\mathcal{M}\)</span></strong>:</p>
+<p>$$</p>
+<p>dx = f(x,t) \, dt + g(t) \, dw_{\mathcal{M}}
+$$</p>
+<p>where <span class="arithmatex">\(dw_{\mathcal{M}}\)</span> is Brownian motion on the manifold.</p>
+<p><strong>Reverse SDE</strong>:</p>
+<p>$$</p>
+<p>dx = \left[f(x,t) - g(t)^2 \nabla_{\mathcal{M}} \log p_t(x)\right] dt + g(t) \, d\bar{w}
+$$</p>
+<p>where <span class="arithmatex">\(\nabla_{\mathcal{M}}\)</span> is the <strong>Riemannian gradient</strong>.</p>
+<p><strong>Neural network</strong>: Learn <span class="arithmatex">\(s_\theta(x,t) \approx \nabla_{\mathcal{M}} \log p_t(x)\)</span> (the score on the manifold).</p>
+<hr />
+<h2 id="part-7-current-research-and-applications">Part 7: Current Research and Applications<a class="headerlink" href="#part-7-current-research-and-applications" title="Permanent link">&para;</a></h2>
+<h3 id="71-riemannian-score-based-generative-models">7.1 Riemannian Score-Based Generative Models<a class="headerlink" href="#71-riemannian-score-based-generative-models" title="Permanent link">&para;</a></h3>
+<p><strong>Key papers</strong>:</p>
+<ul>
+<li>De Bortoli et al. (2022): "Riemannian Score-Based Generative Modeling"</li>
+<li>Mathieu &amp; Nickel (2020): "Continuous Hierarchical Representations with Poincaré VAEs"</li>
+</ul>
+<p><strong>Approach</strong>:
+1. Define data as living on a manifold <span class="arithmatex">\(\mathcal{M}\)</span> with metric <span class="arithmatex">\(g\)</span>
+2. Construct forward diffusion using Brownian motion on <span class="arithmatex">\(\mathcal{M}\)</span>
+3. Learn the Riemannian score function <span class="arithmatex">\(\nabla_{\mathcal{M}} \log p_t(x)\)</span>
+4. Sample via reverse SDE using the learned score</p>
+<p><strong>Applications</strong>:</p>
+<ul>
+<li>Protein structure generation (torsion angles on torus)</li>
+<li>Molecular conformations (constrained manifolds)</li>
+<li>Earth science data (spherical domains)</li>
+</ul>
+<h3 id="72-geometric-deep-learning">7.2 Geometric Deep Learning<a class="headerlink" href="#72-geometric-deep-learning" title="Permanent link">&para;</a></h3>
+<p><strong>Key idea</strong>: Design neural networks that respect the geometry of the data.</p>
+<p><strong>Examples</strong>:
+1. <strong>Graph neural networks</strong>: Data on graphs (non-Euclidean)
+2. <strong>Mesh CNNs</strong>: Operate on 3D meshes (curved surfaces)
+3. <strong>Equivariant networks</strong>: Respect symmetries (rotations, translations)</p>
+<p><strong>Connection to diffusion</strong>: </p>
+<ul>
+<li>Can we build score networks that are equivariant to geometric transformations?</li>
+<li>How to parameterize networks on manifolds?</li>
+</ul>
+<h3 id="73-proteins-and-molecular-generation">7.3 Proteins and Molecular Generation<a class="headerlink" href="#73-proteins-and-molecular-generation" title="Permanent link">&para;</a></h3>
+<p><strong>Problem</strong>: Protein backbones are parameterized by torsion angles <span class="arithmatex">\((\phi, \psi, \omega)\)</span>.</p>
+<p><strong>Naive approach</strong>: Treat angles as <span class="arithmatex">\(\mathbb{R}^3\)</span>
+- <strong>Issue</strong>: Doesn't respect periodicity (<span class="arithmatex">\(\phi + 2\pi = \phi\)</span>)
+- <strong>Result</strong>: Invalid structures, poor generalization</p>
+<p><strong>Geometric approach</strong>: Treat each angle as living on <span class="arithmatex">\(S^1\)</span> (circle)
+- <strong>Manifold</strong>: <span class="arithmatex">\(T^3 = S^1 \times S^1 \times S^1\)</span> (3-torus)
+- <strong>Diffusion</strong>: Brownian motion on the torus
+- <strong>Result</strong>: Always generates valid structures</p>
+<p><strong>State-of-the-art</strong>:</p>
+<ul>
+<li><strong>FoldFlow</strong> (NeurIPS 2023): Diffusion on SE(3) for protein backbone generation</li>
+<li><strong>DiffDock</strong> (ICLR 2023): SE(3)-equivariant diffusion for molecular docking</li>
+</ul>
+<h3 id="74-robotics-and-motion-planning">7.4 Robotics and Motion Planning<a class="headerlink" href="#74-robotics-and-motion-planning" title="Permanent link">&para;</a></h3>
+<p><strong>Problem</strong>: Robot joint configurations live on <strong>configuration space</strong> <span class="arithmatex">\(\mathcal{C}\)</span>, often a manifold.</p>
+<p><strong>Example</strong>: Robot arm with revolute joints
+- Each joint angle is on <span class="arithmatex">\(S^1\)</span>
+- Configuration space: <span class="arithmatex">\(\mathcal{C} = (S^1)^n\)</span> (n-dimensional torus)</p>
+<p><strong>Geometric approach</strong>:</p>
+<ul>
+<li>Learn motion distribution on <span class="arithmatex">\(\mathcal{C}\)</span> using Riemannian diffusion</li>
+<li>Generate collision-free paths respecting joint limits</li>
+<li>Naturally handles periodicity and constraints</li>
+</ul>
+<hr />
+<h2 id="part-8-practical-considerations">Part 8: Practical Considerations<a class="headerlink" href="#part-8-practical-considerations" title="Permanent link">&para;</a></h2>
+<h3 id="81-choosing-coordinates">8.1 Choosing Coordinates<a class="headerlink" href="#81-choosing-coordinates" title="Permanent link">&para;</a></h3>
+<p><strong>For manifolds embedded in <span class="arithmatex">\(\mathbb{R}^D\)</span></strong> (like <span class="arithmatex">\(S^2 \subset \mathbb{R}^3\)</span>):</p>
+<p><strong>Option 1: Intrinsic coordinates</strong> (<span class="arithmatex">\(\theta, \phi\)</span> on sphere)
+- ✅ Lower dimensional (d &lt; D)
+- ❌ Singularities (e.g., poles on sphere)
+- ❌ Requires explicit metric, Christoffel symbols</p>
+<p><strong>Option 2: Ambient coordinates</strong> (<span class="arithmatex">\(x, y, z\)</span> in <span class="arithmatex">\(\mathbb{R}^3\)</span> with constraint <span class="arithmatex">\(x^2+y^2+z^2=1\)</span>)
+- ✅ No singularities
+- ✅ Simple Euclidean gradient
+- ❌ Higher dimensional
+- ❌ Need to project to manifold</p>
+<p><strong>Hybrid approach</strong>: Use ambient coordinates but project gradients to tangent space.</p>
+<h3 id="82-computing-christoffel-symbols">8.2 Computing Christoffel Symbols<a class="headerlink" href="#82-computing-christoffel-symbols" title="Permanent link">&para;</a></h3>
+<p><strong>Symbolic computation</strong> (small problems):
+<div class="language-python highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="kn">import</span><span class="w"> </span><span class="nn">sympy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">sp</span>
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="c1"># Define metric</span>
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="n">g</span> <span class="o">=</span> <span class="n">sp</span><span class="o">.</span><span class="n">Matrix</span><span class="p">([[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="n">r</span><span class="o">**</span><span class="mi">2</span><span class="p">]])</span>
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="c1"># Compute Christoffel symbols automatically</span>
+</span></code></pre></div></p>
+<p><strong>Numerical computation</strong> (large problems):
+- Approximate using finite differences
+- Learn from data (e.g., neural network parameterization)</p>
+<p><strong>Automatic differentiation</strong>:</p>
+<ul>
+<li>PyTorch/JAX can compute gradients on manifolds</li>
+<li>Libraries: <code>geomstats</code>, <code>pymanopt</code>, <code>geoopt</code></li>
+</ul>
+<h3 id="83-neural-network-architectures">8.3 Neural Network Architectures<a class="headerlink" href="#83-neural-network-architectures" title="Permanent link">&para;</a></h3>
+<p><strong>Challenge</strong>: Standard MLPs and CNNs assume Euclidean structure.</p>
+<p><strong>Solutions</strong>:</p>
+<ol>
+<li><strong>Tangent space networks</strong>: Map to tangent space at each point (locally Euclidean)</li>
+<li><strong>Gauge equivariant networks</strong>: Use parallel transport to move between tangent spaces</li>
+<li><strong>Ambient space projection</strong>: Operate in <span class="arithmatex">\(\mathbb{R}^D\)</span>, project outputs to manifold</li>
+</ol>
+<p><strong>Example</strong>: For <span class="arithmatex">\(S^2\)</span> (sphere)
+<div class="language-python highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="c1"># Ambient space projection</span>
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="n">z</span> <span class="o">=</span> <span class="n">mlp</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>  <span class="c1"># z in R^3</span>
+</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="n">z_normalized</span> <span class="o">=</span> <span class="n">z</span> <span class="o">/</span> <span class="n">torch</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">z</span><span class="p">,</span> <span class="n">dim</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span> <span class="n">keepdim</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>  <span class="c1"># Project to S^2</span>
+</span></code></pre></div></p>
+<hr />
+<h2 id="part-9-code-example-diffusion-on-a-circle">Part 9: Code Example - Diffusion on a Circle<a class="headerlink" href="#part-9-code-example-diffusion-on-a-circle" title="Permanent link">&para;</a></h2>
+<h3 id="91-setup">9.1 Setup<a class="headerlink" href="#91-setup" title="Permanent link">&para;</a></h3>
+<p>Circle: <span class="arithmatex">\(S^1 = \{(\cos\theta, \sin\theta) : \theta \in [0, 2\pi)\}\)</span></p>
+<p><strong>Parametrization</strong>: Use angle <span class="arithmatex">\(\theta\)</span> (intrinsic) or <span class="arithmatex">\((x, y)\)</span> with <span class="arithmatex">\(x^2+y^2=1\)</span> (ambient).</p>
+<h3 id="92-ambient-space-approach">9.2 Ambient Space Approach<a class="headerlink" href="#92-ambient-space-approach" title="Permanent link">&para;</a></h3>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="kn">import</span><span class="w"> </span><span class="nn">torch</span>
+</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="kn">import</span><span class="w"> </span><span class="nn">torch.nn</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">nn</span>
+</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a>
+</span><span id="__span-2-4"><a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="k">class</span><span class="w"> </span><span class="nc">CircleDataset</span><span class="p">:</span>
+</span><span id="__span-2-5"><a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Data on a circle (e.g., von Mises distribution)&quot;&quot;&quot;</span>
+</span><span id="__span-2-6"><a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mu</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">kappa</span><span class="o">=</span><span class="mi">10</span><span class="p">):</span>
+</span><span id="__span-2-7"><a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">mu</span> <span class="o">=</span> <span class="n">mu</span>  <span class="c1"># Mean direction</span>
+</span><span id="__span-2-8"><a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">kappa</span> <span class="o">=</span> <span class="n">kappa</span>  <span class="c1"># Concentration</span>
+</span><span id="__span-2-9"><a id="__codelineno-2-9" name="__codelineno-2-9" href="#__codelineno-2-9"></a>
+</span><span id="__span-2-10"><a id="__codelineno-2-10" name="__codelineno-2-10" href="#__codelineno-2-10"></a>    <span class="k">def</span><span class="w"> </span><span class="nf">sample</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n</span><span class="p">):</span>
+</span><span id="__span-2-11"><a id="__codelineno-2-11" name="__codelineno-2-11" href="#__codelineno-2-11"></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Sample from von Mises distribution&quot;&quot;&quot;</span>
+</span><span id="__span-2-12"><a id="__codelineno-2-12" name="__codelineno-2-12" href="#__codelineno-2-12"></a>        <span class="n">theta</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">distributions</span><span class="o">.</span><span class="n">VonMises</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">mu</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">kappa</span><span class="p">)</span><span class="o">.</span><span class="n">sample</span><span class="p">((</span><span class="n">n</span><span class="p">,))</span>
+</span><span id="__span-2-13"><a id="__codelineno-2-13" name="__codelineno-2-13" href="#__codelineno-2-13"></a>        <span class="n">x</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">theta</span><span class="p">)</span>
+</span><span id="__span-2-14"><a id="__codelineno-2-14" name="__codelineno-2-14" href="#__codelineno-2-14"></a>        <span class="n">y</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">theta</span><span class="p">)</span>
+</span><span id="__span-2-15"><a id="__codelineno-2-15" name="__codelineno-2-15" href="#__codelineno-2-15"></a>        <span class="k">return</span> <span class="n">torch</span><span class="o">.</span><span class="n">stack</span><span class="p">([</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">],</span> <span class="n">dim</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>  <span class="c1"># Shape: (n, 2)</span>
+</span><span id="__span-2-16"><a id="__codelineno-2-16" name="__codelineno-2-16" href="#__codelineno-2-16"></a>
+</span><span id="__span-2-17"><a id="__codelineno-2-17" name="__codelineno-2-17" href="#__codelineno-2-17"></a><span class="k">def</span><span class="w"> </span><span class="nf">project_to_circle</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+</span><span id="__span-2-18"><a id="__codelineno-2-18" name="__codelineno-2-18" href="#__codelineno-2-18"></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Project points to unit circle&quot;&quot;&quot;</span>
+</span><span id="__span-2-19"><a id="__codelineno-2-19" name="__codelineno-2-19" href="#__codelineno-2-19"></a>    <span class="k">return</span> <span class="n">x</span> <span class="o">/</span> <span class="n">torch</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">dim</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span> <span class="n">keepdim</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</span><span id="__span-2-20"><a id="__codelineno-2-20" name="__codelineno-2-20" href="#__codelineno-2-20"></a>
+</span><span id="__span-2-21"><a id="__codelineno-2-21" name="__codelineno-2-21" href="#__codelineno-2-21"></a><span class="k">class</span><span class="w"> </span><span class="nc">CircleScoreNetwork</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+</span><span id="__span-2-22"><a id="__codelineno-2-22" name="__codelineno-2-22" href="#__codelineno-2-22"></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Score network for circle using ambient space&quot;&quot;&quot;</span>
+</span><span id="__span-2-23"><a id="__codelineno-2-23" name="__codelineno-2-23" href="#__codelineno-2-23"></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">hidden_dim</span><span class="o">=</span><span class="mi">128</span><span class="p">):</span>
+</span><span id="__span-2-24"><a id="__codelineno-2-24" name="__codelineno-2-24" href="#__codelineno-2-24"></a>        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+</span><span id="__span-2-25"><a id="__codelineno-2-25" name="__codelineno-2-25" href="#__codelineno-2-25"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">net</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Sequential</span><span class="p">(</span>
+</span><span id="__span-2-26"><a id="__codelineno-2-26" name="__codelineno-2-26" href="#__codelineno-2-26"></a>            <span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="n">hidden_dim</span><span class="p">),</span>  <span class="c1"># [x, y, t]</span>
+</span><span id="__span-2-27"><a id="__codelineno-2-27" name="__codelineno-2-27" href="#__codelineno-2-27"></a>            <span class="n">nn</span><span class="o">.</span><span class="n">SiLU</span><span class="p">(),</span>
+</span><span id="__span-2-28"><a id="__codelineno-2-28" name="__codelineno-2-28" href="#__codelineno-2-28"></a>            <span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="n">hidden_dim</span><span class="p">,</span> <span class="n">hidden_dim</span><span class="p">),</span>
+</span><span id="__span-2-29"><a id="__codelineno-2-29" name="__codelineno-2-29" href="#__codelineno-2-29"></a>            <span class="n">nn</span><span class="o">.</span><span class="n">SiLU</span><span class="p">(),</span>
+</span><span id="__span-2-30"><a id="__codelineno-2-30" name="__codelineno-2-30" href="#__codelineno-2-30"></a>            <span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="n">hidden_dim</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>  <span class="c1"># Output in R^2</span>
+</span><span id="__span-2-31"><a id="__codelineno-2-31" name="__codelineno-2-31" href="#__codelineno-2-31"></a>        <span class="p">)</span>
+</span><span id="__span-2-32"><a id="__codelineno-2-32" name="__codelineno-2-32" href="#__codelineno-2-32"></a>
+</span><span id="__span-2-33"><a id="__codelineno-2-33" name="__codelineno-2-33" href="#__codelineno-2-33"></a>    <span class="k">def</span><span class="w"> </span><span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">t</span><span class="p">):</span>
+</span><span id="__span-2-34"><a id="__codelineno-2-34" name="__codelineno-2-34" href="#__codelineno-2-34"></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="__span-2-35"><a id="__codelineno-2-35" name="__codelineno-2-35" href="#__codelineno-2-35"></a><span class="sd">        x: (batch, 2) points on circle</span>
+</span><span id="__span-2-36"><a id="__codelineno-2-36" name="__codelineno-2-36" href="#__codelineno-2-36"></a><span class="sd">        t: (batch,) time steps</span>
+</span><span id="__span-2-37"><a id="__codelineno-2-37" name="__codelineno-2-37" href="#__codelineno-2-37"></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="__span-2-38"><a id="__codelineno-2-38" name="__codelineno-2-38" href="#__codelineno-2-38"></a>        <span class="n">t</span> <span class="o">=</span> <span class="n">t</span><span class="o">.</span><span class="n">unsqueeze</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>  <span class="c1"># (batch, 1)</span>
+</span><span id="__span-2-39"><a id="__codelineno-2-39" name="__codelineno-2-39" href="#__codelineno-2-39"></a>        <span class="n">inp</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">cat</span><span class="p">([</span><span class="n">x</span><span class="p">,</span> <span class="n">t</span><span class="p">],</span> <span class="n">dim</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>  <span class="c1"># (batch, 3)</span>
+</span><span id="__span-2-40"><a id="__codelineno-2-40" name="__codelineno-2-40" href="#__codelineno-2-40"></a>        <span class="n">score</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">net</span><span class="p">(</span><span class="n">inp</span><span class="p">)</span>  <span class="c1"># (batch, 2)</span>
+</span><span id="__span-2-41"><a id="__codelineno-2-41" name="__codelineno-2-41" href="#__codelineno-2-41"></a>
+</span><span id="__span-2-42"><a id="__codelineno-2-42" name="__codelineno-2-42" href="#__codelineno-2-42"></a>        <span class="c1"># Project score to tangent space (orthogonal to x)</span>
+</span><span id="__span-2-43"><a id="__codelineno-2-43" name="__codelineno-2-43" href="#__codelineno-2-43"></a>        <span class="c1"># Tangent space: {v : v · x = 0}</span>
+</span><span id="__span-2-44"><a id="__codelineno-2-44" name="__codelineno-2-44" href="#__codelineno-2-44"></a>        <span class="n">score</span> <span class="o">=</span> <span class="n">score</span> <span class="o">-</span> <span class="p">(</span><span class="n">score</span> <span class="o">*</span> <span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">dim</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span> <span class="n">keepdim</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span> <span class="o">*</span> <span class="n">x</span>
+</span><span id="__span-2-45"><a id="__codelineno-2-45" name="__codelineno-2-45" href="#__codelineno-2-45"></a>        <span class="k">return</span> <span class="n">score</span>
+</span><span id="__span-2-46"><a id="__codelineno-2-46" name="__codelineno-2-46" href="#__codelineno-2-46"></a>
+</span><span id="__span-2-47"><a id="__codelineno-2-47" name="__codelineno-2-47" href="#__codelineno-2-47"></a><span class="k">def</span><span class="w"> </span><span class="nf">forward_diffusion_circle</span><span class="p">(</span><span class="n">x0</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">noise_schedule</span><span class="p">):</span>
+</span><span id="__span-2-48"><a id="__codelineno-2-48" name="__codelineno-2-48" href="#__codelineno-2-48"></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="__span-2-49"><a id="__codelineno-2-49" name="__codelineno-2-49" href="#__codelineno-2-49"></a><span class="sd">    Forward diffusion on circle using wrapped normal</span>
+</span><span id="__span-2-50"><a id="__codelineno-2-50" name="__codelineno-2-50" href="#__codelineno-2-50"></a><span class="sd">    x0: (batch, 2) points on circle</span>
+</span><span id="__span-2-51"><a id="__codelineno-2-51" name="__codelineno-2-51" href="#__codelineno-2-51"></a><span class="sd">    t: scalar time</span>
+</span><span id="__span-2-52"><a id="__codelineno-2-52" name="__codelineno-2-52" href="#__codelineno-2-52"></a><span class="sd">    &quot;&quot;&quot;</span>
+</span><span id="__span-2-53"><a id="__codelineno-2-53" name="__codelineno-2-53" href="#__codelineno-2-53"></a>    <span class="n">alpha_bar_t</span> <span class="o">=</span> <span class="n">noise_schedule</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>
+</span><span id="__span-2-54"><a id="__codelineno-2-54" name="__codelineno-2-54" href="#__codelineno-2-54"></a>
+</span><span id="__span-2-55"><a id="__codelineno-2-55" name="__codelineno-2-55" href="#__codelineno-2-55"></a>    <span class="c1"># Add noise in ambient space</span>
+</span><span id="__span-2-56"><a id="__codelineno-2-56" name="__codelineno-2-56" href="#__codelineno-2-56"></a>    <span class="n">noise</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">randn_like</span><span class="p">(</span><span class="n">x0</span><span class="p">)</span>
+</span><span id="__span-2-57"><a id="__codelineno-2-57" name="__codelineno-2-57" href="#__codelineno-2-57"></a>    <span class="n">xt</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">alpha_bar_t</span><span class="p">)</span> <span class="o">*</span> <span class="n">x0</span> <span class="o">+</span> <span class="n">torch</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">alpha_bar_t</span><span class="p">)</span> <span class="o">*</span> <span class="n">noise</span>
+</span><span id="__span-2-58"><a id="__codelineno-2-58" name="__codelineno-2-58" href="#__codelineno-2-58"></a>
+</span><span id="__span-2-59"><a id="__codelineno-2-59" name="__codelineno-2-59" href="#__codelineno-2-59"></a>    <span class="c1"># Project back to circle</span>
+</span><span id="__span-2-60"><a id="__codelineno-2-60" name="__codelineno-2-60" href="#__codelineno-2-60"></a>    <span class="n">xt</span> <span class="o">=</span> <span class="n">project_to_circle</span><span class="p">(</span><span class="n">xt</span><span class="p">)</span>
+</span><span id="__span-2-61"><a id="__codelineno-2-61" name="__codelineno-2-61" href="#__codelineno-2-61"></a>    <span class="k">return</span> <span class="n">xt</span><span class="p">,</span> <span class="n">noise</span>
+</span><span id="__span-2-62"><a id="__codelineno-2-62" name="__codelineno-2-62" href="#__codelineno-2-62"></a>
+</span><span id="__span-2-63"><a id="__codelineno-2-63" name="__codelineno-2-63" href="#__codelineno-2-63"></a><span class="k">def</span><span class="w"> </span><span class="nf">train_circle_score</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">dataset</span><span class="p">,</span> <span class="n">num_epochs</span><span class="o">=</span><span class="mi">1000</span><span class="p">):</span>
+</span><span id="__span-2-64"><a id="__codelineno-2-64" name="__codelineno-2-64" href="#__codelineno-2-64"></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Train score network on circle&quot;&quot;&quot;</span>
+</span><span id="__span-2-65"><a id="__codelineno-2-65" name="__codelineno-2-65" href="#__codelineno-2-65"></a>    <span class="n">optimizer</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">optim</span><span class="o">.</span><span class="n">Adam</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">parameters</span><span class="p">(),</span> <span class="n">lr</span><span class="o">=</span><span class="mf">1e-3</span><span class="p">)</span>
+</span><span id="__span-2-66"><a id="__codelineno-2-66" name="__codelineno-2-66" href="#__codelineno-2-66"></a>
+</span><span id="__span-2-67"><a id="__codelineno-2-67" name="__codelineno-2-67" href="#__codelineno-2-67"></a>    <span class="k">for</span> <span class="n">epoch</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">num_epochs</span><span class="p">):</span>
+</span><span id="__span-2-68"><a id="__codelineno-2-68" name="__codelineno-2-68" href="#__codelineno-2-68"></a>        <span class="n">x0</span> <span class="o">=</span> <span class="n">dataset</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="mi">128</span><span class="p">)</span>  <span class="c1"># Sample from data distribution</span>
+</span><span id="__span-2-69"><a id="__codelineno-2-69" name="__codelineno-2-69" href="#__codelineno-2-69"></a>        <span class="n">t</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="mi">128</span><span class="p">)</span>  <span class="c1"># Random timesteps</span>
+</span><span id="__span-2-70"><a id="__codelineno-2-70" name="__codelineno-2-70" href="#__codelineno-2-70"></a>        <span class="n">xt</span><span class="p">,</span> <span class="n">noise</span> <span class="o">=</span> <span class="n">forward_diffusion_circle</span><span class="p">(</span><span class="n">x0</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">t</span><span class="p">:</span> <span class="mi">1</span> <span class="o">-</span> <span class="n">t</span><span class="p">)</span>
+</span><span id="__span-2-71"><a id="__codelineno-2-71" name="__codelineno-2-71" href="#__codelineno-2-71"></a>
+</span><span id="__span-2-72"><a id="__codelineno-2-72" name="__codelineno-2-72" href="#__codelineno-2-72"></a>        <span class="c1"># Predict score</span>
+</span><span id="__span-2-73"><a id="__codelineno-2-73" name="__codelineno-2-73" href="#__codelineno-2-73"></a>        <span class="n">score_pred</span> <span class="o">=</span> <span class="n">model</span><span class="p">(</span><span class="n">xt</span><span class="p">,</span> <span class="n">t</span><span class="p">)</span>
+</span><span id="__span-2-74"><a id="__codelineno-2-74" name="__codelineno-2-74" href="#__codelineno-2-74"></a>
+</span><span id="__span-2-75"><a id="__codelineno-2-75" name="__codelineno-2-75" href="#__codelineno-2-75"></a>        <span class="c1"># True score (for wrapped Gaussian)</span>
+</span><span id="__span-2-76"><a id="__codelineno-2-76" name="__codelineno-2-76" href="#__codelineno-2-76"></a>        <span class="n">score_true</span> <span class="o">=</span> <span class="o">-</span><span class="p">(</span><span class="n">xt</span> <span class="o">-</span> <span class="n">torch</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">t</span><span class="o">.</span><span class="n">unsqueeze</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">))</span> <span class="o">*</span> <span class="n">x0</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">t</span><span class="o">.</span><span class="n">unsqueeze</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">))</span>
+</span><span id="__span-2-77"><a id="__codelineno-2-77" name="__codelineno-2-77" href="#__codelineno-2-77"></a>        <span class="n">score_true</span> <span class="o">=</span> <span class="n">score_true</span> <span class="o">-</span> <span class="p">(</span><span class="n">score_true</span> <span class="o">*</span> <span class="n">xt</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">dim</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span> <span class="n">keepdim</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span> <span class="o">*</span> <span class="n">xt</span>
+</span><span id="__span-2-78"><a id="__codelineno-2-78" name="__codelineno-2-78" href="#__codelineno-2-78"></a>
+</span><span id="__span-2-79"><a id="__codelineno-2-79" name="__codelineno-2-79" href="#__codelineno-2-79"></a>        <span class="n">loss</span> <span class="o">=</span> <span class="p">((</span><span class="n">score_pred</span> <span class="o">-</span> <span class="n">score_true</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">dim</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
+</span><span id="__span-2-80"><a id="__codelineno-2-80" name="__codelineno-2-80" href="#__codelineno-2-80"></a>
+</span><span id="__span-2-81"><a id="__codelineno-2-81" name="__codelineno-2-81" href="#__codelineno-2-81"></a>        <span class="n">optimizer</span><span class="o">.</span><span class="n">zero_grad</span><span class="p">()</span>
+</span><span id="__span-2-82"><a id="__codelineno-2-82" name="__codelineno-2-82" href="#__codelineno-2-82"></a>        <span class="n">loss</span><span class="o">.</span><span class="n">backward</span><span class="p">()</span>
+</span><span id="__span-2-83"><a id="__codelineno-2-83" name="__codelineno-2-83" href="#__codelineno-2-83"></a>        <span class="n">optimizer</span><span class="o">.</span><span class="n">step</span><span class="p">()</span>
+</span><span id="__span-2-84"><a id="__codelineno-2-84" name="__codelineno-2-84" href="#__codelineno-2-84"></a>
+</span><span id="__span-2-85"><a id="__codelineno-2-85" name="__codelineno-2-85" href="#__codelineno-2-85"></a>        <span class="k">if</span> <span class="n">epoch</span> <span class="o">%</span> <span class="mi">100</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+</span><span id="__span-2-86"><a id="__codelineno-2-86" name="__codelineno-2-86" href="#__codelineno-2-86"></a>            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Epoch </span><span class="si">{</span><span class="n">epoch</span><span class="si">}</span><span class="s2">, Loss: </span><span class="si">{</span><span class="n">loss</span><span class="o">.</span><span class="n">item</span><span class="p">()</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</span><span id="__span-2-87"><a id="__codelineno-2-87" name="__codelineno-2-87" href="#__codelineno-2-87"></a>
+</span><span id="__span-2-88"><a id="__codelineno-2-88" name="__codelineno-2-88" href="#__codelineno-2-88"></a><span class="c1"># Usage</span>
+</span><span id="__span-2-89"><a id="__codelineno-2-89" name="__codelineno-2-89" href="#__codelineno-2-89"></a><span class="n">dataset</span> <span class="o">=</span> <span class="n">CircleDataset</span><span class="p">(</span><span class="n">mu</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">kappa</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
+</span><span id="__span-2-90"><a id="__codelineno-2-90" name="__codelineno-2-90" href="#__codelineno-2-90"></a><span class="n">model</span> <span class="o">=</span> <span class="n">CircleScoreNetwork</span><span class="p">(</span><span class="n">hidden_dim</span><span class="o">=</span><span class="mi">128</span><span class="p">)</span>
+</span><span id="__span-2-91"><a id="__codelineno-2-91" name="__codelineno-2-91" href="#__codelineno-2-91"></a><span class="n">train_circle_score</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">dataset</span><span class="p">)</span>
+</span></code></pre></div>
+<h3 id="93-intrinsic-coordinates-approach">9.3 Intrinsic Coordinates Approach<a class="headerlink" href="#93-intrinsic-coordinates-approach" title="Permanent link">&para;</a></h3>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="k">class</span><span class="w"> </span><span class="nc">CircleScoreNetworkIntrinsic</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Score network using angle θ directly&quot;&quot;&quot;</span>
+</span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">hidden_dim</span><span class="o">=</span><span class="mi">128</span><span class="p">):</span>
+</span><span id="__span-3-4"><a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a>        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+</span><span id="__span-3-5"><a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a>        <span class="c1"># Use periodic encoding for angle</span>
+</span><span id="__span-3-6"><a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">net</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Sequential</span><span class="p">(</span>
+</span><span id="__span-3-7"><a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a>            <span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="n">hidden_dim</span><span class="p">),</span>  <span class="c1"># [cos(θ), sin(θ), t]</span>
+</span><span id="__span-3-8"><a id="__codelineno-3-8" name="__codelineno-3-8" href="#__codelineno-3-8"></a>            <span class="n">nn</span><span class="o">.</span><span class="n">SiLU</span><span class="p">(),</span>
+</span><span id="__span-3-9"><a id="__codelineno-3-9" name="__codelineno-3-9" href="#__codelineno-3-9"></a>            <span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="n">hidden_dim</span><span class="p">,</span> <span class="n">hidden_dim</span><span class="p">),</span>
+</span><span id="__span-3-10"><a id="__codelineno-3-10" name="__codelineno-3-10" href="#__codelineno-3-10"></a>            <span class="n">nn</span><span class="o">.</span><span class="n">SiLU</span><span class="p">(),</span>
+</span><span id="__span-3-11"><a id="__codelineno-3-11" name="__codelineno-3-11" href="#__codelineno-3-11"></a>            <span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="n">hidden_dim</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>  <span class="c1"># Output: dθ/dt (scalar)</span>
+</span><span id="__span-3-12"><a id="__codelineno-3-12" name="__codelineno-3-12" href="#__codelineno-3-12"></a>        <span class="p">)</span>
+</span><span id="__span-3-13"><a id="__codelineno-3-13" name="__codelineno-3-13" href="#__codelineno-3-13"></a>
+</span><span id="__span-3-14"><a id="__codelineno-3-14" name="__codelineno-3-14" href="#__codelineno-3-14"></a>    <span class="k">def</span><span class="w"> </span><span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">theta</span><span class="p">,</span> <span class="n">t</span><span class="p">):</span>
+</span><span id="__span-3-15"><a id="__codelineno-3-15" name="__codelineno-3-15" href="#__codelineno-3-15"></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="__span-3-16"><a id="__codelineno-3-16" name="__codelineno-3-16" href="#__codelineno-3-16"></a><span class="sd">        theta: (batch,) angles</span>
+</span><span id="__span-3-17"><a id="__codelineno-3-17" name="__codelineno-3-17" href="#__codelineno-3-17"></a><span class="sd">        t: (batch,) time</span>
+</span><span id="__span-3-18"><a id="__codelineno-3-18" name="__codelineno-3-18" href="#__codelineno-3-18"></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="__span-3-19"><a id="__codelineno-3-19" name="__codelineno-3-19" href="#__codelineno-3-19"></a>        <span class="c1"># Periodic encoding</span>
+</span><span id="__span-3-20"><a id="__codelineno-3-20" name="__codelineno-3-20" href="#__codelineno-3-20"></a>        <span class="n">x</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">theta</span><span class="p">)</span>
+</span><span id="__span-3-21"><a id="__codelineno-3-21" name="__codelineno-3-21" href="#__codelineno-3-21"></a>        <span class="n">y</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">theta</span><span class="p">)</span>
+</span><span id="__span-3-22"><a id="__codelineno-3-22" name="__codelineno-3-22" href="#__codelineno-3-22"></a>        <span class="n">inp</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">cat</span><span class="p">([</span><span class="n">x</span><span class="o">.</span><span class="n">unsqueeze</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">),</span> <span class="n">y</span><span class="o">.</span><span class="n">unsqueeze</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">),</span> <span class="n">t</span><span class="o">.</span><span class="n">unsqueeze</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)],</span> <span class="n">dim</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
+</span><span id="__span-3-23"><a id="__codelineno-3-23" name="__codelineno-3-23" href="#__codelineno-3-23"></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">net</span><span class="p">(</span><span class="n">inp</span><span class="p">)</span><span class="o">.</span><span class="n">squeeze</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>  <span class="c1"># (batch,)</span>
+</span></code></pre></div>
+<hr />
+<h2 id="part-10-resources-and-next-steps">Part 10: Resources and Next Steps<a class="headerlink" href="#part-10-resources-and-next-steps" title="Permanent link">&para;</a></h2>
+<h3 id="101-essential-textbooks">10.1 Essential Textbooks<a class="headerlink" href="#101-essential-textbooks" title="Permanent link">&para;</a></h3>
+<p><strong>Differential Geometry</strong>:
+1. <strong>do Carmo</strong>: "Riemannian Geometry" - Classic, very readable
+2. <strong>Lee</strong>: "Introduction to Smooth Manifolds" - Comprehensive, modern
+3. <strong>Spivak</strong>: "Calculus on Manifolds" - Concise intro</p>
+<p><strong>Geometric ML</strong>:
+1. <strong>Bronstein et al.</strong>: "Geometric Deep Learning" (2021) - Free online
+2. <strong>Bekkers</strong>: "An Introduction to Geometric Deep Learning" (2023)</p>
+<p><strong>Diffusion on Manifolds</strong>:
+1. <strong>Grigoryan</strong>: "Heat Kernel and Analysis on Manifolds"
+2. <strong>De Bortoli et al.</strong>: "Riemannian Score-Based Generative Modeling" (ICML 2022)</p>
+<h3 id="102-software-libraries">10.2 Software Libraries<a class="headerlink" href="#102-software-libraries" title="Permanent link">&para;</a></h3>
+<p><strong>Manifold optimization</strong>:</p>
+<ul>
+<li><code>geoopt</code> (PyTorch): Riemannian optimization</li>
+<li><code>pymanopt</code> (NumPy/PyTorch/JAX): General manifold optimization</li>
+<li><code>geomstats</code> (NumPy/PyTorch/JAX): Comprehensive Riemannian geometry</li>
+</ul>
+<p><strong>Geometric deep learning</strong>:</p>
+<ul>
+<li><code>PyG</code> (PyTorch Geometric): Graph neural networks</li>
+<li><code>DGL</code>: Deep Graph Library</li>
+<li><code>e3nn</code>: Equivariant neural networks (SO(3)/E(3))</li>
+</ul>
+<p><strong>Protein structure</strong>:</p>
+<ul>
+<li><code>AlphaFold</code>: Structure prediction</li>
+<li><code>ESM</code> (Evolutionary Scale Modeling): Protein language models</li>
+<li><code>OpenFold</code>: Open-source AlphaFold implementation</li>
+</ul>
+<h3 id="103-paper-reading-list">10.3 Paper Reading List<a class="headerlink" href="#103-paper-reading-list" title="Permanent link">&para;</a></h3>
+<p><strong>Foundation</strong>:
+1. De Bortoli et al. (2022): "Riemannian Score-Based Generative Modeling"
+2. Song et al. (2021): "Score-Based Generative Modeling through SDEs"</p>
+<p><strong>Applications</strong>:
+3. Yim et al. (2023): "SE(3) Diffusion Model with Application to Protein Backbone Generation"
+4. Watson et al. (2023): "De novo design of protein structure and function with RFdiffusion"
+5. Corso et al. (2023): "DiffDock: Diffusion Steps, Twists, and Turns for Molecular Docking"</p>
+<p><strong>Theory</strong>:
+6. Chen et al. (2023): "Riemannian Flow Matching on General Geometries"
+7. Huang et al. (2022): "Riemannian Diffusion Models"</p>
+<h3 id="104-future-directions">10.4 Future Directions<a class="headerlink" href="#104-future-directions" title="Permanent link">&para;</a></h3>
+<p><strong>Open research questions</strong>:</p>
+<ol>
+<li><strong>Optimal parametrizations</strong>: When to use ambient vs. intrinsic coordinates?</li>
+<li><strong>Scalability</strong>: Efficient algorithms for high-dimensional manifolds</li>
+<li><strong>Learning the geometry</strong>: Can we learn the manifold structure from data?</li>
+<li><strong>Hybrid models</strong>: Combining Euclidean and Riemannian components</li>
+<li><strong>Discrete manifolds</strong>: Diffusion on graphs and combinatorial structures</li>
+</ol>
+<p><strong>Emerging applications</strong>:
+1. <strong>Drug discovery</strong>: Molecular generation on conformational manifolds
+2. <strong>Protein design</strong>: Backbone and sequence co-design
+3. <strong>Materials science</strong>: Crystal structure generation (lattices are manifolds)
+4. <strong>Climate modeling</strong>: Weather prediction on spherical domains
+5. <strong>Robotics</strong>: Motion planning on configuration spaces</p>
+<hr />
+<h2 id="summary-key-concepts">Summary: Key Concepts<a class="headerlink" href="#summary-key-concepts" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>Concept</th>
+<th>Euclidean Space</th>
+<th>Curved Space (Manifold)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Metric</strong></td>
+<td><span class="arithmatex">\(g_{ij} = \delta_{ij}\)</span> (identity)</td>
+<td>General <span class="arithmatex">\(g_{ij}(x)\)</span> (position-dependent)</td>
+</tr>
+<tr>
+<td><strong>Distance</strong></td>
+<td><span class="arithmatex">\(ds^2 = \sum_i dx_i^2\)</span></td>
+<td><span class="arithmatex">\(ds^2 = g_{ij} dx^i dx^j\)</span></td>
+</tr>
+<tr>
+<td><strong>Gradient</strong></td>
+<td><span class="arithmatex">\(\nabla f = \frac{\partial f}{\partial x}\)</span></td>
+<td><span class="arithmatex">\((\nabla f)^i = g^{ij} \frac{\partial f}{\partial x^j}\)</span></td>
+</tr>
+<tr>
+<td><strong>Covariant derivative</strong></td>
+<td><span class="arithmatex">\(\nabla_i v^j = \frac{\partial v^j}{\partial x^i}\)</span></td>
+<td><span class="arithmatex">\(\nabla_i v^j = \frac{\partial v^j}{\partial x^i} + \Gamma^j_{ik} v^k\)</span></td>
+</tr>
+<tr>
+<td><strong>Laplacian</strong></td>
+<td><span class="arithmatex">\(\Delta f = \sum_i \frac{\partial^2 f}{\partial x_i^2}\)</span></td>
+<td><span class="arithmatex">\(\Delta_g f = \frac{1}{\sqrt{\det g}} \partial_i(\sqrt{\det g} \, g^{ij} \partial_j f)\)</span></td>
+</tr>
+<tr>
+<td><strong>Brownian motion</strong></td>
+<td><span class="arithmatex">\(dx = \sigma dw\)</span></td>
+<td><span class="arithmatex">\(dx^i = \sqrt{g^{ij}} \sigma dw_j - \frac{1}{2}\Gamma^i_{jk} g^{jk} \sigma^2 dt\)</span></td>
+</tr>
+</tbody>
+</table>
+<p><strong>The main message</strong>: Many of the formulas you know from Euclidean space have natural generalizations to curved spaces, but you need to account for the metric tensor and Christoffel symbols.</p>
+<hr />
+<h2 id="related-documents">Related Documents<a class="headerlink" href="#related-documents" title="Permanent link">&para;</a></h2>
+<ul>
+<li><a href="../../dev/ddpm_learning_process/03_gradient_operator_and_independence.md"><code>../../dev/ddpm_learning_process/03_gradient_operator_and_independence.md</code></a>: Gradient operator in different coordinate systems</li>
+<li><a href="../diffusion/brownian_motion_tutorial.md"><code>../diffusion/brownian_motion_tutorial.md</code></a>: Brownian motion in Euclidean space</li>
+<li><a href="../SDE/01_diffusion_sde_view.md"><code>../SDE/01_diffusion_sde_view.md</code></a>: SDE formulation of diffusion models</li>
+</ul>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">
+      Copyright &copy; 2026 GenAI Lab Research Team
+    </div>
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+        
+<div class="md-social">
+  
+    
+    
+    
+    
+      
+      
+    
+    <a href="https://github.com/pleiadian53/genai-lab" target="_blank" rel="noopener" title="github.com" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../../..", "features": ["navigation.instant", "navigation.tracking", "navigation.tabs", "navigation.tabs.sticky", "navigation.sections", "navigation.expand", "navigation.top", "search.suggest", "search.highlight", "content.code.copy", "content.action.edit"], "search": "../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"provider": "mike"}}</script>
+    
+    
+      <script src="../../../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+        <script src="../../../javascripts/mathjax.js"></script>
+      
+        <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+      
+        <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+      
+    
+  </body>
+</html>

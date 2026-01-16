@@ -1,0 +1,4234 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Generative AI for computational biology - diffusion models, VAEs, and foundation models for gene expression">
+      
+      
+        <meta name="author" content="GenAI Lab Research Team">
+      
+      
+        <link rel="canonical" href="https://pleiadian53.github.io/genai-lab/diffusion/brownian_motion_tutorial/">
+      
+      
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.1">
+    
+    
+      
+        <title>Understanding Brownian Motion: From Random Walks to Diffusion Models - GenAI Lab</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.484c7ddc.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../../stylesheets/extra.css">
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="deep-purple" data-md-color-accent="deep-purple">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#understanding-brownian-motion-from-random-walks-to-diffusion-models" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+      <div data-md-color-scheme="default" data-md-component="outdated" hidden>
+        
+      </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow md-header--lifted" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="GenAI Lab" class="md-header__button md-logo" aria-label="GenAI Lab" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            GenAI Lab
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Understanding Brownian Motion: From Random Walks to Diffusion Models
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="deep-purple" data-md-color-accent="deep-purple"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="deep-purple" data-md-color-accent="deep-purple"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/pleiadian53/genai-lab" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+  </div>
+  <div class="md-source__repository">
+    pleiadian53/genai-lab
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+    
+      
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../.." class="md-tabs__link">
+        
+  
+  
+    
+  
+  Home
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../ROADMAP/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Roadmap
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../foundation_models/" class="md-tabs__link">
+          
+  
+  
+  Foundation Models
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../DiT/" class="md-tabs__link">
+          
+  
+  
+  Diffusion Transformers (DiT)
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../JEPA/" class="md-tabs__link">
+          
+  
+  
+  JEPA (Joint Embedding)
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../latent_diffusion/" class="md-tabs__link">
+          
+  
+  
+  Latent Diffusion
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../DDPM/" class="md-tabs__link">
+          
+  
+  
+  DDPM (Denoising Diffusion)
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../VAE/VAE-01-overview/" class="md-tabs__link">
+          
+  
+  
+  VAE (Variational Autoencoders)
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../score_matching/" class="md-tabs__link">
+          
+  
+  
+  Score Matching & EBM
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../flow_matching/" class="md-tabs__link">
+          
+  
+  
+  Flow Matching
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../SDE/" class="md-tabs__link">
+          
+  
+  
+  SDE (Stochastic Differential Equations)
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../datasets/" class="md-tabs__link">
+          
+  
+  
+  Datasets
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../01_ddpm/01_ddpm_basics/" class="md-tabs__link">
+          
+  
+  
+  Diffusion (Technical Deep Dives)
+
+        </a>
+      </li>
+    
+  
+
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../notebooks/" class="md-tabs__link">
+          
+  
+  
+  Notebooks
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../SETUP/" class="md-tabs__link">
+          
+  
+  
+  About
+
+        </a>
+      </li>
+    
+  
+
+      
+    </ul>
+  </div>
+</nav>
+    
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="GenAI Lab" class="md-nav__button md-logo" aria-label="GenAI Lab" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    GenAI Lab
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/pleiadian53/genai-lab" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+  </div>
+  <div class="md-source__repository">
+    pleiadian53/genai-lab
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../ROADMAP/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Roadmap
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Foundation Models
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Foundation Models
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../foundation_models/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../foundation_models/leveraging_foundation_models_v2/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Leveraging Foundation Models
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../foundation_models/data_shape_v2/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Data Shape & Tensors
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../foundation_models/IMPLEMENTATION_GUIDE/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Implementation Guide
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Diffusion Transformers (DiT)
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Diffusion Transformers (DiT)
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../DiT/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Series Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../DiT/00_dit_overview/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    00: DiT Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../DiT/01_dit_foundations/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    01: Foundations
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../DiT/02_dit_training/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    02: Training
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../DiT/03_dit_sampling/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    03: Sampling
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../DiT/open_research_tokenization/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Research: Tokenization
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    JEPA (Joint Embedding)
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    JEPA (Joint Embedding)
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../JEPA/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Series Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../JEPA/00_jepa_overview/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    00: JEPA Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../JEPA/01_jepa_foundations/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    01: Foundations
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../JEPA/02_jepa_training/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    02: Training
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../JEPA/03_jepa_applications/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    03: Applications
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../JEPA/04_jepa_perturbseq/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    04: Perturb-seq
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../JEPA/open_research_joint_latent/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Research: Joint Latent
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_6" >
+        
+          
+          <label class="md-nav__link" for="__nav_6" id="__nav_6_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Latent Diffusion
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Latent Diffusion
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../latent_diffusion/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Series Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../latent_diffusion/00_latent_diffusion_overview/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    00: Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../latent_diffusion/01_latent_diffusion_foundations/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    01: Foundations
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../latent_diffusion/02_latent_diffusion_training/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    02: Training
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../latent_diffusion/03_latent_diffusion_applications/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    03: Applications
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../latent_diffusion/04_latent_diffusion_combio/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    04: ComBio Implementation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_7" >
+        
+          
+          <label class="md-nav__link" for="__nav_7" id="__nav_7_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    DDPM (Denoising Diffusion)
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_7_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_7">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    DDPM (Denoising Diffusion)
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../DDPM/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../DDPM/02a_diffusion_arch_gene_expression/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Architectures for Gene Expression
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../DDPM/02b_diffusion_arch_qa/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Architecture Q&A
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_8" >
+        
+          
+          <label class="md-nav__link" for="__nav_8" id="__nav_8_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    VAE (Variational Autoencoders)
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_8_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_8">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    VAE (Variational Autoencoders)
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../VAE/VAE-01-overview/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    01: Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../VAE/VAE-02-elbo/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    02: ELBO
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../VAE/VAE-03-inference/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    03: Inference
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../VAE/VAE-for-prediction/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    VAE for Prediction
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../VAE/VAE-model-training/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Model Training
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../beta-VAE/beta_vae/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Beta-VAE
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_9" >
+        
+          
+          <label class="md-nav__link" for="__nav_9" id="__nav_9_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Score Matching & EBM
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_9_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_9">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Score Matching & EBM
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../score_matching/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Score Matching
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../EBM/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Energy-Based Models
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../EBM/EBM-stein-vs-fisher-score/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Stein vs Fisher Score
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_10" >
+        
+          
+          <label class="md-nav__link" for="__nav_10" id="__nav_10_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Flow Matching
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_10_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_10">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Flow Matching
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../flow_matching/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_11" >
+        
+          
+          <label class="md-nav__link" for="__nav_11" id="__nav_11_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    SDE (Stochastic Differential Equations)
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_11_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_11">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    SDE (Stochastic Differential Equations)
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../SDE/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_12" >
+        
+          
+          <label class="md-nav__link" for="__nav_12" id="__nav_12_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Datasets
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_12_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_12">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Datasets
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../datasets/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_13" >
+        
+          
+          <label class="md-nav__link" for="__nav_13" id="__nav_13_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Diffusion (Technical Deep Dives)
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_13_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_13">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Diffusion (Technical Deep Dives)
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_13_1" >
+        
+          
+          <label class="md-nav__link" for="__nav_13_1" id="__nav_13_1_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    DDPM Basics
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_13_1_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_13_1">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    DDPM Basics
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../01_ddpm/01_ddpm_basics/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Notebook
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_13_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_13_2" id="__nav_13_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    SDE Formulation
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_13_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_13_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    SDE Formulation
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../02_sde_formulation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../02_sde_formulation/02_sde_formulation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Notebook
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_13_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_13_3" id="__nav_13_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Medical Imaging Diffusion
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_13_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_13_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Medical Imaging Diffusion
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../03_medical_imaging_diffusion/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../03_medical_imaging_diffusion/03_medical_imaging_diffusion/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Notebook
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_13_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_13_4" id="__nav_13_4_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Gene Expression Diffusion
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_13_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_13_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Gene Expression Diffusion
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../04_gene_expression_diffusion/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../04_gene_expression_diffusion/04_gene_expression_diffusion/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Notebook
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_14" >
+        
+          
+          <label class="md-nav__link" for="__nav_14" id="__nav_14_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Notebooks
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_14_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_14">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Notebooks
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../notebooks/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_15" >
+        
+          
+          <label class="md-nav__link" for="__nav_15" id="__nav_15_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    About
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_15_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_15">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    About
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../SETUP/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Setup & Installation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../INDUSTRY_LANDSCAPE/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Industry Landscape
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#table-of-contents" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Table of Contents
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#1-the-physical-origin-story" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. The Physical Origin Story
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="1. The Physical Origin Story">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#the-discovery-1827" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The Discovery (1827)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#the-explanation-1905" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The Explanation (1905)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#the-mathematical-skeleton-1920s" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The Mathematical Skeleton (1920s)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-random-walk-the-discrete-cousin" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Random Walk: The Discrete Cousin
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="2. Random Walk: The Discrete Cousin">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#definition" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Definition
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#classic-example-simple-symmetric-random-walk" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Classic Example: Simple Symmetric Random Walk
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#key-properties" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Key Properties
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#where-random-walks-appear" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Where Random Walks Appear
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-brownian-motion-the-continuous-limit" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. Brownian Motion: The Continuous Limit
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3. Brownian Motion: The Continuous Limit">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#the-transition" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The Transition
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#continuous-time" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Continuous Time
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-the-four-defining-properties" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. The Four Defining Properties
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="4. The Four Defining Properties">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#conceptual-clarification-what-is-b_t" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Conceptual Clarification: What is \(B_t\)?
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#property-1-b_0-0" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Property 1: \(B_0 = 0\)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#property-2-independent-increments" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Property 2: Independent Increments
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#property-3-stationary-gaussian-increments" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Property 3: Stationary Gaussian Increments
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#property-4-continuous-paths-but-nowhere-differentiable" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Property 4: Continuous Paths (But Nowhere Differentiable)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5-the-mysterious-sqrtdt-scaling" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. The Mysterious \(\sqrt{dt}\) Scaling
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="5. The Mysterious \(\sqrt{dt}\) Scaling">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#the-question" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The Question
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#intuition-1-diffusive-scaling" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Intuition 1: Diffusive Scaling
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#intuition-2-variance-adds-not-displacements" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Intuition 2: Variance Adds, Not Displacements
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#from-steps-to-time" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        From Steps to Time
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#the-mathematical-statement" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The Mathematical Statement
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#why-not-other-scalings" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Why Not Other Scalings?
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#the-key-insight-for-sdes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The Key Insight for SDEs
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#6-from-random-walk-to-brownian-motion" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6. From Random Walk to Brownian Motion
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="6. From Random Walk to Brownian Motion">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#the-scaling-limit" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The Scaling Limit
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#donskers-invariance-principle" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Donsker's Invariance Principle
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#7-why-this-matters-for-diffusion-models" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7. Why This Matters for Diffusion Models
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="7. Why This Matters for Diffusion Models">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#the-forward-process" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The Forward Process
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#why-brownian-motion-is-perfect-for-diffusion" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Why Brownian Motion is Perfect for Diffusion
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#the-sde-formulation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The SDE Formulation
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#the-reverse-process" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The Reverse Process
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#connection-to-score-matching" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Connection to Score Matching
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#summary-the-big-picture" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Summary: The Big Picture
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Summary: The Big Picture">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#what-brownian-motion-is" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What Brownian Motion Is
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#why-it-appears-everywhere" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Why It Appears Everywhere
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#the-key-properties-recap" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The Key Properties (Recap)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#the-sqrtdt-scaling-one-line-takeaway" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The \(\sqrt{dt}\) Scaling (One-Line Takeaway)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#for-diffusion-models" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        For Diffusion Models
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#further-reading" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Further Reading
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Further Reading">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#primary-papers" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Primary Papers
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#textbooks" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Textbooks
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#related-topics" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Related Topics
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#next-steps" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Next Steps
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+    <a href="https://github.com/pleiadian53/genai-lab/edit/main/docs/diffusion/brownian_motion_tutorial.md" title="Edit this page" class="md-content__button md-icon" rel="edit">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20.71 7.04c.39-.39.39-1.04 0-1.41l-2.34-2.34c-.37-.39-1.02-.39-1.41 0l-1.84 1.83 3.75 3.75M3 17.25V21h3.75L17.81 9.93l-3.75-3.75z"/></svg>
+    </a>
+  
+  
+
+
+<h1 id="understanding-brownian-motion-from-random-walks-to-diffusion-models">Understanding Brownian Motion: From Random Walks to Diffusion Models<a class="headerlink" href="#understanding-brownian-motion-from-random-walks-to-diffusion-models" title="Permanent link">&para;</a></h1>
+<p><strong>A ground-up introduction to the stochastic process that powers modern diffusion models</strong></p>
+<p>Brownian motion is the mathematical heartbeat of diffusion models. It's the reason why adding noise "just works," why the <span class="arithmatex">\(\sqrt{dt}\)</span> scaling appears everywhere, and why continuous-time SDEs can describe discrete-time algorithms like DDPM.</p>
+<p>This tutorial builds intuition from physical observations, connects to rigorous mathematics, and shows exactly how Brownian motion enables generative modeling.</p>
+<hr />
+<h2 id="table-of-contents">Table of Contents<a class="headerlink" href="#table-of-contents" title="Permanent link">&para;</a></h2>
+<ol>
+<li><a href="#1-the-physical-origin-story">The Physical Origin Story</a></li>
+<li><a href="#2-random-walk-the-discrete-cousin">Random Walk: The Discrete Cousin</a></li>
+<li><a href="#3-brownian-motion-the-continuous-limit">Brownian Motion: The Continuous Limit</a></li>
+<li><a href="#4-the-four-defining-properties">The Four Defining Properties (And What They Really Mean)</a></li>
+<li><a href="#5-the-mysterious-sqrtdt-scaling">The Mysterious <span class="arithmatex">\(\sqrt{dt}\)</span> Scaling</a></li>
+<li><a href="#6-from-random-walk-to-brownian-motion">From Random Walk to Brownian Motion: The Scaling Limit</a></li>
+<li><a href="#7-why-this-matters-for-diffusion-models">Why This Matters for Diffusion Models</a></li>
+</ol>
+<hr />
+<h2 id="1-the-physical-origin-story">1. The Physical Origin Story<a class="headerlink" href="#1-the-physical-origin-story" title="Permanent link">&para;</a></h2>
+<h3 id="the-discovery-1827">The Discovery (1827)<a class="headerlink" href="#the-discovery-1827" title="Permanent link">&para;</a></h3>
+<p><strong>Robert Brown</strong>, a botanist, looked through a microscope at pollen grains suspended in water and noticed something uncanny:</p>
+<p><strong>They jittered forever.</strong></p>
+<p>No trend. No settling. No rest. The motion was real, persistent, and structureless.</p>
+<p>At first, he suspected life. Then he tried dust particles. Same thing. The motion was universal, relentless, and seemingly random.</p>
+<h3 id="the-explanation-1905">The Explanation (1905)<a class="headerlink" href="#the-explanation-1905" title="Permanent link">&para;</a></h3>
+<p>Decades later, <strong>Albert Einstein</strong> explained it: <strong>invisible molecular collisions</strong> from the surrounding fluid.</p>
+<p>The key insights:
+- Water molecules are in constant thermal motion
+- They bombard the visible particle from all directions
+- Each collision is tiny, but there are billions per second
+- The cumulative effect is visible, persistent random motion</p>
+<p>This wasn't just a curiosity—Einstein used it to prove atoms exist and to measure Avogadro's number.</p>
+<h3 id="the-mathematical-skeleton-1920s">The Mathematical Skeleton (1920s)<a class="headerlink" href="#the-mathematical-skeleton-1920s" title="Permanent link">&para;</a></h3>
+<p><strong>Norbert Wiener</strong> gave the phenomenon its clean mathematical structure, now called the <strong>Wiener process</strong> or <strong>Brownian motion</strong>.</p>
+<p>This mathematical object became the foundation for:
+- Stochastic calculus (Itô, Stratonovich)
+- Financial mathematics (Black-Scholes)
+- Statistical physics (Langevin dynamics)
+- Modern machine learning (diffusion models, score matching)</p>
+<hr />
+<h2 id="2-random-walk-the-discrete-cousin">2. Random Walk: The Discrete Cousin<a class="headerlink" href="#2-random-walk-the-discrete-cousin" title="Permanent link">&para;</a></h2>
+<p>Before understanding Brownian motion, let's start with something simpler: <strong>random walks</strong>.</p>
+<h3 id="definition">Definition<a class="headerlink" href="#definition" title="Permanent link">&para;</a></h3>
+<p>A <strong>random walk</strong> is defined step by step in discrete time.</p>
+<p><strong>Time</strong>: <span class="arithmatex">\(t = 0, 1, 2, \ldots\)</span></p>
+<p>At each step, the position changes by a random increment:</p>
+<div class="arithmatex">\[
+X_{n+1} = X_n + \varepsilon_{n+1}
+\]</div>
+<p>where <span class="arithmatex">\(\varepsilon_n\)</span> are independent and identically distributed (i.i.d.) random variables.</p>
+<h3 id="classic-example-simple-symmetric-random-walk">Classic Example: Simple Symmetric Random Walk<a class="headerlink" href="#classic-example-simple-symmetric-random-walk" title="Permanent link">&para;</a></h3>
+<div class="arithmatex">\[
+\varepsilon_n =
+\begin{cases}
++1 &amp; \text{with probability } \tfrac{1}{2} \\
+-1 &amp; \text{with probability } \tfrac{1}{2}
+\end{cases}
+\]</div>
+<p><strong>Interpretation</strong>:</p>
+<ul>
+<li>Flip a coin</li>
+<li>Heads → step right</li>
+<li>Tails → step left</li>
+<li>Repeat forever</li>
+</ul>
+<h3 id="key-properties">Key Properties<a class="headerlink" href="#key-properties" title="Permanent link">&para;</a></h3>
+<ul>
+<li><strong>Discrete time</strong> and usually <strong>discrete space</strong></li>
+<li><strong>Independent increments</strong>: Each step doesn't depend on previous steps</li>
+<li><strong>Paths look jagged</strong>, stair-like</li>
+<li><strong>Easy to simulate</strong>, easy to analyze</li>
+</ul>
+<h3 id="where-random-walks-appear">Where Random Walks Appear<a class="headerlink" href="#where-random-walks-appear" title="Permanent link">&para;</a></h3>
+<ul>
+<li>Gambling (gambler's ruin)</li>
+<li>Population genetics (genetic drift)</li>
+<li>Markov chains</li>
+<li>Graph theory (random walks on graphs)</li>
+<li>Toy models for diffusion</li>
+</ul>
+<hr />
+<h2 id="3-brownian-motion-the-continuous-limit">3. Brownian Motion: The Continuous Limit<a class="headerlink" href="#3-brownian-motion-the-continuous-limit" title="Permanent link">&para;</a></h2>
+<p><strong>Brownian motion</strong> is what you get when a random walk is pushed to the limit of infinite refinement.</p>
+<h3 id="the-transition">The Transition<a class="headerlink" href="#the-transition" title="Permanent link">&para;</a></h3>
+<p>Think of it this way:</p>
+<p><strong>Random walk</strong> is flipping coins while walking on tiles.</p>
+<p><strong>Brownian motion</strong> is what the walk looks like after you:
+- Shrink the tiles to dust
+- Speed up time
+- Step infinitely often</p>
+<p>The path never smooths out. Reality just stops showing you the individual steps.</p>
+<h3 id="continuous-time">Continuous Time<a class="headerlink" href="#continuous-time" title="Permanent link">&para;</a></h3>
+<p>Brownian motion is defined in <strong>continuous time</strong>:</p>
+<div class="arithmatex">\[
+t \in [0,\infty)
+\]</div>
+<p>Unlike random walks where you count steps <span class="arithmatex">\(n = 0, 1, 2, \ldots\)</span>, Brownian motion evolves continuously. You can ask "where is the particle at time <span class="arithmatex">\(t = \pi\)</span>?" and get a meaningful answer.</p>
+<hr />
+<h2 id="4-the-four-defining-properties">4. The Four Defining Properties<a class="headerlink" href="#4-the-four-defining-properties" title="Permanent link">&para;</a></h2>
+<p>A process <span class="arithmatex">\(B_t\)</span> is <strong>Brownian motion</strong> (or a <strong>Wiener process</strong>) if it satisfies four properties. Let's unpack what each one really means.</p>
+<h3 id="conceptual-clarification-what-is-b_t">Conceptual Clarification: What is <span class="arithmatex">\(B_t\)</span>?<a class="headerlink" href="#conceptual-clarification-what-is-b_t" title="Permanent link">&para;</a></h3>
+<p>Before diving into the properties, let's clarify what we mean by "process" and how to think about <span class="arithmatex">\(B_t\)</span>.</p>
+<h4 id="is-b_t-a-random-variable">Is <span class="arithmatex">\(B_t\)</span> a Random Variable?<a class="headerlink" href="#is-b_t-a-random-variable" title="Permanent link">&para;</a></h4>
+<p><strong>Yes, but more precisely:</strong></p>
+<ul>
+<li><strong>For each fixed time <span class="arithmatex">\(t\)</span></strong>: <span class="arithmatex">\(B_t\)</span> is a <strong>random variable</strong> representing the position/displacement at time <span class="arithmatex">\(t\)</span></li>
+<li><strong>For the collection <span class="arithmatex">\(\{B_t : t \geq 0\}\)</span></strong>: This is a <strong>stochastic process</strong>—a family of random variables indexed by time</li>
+</ul>
+<p><strong>Think of it this way:</strong></p>
+<ul>
+<li>At time <span class="arithmatex">\(t = 0.5\)</span>, <span class="arithmatex">\(B_{0.5}\)</span> is a random variable (could be any real number, with probabilities given by a Gaussian)</li>
+<li>At time <span class="arithmatex">\(t = 1.0\)</span>, <span class="arithmatex">\(B_{1.0}\)</span> is a different random variable</li>
+<li>The <strong>process</strong> <span class="arithmatex">\(B_t\)</span> is the entire collection: <span class="arithmatex">\(\{B_{0.5}, B_{1.0}, B_{2.3}, \ldots\}\)</span></li>
+</ul>
+<p><strong>In diffusion models</strong>: <span class="arithmatex">\(B_t\)</span> represents the <strong>noise/displacement</strong> at time <span class="arithmatex">\(t\)</span>. For a d-dimensional process, <span class="arithmatex">\(B_t \in \mathbb{R}^d\)</span> is a random vector.</p>
+<h4 id="is-process-the-same-as-in-gaussian-process-dirichlet-process-etc">Is "Process" the Same as in Gaussian Process, Dirichlet Process, etc.?<a class="headerlink" href="#is-process-the-same-as-in-gaussian-process-dirichlet-process-etc" title="Permanent link">&para;</a></h4>
+<p><strong>Yes!</strong> The word "process" here means <strong>stochastic process</strong> in the same sense as:</p>
+<ul>
+<li><strong>Gaussian Process</strong>: A collection of random variables <span class="arithmatex">\(\{f(x) : x \in \mathcal{X}\}\)</span> where any finite subset is jointly Gaussian</li>
+<li><strong>Dirichlet Process</strong>: A stochastic process whose realizations are probability distributions</li>
+<li><strong>Markov Process</strong>: A stochastic process with the Markov property</li>
+<li><strong>Brownian Motion</strong>: A stochastic process with specific properties (the four we're about to define)</li>
+</ul>
+<p><strong>Common structure</strong>: All are collections of random variables indexed by some parameter (time, space, etc.)</p>
+<p><strong>Key difference</strong>: What properties they satisfy:
+- <strong>Brownian motion</strong>: Independent increments, Gaussian, variance = time
+- <strong>Gaussian process</strong>: Any finite subset is jointly Gaussian
+- <strong>Dirichlet process</strong>: Realizations are probability distributions</p>
+<p><strong>In summary</strong>: </p>
+<ul>
+<li><span class="arithmatex">\(B_t\)</span> (for fixed <span class="arithmatex">\(t\)</span>) = random variable (position at time <span class="arithmatex">\(t\)</span>)</li>
+<li><span class="arithmatex">\(\{B_t : t \geq 0\}\)</span> = stochastic process (the entire trajectory)</li>
+<li>"Process" = same mathematical concept as GP, DP, etc., but with different properties</li>
+</ul>
+<hr />
+<h3 id="property-1-b_0-0">Property 1: <span class="arithmatex">\(B_0 = 0\)</span><a class="headerlink" href="#property-1-b_0-0" title="Permanent link">&para;</a></h3>
+<p><strong>"Start at zero."</strong></p>
+<p><strong>Mathematical meaning</strong>: The process begins at the origin.</p>
+<p><strong>Physical meaning</strong>: We measure <strong>displacement</strong>, not absolute position. The particle's initial location is irrelevant; only changes matter.</p>
+<p><strong>Interpretation</strong>: Wherever the particle starts, call that position zero. This is a <strong>choice of reference frame</strong>, not a physical constraint.</p>
+<p><strong>Why it matters</strong>: Origins are conventions, not truths. This mirrors how physics works—we care about relative motion.</p>
+<hr />
+<h3 id="property-2-independent-increments">Property 2: Independent Increments<a class="headerlink" href="#property-2-independent-increments" title="Permanent link">&para;</a></h3>
+<div class="arithmatex">\[
+B_t - B_s \perp\!\!\!\perp B_u - B_v \quad \text{for disjoint intervals}
+\]</div>
+<p><strong>Mathematical meaning</strong>: Changes over non-overlapping time intervals are independent random variables.</p>
+<p><strong>Physical meaning</strong>: The future does not remember the past. Molecular collisions are so rapid and chaotic that past kicks don't influence future kicks.</p>
+<p><strong>Why this is reasonable</strong>:</p>
+<ul>
+<li>Billions of collisions per second</li>
+<li>Correlations wash out almost instantly</li>
+<li>The surrounding fluid has no memory at the scale of observation</li>
+</ul>
+<p><strong>Interpretation</strong>: Yesterday's shove tells you nothing about tomorrow's shove.</p>
+<p><strong>This is the Markov assumption</strong>, but earned, not assumed. It's why Brownian motion became the backbone of Markov processes, diffusion, and SDEs.</p>
+<hr />
+<h3 id="property-3-stationary-gaussian-increments">Property 3: Stationary Gaussian Increments<a class="headerlink" href="#property-3-stationary-gaussian-increments" title="Permanent link">&para;</a></h3>
+<div class="arithmatex">\[
+B_t - B_s \sim \mathcal{N}(0, t-s)
+\]</div>
+<p>This is the most information-dense property. Let's break it down.</p>
+<h4 id="mean-0">Mean = 0<a class="headerlink" href="#mean-0" title="Permanent link">&para;</a></h4>
+<p><strong>No drift.</strong> No preferred direction.</p>
+<p><strong>Physical meaning</strong>: The fluid is isotropic and at equilibrium. If there were a mean, you'd have wind, flow, or external force.</p>
+<h4 id="variance-t-s">Variance = <span class="arithmatex">\(t-s\)</span><a class="headerlink" href="#variance-t-s" title="Permanent link">&para;</a></h4>
+<p><strong>Spread grows linearly with time.</strong></p>
+<p><strong>Physical meaning</strong>:</p>
+<ul>
+<li>Each collision adds a tiny displacement</li>
+<li>Variances add, not displacements</li>
+<li>This is <strong>diffusion</strong>, not ballistic motion</li>
+</ul>
+<p><strong>Key insight</strong>: Distance <span class="arithmatex">\(\propto \sqrt{\text{time}}\)</span>, not <span class="arithmatex">\(\propto \text{time}\)</span>.</p>
+<p>This single fact distinguishes <strong>diffusion</strong> from <strong>motion with velocity</strong>.</p>
+<h4 id="gaussian-shape">Gaussian Shape<a class="headerlink" href="#gaussian-shape" title="Permanent link">&para;</a></h4>
+<p><strong>Why normal distribution?</strong></p>
+<p>Because the displacement over time is the sum of <strong>enormously many tiny, independent kicks</strong>, and the <strong>Central Limit Theorem</strong> kicks in mercilessly.</p>
+<p>Gaussianity is not sacred—it's <strong>statistical inevitability</strong> under these conditions.</p>
+<hr />
+<h3 id="property-4-continuous-paths-but-nowhere-differentiable">Property 4: Continuous Paths (But Nowhere Differentiable)<a class="headerlink" href="#property-4-continuous-paths-but-nowhere-differentiable" title="Permanent link">&para;</a></h3>
+<p><strong>Mathematical meaning</strong>: <span class="arithmatex">\(B_t\)</span> is continuous, but has no well-defined velocity anywhere.</p>
+<p><strong>Physical meaning</strong>:</p>
+<ul>
+<li>The particle never teleports</li>
+<li>But at every scale, motion is jittery</li>
+</ul>
+<p><strong>The strange reality</strong>:</p>
+<p>Zoom in: Still jagged.<br />
+Zoom in again: Still jagged.<br />
+Zoom in infinitely: <strong>Still jagged.</strong></p>
+<p>There is <strong>no smallest wiggle</strong>.</p>
+<p><strong>Consequences</strong>: This forced mathematics to abandon classical calculus and invent:
+- Itô calculus
+- Stratonovich calculus
+- Stochastic integration</p>
+<p>Nature demanded new math.</p>
+<hr />
+<h2 id="5-the-mysterious-sqrtdt-scaling">5. The Mysterious <span class="arithmatex">\(\sqrt{dt}\)</span> Scaling<a class="headerlink" href="#5-the-mysterious-sqrtdt-scaling" title="Permanent link">&para;</a></h2>
+<p>One of the most confusing aspects of Brownian motion is why noise scales as <span class="arithmatex">\(\sqrt{dt}\)</span>, not <span class="arithmatex">\(dt\)</span>. Let's build intuition step by step.</p>
+<h3 id="the-question">The Question<a class="headerlink" href="#the-question" title="Permanent link">&para;</a></h3>
+<p>In SDEs, we write:</p>
+<div class="arithmatex">\[
+dw(t) = \sqrt{dt} \cdot \varepsilon, \quad \varepsilon \sim \mathcal{N}(0,1)
+\]</div>
+<p><strong>Why the square root?</strong> Why not just <span class="arithmatex">\(dt\)</span> or some other power?</p>
+<h3 id="intuition-1-diffusive-scaling">Intuition 1: Diffusive Scaling<a class="headerlink" href="#intuition-1-diffusive-scaling" title="Permanent link">&para;</a></h3>
+<p>Imagine a particle getting random kicks over time.</p>
+<ul>
+<li>Over <strong>1 second</strong>, it wanders a lot</li>
+<li>Over <strong>0.01 seconds</strong>, it wanders a little</li>
+<li>Over <strong>0 seconds</strong>, it doesn't move at all</li>
+</ul>
+<p><strong>Key empirical fact</strong>: If you wait <strong>4× longer</strong>, the typical distance only <strong>doubles</strong>—not quadruples.</p>
+<div class="arithmatex">\[
+\text{typical distance} \propto \sqrt{\text{time}}
+\]</div>
+<p>This is called <strong>diffusive scaling</strong>.</p>
+<h3 id="intuition-2-variance-adds-not-displacements">Intuition 2: Variance Adds, Not Displacements<a class="headerlink" href="#intuition-2-variance-adds-not-displacements" title="Permanent link">&para;</a></h3>
+<p>Consider a simple random walk with <span class="arithmatex">\(n\)</span> steps:</p>
+<div class="arithmatex">\[
+X_n = \sum_{k=1}^n \varepsilon_k, \quad \varepsilon_k \sim \mathcal{N}(0, 1)
+\]</div>
+<p><strong>Variance</strong>:</p>
+<div class="arithmatex">\[
+\text{Var}(X_n) = \text{Var}\left(\sum_{k=1}^n \varepsilon_k\right) = n
+\]</div>
+<p><strong>Why this formula?</strong> The variance of a sum of <strong>independent</strong> random variables equals the sum of their variances:</p>
+<div class="arithmatex">\[
+\text{Var}\left(\sum_{k=1}^n \varepsilon_k\right) = \sum_{k=1}^n \text{Var}(\varepsilon_k) = \sum_{k=1}^n 1 = n
+\]</div>
+<p><strong>General formula for variance of sum:</strong></p>
+<p>For <strong>independent</strong> random variables <span class="arithmatex">\(X_1, X_2, \ldots, X_n\)</span>:</p>
+<p>$$</p>
+<p>\text{Var}\left(\sum_{k=1}^n X_k\right) = \sum_{k=1}^n \text{Var}(X_k)
+$$</p>
+<p>For <strong>dependent</strong> random variables (with covariance):</p>
+<p>$$</p>
+<p>\text{Var}\left(\sum_{k=1}^n X_k\right) = \sum_{k=1}^n \text{Var}(X_k) + 2\sum_{i &lt; j} \text{Cov}(X_i, X_j)
+$$</p>
+<p>In our case, the <span class="arithmatex">\(\varepsilon_k\)</span> are <strong>independent</strong> (each step is independent), so the covariance terms are zero, and we get the simple sum.</p>
+<p><strong>Standard deviation</strong>:</p>
+<div class="arithmatex">\[
+\text{SD}(X_n) = \sqrt{n}
+\]</div>
+<p>So:
+- Variance grows <strong>linearly</strong> with number of steps
+- Standard deviation (typical distance) grows like <strong><span class="arithmatex">\(\sqrt{n}\)</span></strong></p>
+<h3 id="from-steps-to-time">From Steps to Time<a class="headerlink" href="#from-steps-to-time" title="Permanent link">&para;</a></h3>
+<p>Now connect steps to continuous time:</p>
+<ul>
+<li>Total time: <span class="arithmatex">\(t\)</span></li>
+<li>Step size: <span class="arithmatex">\(\Delta t\)</span></li>
+<li>Number of steps: <span class="arithmatex">\(n = t / \Delta t\)</span></li>
+</ul>
+<p>If each step had noise of fixed size, variance would blow up as <span class="arithmatex">\(\Delta t \to 0\)</span>. That's bad.</p>
+<p><strong>Solution</strong>: Scale down the noise per step:</p>
+<div class="arithmatex">\[
+\Delta x_k = \sqrt{\Delta t} \cdot \varepsilon_k
+\]</div>
+<p><strong>Variance over time <span class="arithmatex">\(t\)</span></strong>:</p>
+<div class="arithmatex">\[
+\text{Var}(x_t) = \sum_{k=1}^n \text{Var}(\sqrt{\Delta t} \cdot \varepsilon_k) = \sum_{k=1}^n \Delta t = n \cdot \Delta t = t
+\]</div>
+<p>Perfect! We get:
+- Finite variance
+- Linear growth in time
+- Well-defined continuous limit</p>
+<p><strong>This is why noise per step must scale as <span class="arithmatex">\(\sqrt{\Delta t}\)</span>.</strong></p>
+<h3 id="the-mathematical-statement">The Mathematical Statement<a class="headerlink" href="#the-mathematical-statement" title="Permanent link">&para;</a></h3>
+<p>Brownian motion is <strong>defined</strong> to satisfy:</p>
+<div class="arithmatex">\[
+w(t+\Delta t) - w(t) \sim \mathcal{N}(0, \Delta t)
+\]</div>
+<p>Since any <span class="arithmatex">\(\mathcal{N}(0, \Delta t)\)</span> variable can be written as <span class="arithmatex">\(\sqrt{\Delta t}\)</span> times a standard normal:</p>
+<div class="arithmatex">\[
+dw(t) = \sqrt{dt} \cdot \varepsilon, \quad \varepsilon \sim \mathcal{N}(0,1)
+\]</div>
+<p><strong>This is not an approximation or modeling choice—it's baked into the definition.</strong></p>
+<h3 id="why-not-other-scalings">Why Not Other Scalings?<a class="headerlink" href="#why-not-other-scalings" title="Permanent link">&para;</a></h3>
+<p>Let's check alternatives:</p>
+<h4 id="if-noise-scaled-as-dt">If noise scaled as <span class="arithmatex">\(dt\)</span><a class="headerlink" href="#if-noise-scaled-as-dt" title="Permanent link">&para;</a></h4>
+<div class="arithmatex">\[
+dw \sim dt
+\]</div>
+<p>Then:
+- Variance per step <span class="arithmatex">\(\sim dt^2\)</span>
+- Total variance over time <span class="arithmatex">\(\sim dt \to 0\)</span></p>
+<p><strong>Result</strong>: Noise disappears. You just get an ODE.</p>
+<h4 id="if-noise-scaled-as-constant">If noise scaled as constant<a class="headerlink" href="#if-noise-scaled-as-constant" title="Permanent link">&para;</a></h4>
+<div class="arithmatex">\[
+dw \sim 1
+\]</div>
+<p>Then:
+- Variance per unit time <span class="arithmatex">\(\to \infty\)</span></p>
+<p><strong>Result</strong>: Process explodes. No limit exists.</p>
+<h4 id="only-sqrtdt-works">Only <span class="arithmatex">\(\sqrt{dt}\)</span> works<a class="headerlink" href="#only-sqrtdt-works" title="Permanent link">&para;</a></h4>
+<p>It's the <strong>unique scaling</strong> that gives:
+- Nontrivial randomness
+- Finite variance
+- A meaningful continuous-time limit</p>
+<p>This is why Brownian motion is so universal.</p>
+<h3 id="the-key-insight-for-sdes">The Key Insight for SDEs<a class="headerlink" href="#the-key-insight-for-sdes" title="Permanent link">&para;</a></h3>
+<p>In an SDE:</p>
+<div class="arithmatex">\[
+dx = f(x,t)\,dt + g(t)\,dw
+\]</div>
+<p>You can now clearly see:
+- <strong>Deterministic motion</strong> scales like <span class="arithmatex">\(dt\)</span>
+- <strong>Stochastic motion</strong> scales like <span class="arithmatex">\(\sqrt{dt}\)</span></p>
+<p>They live on <strong>different scales</strong>. This difference is crucial—it's why noise doesn't vanish or explode.</p>
+<hr />
+<h2 id="6-from-random-walk-to-brownian-motion">6. From Random Walk to Brownian Motion<a class="headerlink" href="#6-from-random-walk-to-brownian-motion" title="Permanent link">&para;</a></h2>
+<p>Now let's make the connection rigorous. How exactly does a random walk become Brownian motion?</p>
+<h3 id="the-scaling-limit">The Scaling Limit<a class="headerlink" href="#the-scaling-limit" title="Permanent link">&para;</a></h3>
+<p><strong>Setup</strong>: Take a random walk with:
+- Step size: <span class="arithmatex">\(\Delta x\)</span>
+- Time step: <span class="arithmatex">\(\Delta t\)</span>
+- Steps: <span class="arithmatex">\(\varepsilon_1, \varepsilon_2, \ldots\)</span> with <span class="arithmatex">\(\mathbb{E}[\varepsilon_i] = 0\)</span>, <span class="arithmatex">\(\text{Var}(\varepsilon_i) = 1\)</span></p>
+<p><strong>Discrete random walk</strong>:</p>
+<div class="arithmatex">\[
+S_n = \sum_{i=1}^n \varepsilon_i, \quad S_0 = 0
+\]</div>
+<p><strong>Rescaling</strong>: Define a continuous-time process:</p>
+<div class="arithmatex">\[
+W_n(t) = \frac{1}{\sqrt{n}} S_{\lfloor nt \rfloor}
+\]</div>
+<p><strong>Interpretation</strong>:</p>
+<ul>
+<li>Speed up time by factor <span class="arithmatex">\(n\)</span> (so <span class="arithmatex">\(nt\)</span> steps happen by time <span class="arithmatex">\(t\)</span>)</li>
+<li>Shrink space by <span class="arithmatex">\(\sqrt{n}\)</span></li>
+</ul>
+<p><strong>Variance check</strong>:</p>
+<div class="arithmatex">\[
+\text{Var}(W_n(t)) = \text{Var}\left(\frac{1}{\sqrt{n}} S_{\lfloor nt \rfloor}\right) = \frac{1}{n} \cdot \lfloor nt \rfloor \approx t
+\]</div>
+<p>Perfect!</p>
+<h3 id="donskers-invariance-principle">Donsker's Invariance Principle<a class="headerlink" href="#donskers-invariance-principle" title="Permanent link">&para;</a></h3>
+<p><strong>Theorem</strong> (Donsker, 1951): As <span class="arithmatex">\(n \to \infty\)</span>,</p>
+<div class="arithmatex">\[
+W_n(\cdot) \Rightarrow B(\cdot)
+\]</div>
+<p>as <strong>processes</strong> (convergence in distribution in the space of continuous functions).</p>
+<p><strong>What this means</strong>:</p>
+<ul>
+<li>The rescaled random walk converges to Brownian motion</li>
+<li>Not just at individual times, but as entire random curves</li>
+<li>This is a <strong>functional Central Limit Theorem</strong></li>
+</ul>
+<p><strong>Interpretation</strong>:</p>
+<ul>
+<li>Random walk = microscopic description</li>
+<li>Brownian motion = macroscopic, continuum description</li>
+</ul>
+<p>Just like:
+- Individual molecules → thermodynamics
+- Coin flips → Gaussian noise
+- Discrete Markov chains → SDEs</p>
+<hr />
+<h2 id="7-why-this-matters-for-diffusion-models">7. Why This Matters for Diffusion Models<a class="headerlink" href="#7-why-this-matters-for-diffusion-models" title="Permanent link">&para;</a></h2>
+<p>Now we can connect everything to diffusion models.</p>
+<h3 id="the-forward-process">The Forward Process<a class="headerlink" href="#the-forward-process" title="Permanent link">&para;</a></h3>
+<p>In diffusion models, the <strong>forward noising process</strong> gradually corrupts clean data into noise.</p>
+<p><strong>Discrete view (DDPM)</strong>:</p>
+<div class="arithmatex">\[
+x_t = \sqrt{\bar{\alpha}_t} x_0 + \sqrt{1-\bar{\alpha}_t} \varepsilon
+\]</div>
+<p>This is a <strong>discrete random walk in noise space</strong>.</p>
+<p><strong>Continuous view (SDE)</strong>:</p>
+<div class="arithmatex">\[
+dx = f(x,t)\,dt + g(t)\,dw(t)
+\]</div>
+<p>This treats the same process as <strong>Brownian motion with drift</strong>.</p>
+<p><strong>Key insight</strong>: DDPM's discrete noise <strong>exactly matches</strong> the <span class="arithmatex">\(\sqrt{dt}\)</span> scaling of Brownian motion.</p>
+<h3 id="why-brownian-motion-is-perfect-for-diffusion">Why Brownian Motion is Perfect for Diffusion<a class="headerlink" href="#why-brownian-motion-is-perfect-for-diffusion" title="Permanent link">&para;</a></h3>
+<ol>
+<li><strong>Continuous paths</strong>: Data never jumps discontinuously</li>
+<li><strong>Gaussian increments</strong>: Noise is well-behaved, tractable</li>
+<li><strong>Independent increments</strong>: Markov property enables efficient training</li>
+<li><strong>Stationary increments</strong>: Noise schedule is time-translation invariant</li>
+<li><strong>Universal limit</strong>: Any reasonable discrete noise schedule converges to it</li>
+</ol>
+<h3 id="the-sde-formulation">The SDE Formulation<a class="headerlink" href="#the-sde-formulation" title="Permanent link">&para;</a></h3>
+<p>The forward SDE:</p>
+<div class="arithmatex">\[
+dx = f(x,t)\,dt + g(t)\,dw(t)
+\]</div>
+<p><strong>Components</strong>:</p>
+<ul>
+<li><span class="arithmatex">\(f(x,t)\)</span>: Drift (deterministic shrinkage toward origin)</li>
+<li><span class="arithmatex">\(g(t)\)</span>: Diffusion coefficient (noise strength)</li>
+<li><span class="arithmatex">\(dw(t) = \sqrt{dt} \cdot \varepsilon\)</span>: Brownian motion</li>
+</ul>
+<p><strong>Why this works</strong>:</p>
+<ul>
+<li>Drift scales as <span class="arithmatex">\(dt\)</span> (slow, deterministic)</li>
+<li>Diffusion scales as <span class="arithmatex">\(\sqrt{dt}\)</span> (fast, stochastic)</li>
+<li>Together they balance to create smooth corruption</li>
+</ul>
+<h3 id="the-reverse-process">The Reverse Process<a class="headerlink" href="#the-reverse-process" title="Permanent link">&para;</a></h3>
+<p>The reverse SDE:</p>
+<div class="arithmatex">\[
+dx = \left[f(x,t) - g(t)^2 \nabla_x \log p_t(x)\right]dt + g(t)\,d\bar{w}(t)
+\]</div>
+<p><strong>Key point</strong>: The reverse process <strong>also uses Brownian motion</strong> (with time running backwards).</p>
+<p><strong>Why this is remarkable</strong>:</p>
+<ul>
+<li>The same stochastic process that corrupts data</li>
+<li>Can be reversed to generate data</li>
+<li>All thanks to Anderson's theorem (1982)</li>
+</ul>
+<h3 id="connection-to-score-matching">Connection to Score Matching<a class="headerlink" href="#connection-to-score-matching" title="Permanent link">&para;</a></h3>
+<p>The score function <span class="arithmatex">\(\nabla_x \log p_t(x)\)</span> tells you:
+- Which direction increases probability
+- How to "undo" the Brownian noise</p>
+<p><strong>Training</strong>: Learn to predict the score at all noise levels.</p>
+<p><strong>Sampling</strong>: Use the learned score in the reverse SDE to denoise.</p>
+<p><strong>The bridge</strong>: Brownian motion is what makes this connection clean and tractable.</p>
+<hr />
+<h2 id="summary-the-big-picture">Summary: The Big Picture<a class="headerlink" href="#summary-the-big-picture" title="Permanent link">&para;</a></h2>
+<p>Let's synthesize everything:</p>
+<h3 id="what-brownian-motion-is">What Brownian Motion Is<a class="headerlink" href="#what-brownian-motion-is" title="Permanent link">&para;</a></h3>
+<blockquote>
+<p>The <strong>universal macroscopic description</strong> of motion driven by countless microscopic, memoryless, unbiased fluctuations.</p>
+</blockquote>
+<h3 id="why-it-appears-everywhere">Why It Appears Everywhere<a class="headerlink" href="#why-it-appears-everywhere" title="Permanent link">&para;</a></h3>
+<ul>
+<li>Pollen grains in water</li>
+<li>Heat diffusion</li>
+<li>Stock prices (with caveats)</li>
+<li>Noise in neural models</li>
+<li>Forward processes in diffusion models</li>
+<li>SDE limits of random walks</li>
+</ul>
+<p>It is not "the truth of motion"—it is the <strong>inevitable limit</strong> when you refuse to track microscopic detail.</p>
+<h3 id="the-key-properties-recap">The Key Properties (Recap)<a class="headerlink" href="#the-key-properties-recap" title="Permanent link">&para;</a></h3>
+<ol>
+<li><strong><span class="arithmatex">\(B_0 = 0\)</span></strong>: Start at origin (choice of reference frame)</li>
+<li><strong>Independent increments</strong>: No memory (Markov property)</li>
+<li><strong>Gaussian increments with variance <span class="arithmatex">\(\propto\)</span> time</strong>: Diffusive scaling</li>
+<li><strong>Continuous but nowhere differentiable</strong>: Infinitely rough</li>
+</ol>
+<h3 id="the-sqrtdt-scaling-one-line-takeaway">The <span class="arithmatex">\(\sqrt{dt}\)</span> Scaling (One-Line Takeaway)<a class="headerlink" href="#the-sqrtdt-scaling-one-line-takeaway" title="Permanent link">&para;</a></h3>
+<blockquote>
+<p>Noise scales as <span class="arithmatex">\(\sqrt{dt}\)</span> because variance must grow linearly in time for a continuous-time random process to exist; this is the only scaling that yields finite, nontrivial stochastic behavior.</p>
+</blockquote>
+<h3 id="for-diffusion-models">For Diffusion Models<a class="headerlink" href="#for-diffusion-models" title="Permanent link">&para;</a></h3>
+<ul>
+<li><strong>DDPM</strong>: Discrete random walk in noise space</li>
+<li><strong>SDE formulation</strong>: Continuous Brownian motion with drift</li>
+<li><strong>Same process</strong>: Different descriptions, unified by Donsker's theorem</li>
+<li><strong>Why it works</strong>: Brownian motion provides the mathematical foundation for adding and removing noise in a principled way</li>
+</ul>
+<hr />
+<h2 id="further-reading">Further Reading<a class="headerlink" href="#further-reading" title="Permanent link">&para;</a></h2>
+<h3 id="primary-papers">Primary Papers<a class="headerlink" href="#primary-papers" title="Permanent link">&para;</a></h3>
+<ul>
+<li><strong>Einstein (1905)</strong>: <a href="https://en.wikipedia.org/wiki/Investigations_on_the_Theory_of_the_Brownian_Movement">Investigations on the Theory of the Brownian Movement</a></li>
+<li>
+<p>Original explanation of Brownian motion via molecular collisions</p>
+</li>
+<li>
+<p><strong>Donsker (1951)</strong>: An invariance principle for certain probability limit theorems</p>
+</li>
+<li>
+<p>Proves random walk → Brownian motion convergence</p>
+</li>
+<li>
+<p><strong>Song et al. (2021)</strong>: <a href="https://arxiv.org/abs/2011.13456">Score-Based Generative Modeling through SDEs</a></p>
+</li>
+<li>Applies Brownian motion to diffusion models</li>
+</ul>
+<h3 id="textbooks">Textbooks<a class="headerlink" href="#textbooks" title="Permanent link">&para;</a></h3>
+<ul>
+<li><strong>Øksendal (2003)</strong>: <em>Stochastic Differential Equations: An Introduction with Applications</em></li>
+<li>
+<p>Comprehensive SDE theory with Brownian motion foundations</p>
+</li>
+<li>
+<p><strong>Karatzas &amp; Shreve (1991)</strong>: <em>Brownian Motion and Stochastic Calculus</em></p>
+</li>
+<li>
+<p>Advanced reference with rigorous proofs</p>
+</li>
+<li>
+<p><strong>Mörters &amp; Peres (2010)</strong>: <em>Brownian Motion</em></p>
+</li>
+<li>Modern treatment with applications</li>
+</ul>
+<h3 id="related-topics">Related Topics<a class="headerlink" href="#related-topics" title="Permanent link">&para;</a></h3>
+<ul>
+<li><strong>Itô calculus</strong>: How to do calculus with Brownian motion</li>
+<li><strong>Langevin dynamics</strong>: Brownian motion + gradient flow</li>
+<li><strong>Fokker-Planck equation</strong>: PDE describing probability evolution</li>
+<li><strong>Wiener measure</strong>: Probability measure on path space</li>
+</ul>
+<hr />
+<h2 id="next-steps">Next Steps<a class="headerlink" href="#next-steps" title="Permanent link">&para;</a></h2>
+<p>Now that you understand Brownian motion:</p>
+<ol>
+<li><strong>See it in action</strong>: Run the SDE tutorial notebook to visualize Brownian paths</li>
+<li><strong>Study the forward SDE</strong>: Learn how <span class="arithmatex">\(f(x,t)\)</span> and <span class="arithmatex">\(g(t)\)</span> are chosen</li>
+<li><strong>Understand score matching</strong>: See how the score function reverses diffusion</li>
+<li><strong>Implement DDPM</strong>: Connect discrete and continuous views</li>
+</ol>
+<p>The mathematical machinery is now in place. Time to build diffusion models!</p>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">
+      Copyright &copy; 2026 GenAI Lab Research Team
+    </div>
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+        
+<div class="md-social">
+  
+    
+    
+    
+    
+      
+      
+    
+    <a href="https://github.com/pleiadian53/genai-lab" target="_blank" rel="noopener" title="github.com" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.tracking", "navigation.tabs", "navigation.tabs.sticky", "navigation.sections", "navigation.expand", "navigation.top", "search.suggest", "search.highlight", "content.code.copy", "content.action.edit"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"provider": "mike"}}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+        <script src="../../javascripts/mathjax.js"></script>
+      
+        <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+      
+        <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+      
+    
+  </body>
+</html>

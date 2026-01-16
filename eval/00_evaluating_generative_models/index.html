@@ -1,0 +1,4186 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Generative AI for computational biology - diffusion models, VAEs, and foundation models for gene expression">
+      
+      
+        <meta name="author" content="GenAI Lab Research Team">
+      
+      
+        <link rel="canonical" href="https://pleiadian53.github.io/genai-lab/eval/00_evaluating_generative_models/">
+      
+      
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.1">
+    
+    
+      
+        <title>Evaluating Generative Models: A Comprehensive Guide - GenAI Lab</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.484c7ddc.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../../stylesheets/extra.css">
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="deep-purple" data-md-color-accent="deep-purple">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#evaluating-generative-models-a-comprehensive-guide" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+      <div data-md-color-scheme="default" data-md-component="outdated" hidden>
+        
+      </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow md-header--lifted" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="GenAI Lab" class="md-header__button md-logo" aria-label="GenAI Lab" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            GenAI Lab
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Evaluating Generative Models: A Comprehensive Guide
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="deep-purple" data-md-color-accent="deep-purple"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="deep-purple" data-md-color-accent="deep-purple"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/pleiadian53/genai-lab" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+  </div>
+  <div class="md-source__repository">
+    pleiadian53/genai-lab
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+    
+      
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../.." class="md-tabs__link">
+        
+  
+  
+    
+  
+  Home
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../ROADMAP/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Roadmap
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../foundation_models/" class="md-tabs__link">
+          
+  
+  
+  Foundation Models
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../DiT/" class="md-tabs__link">
+          
+  
+  
+  Diffusion Transformers (DiT)
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../JEPA/" class="md-tabs__link">
+          
+  
+  
+  JEPA (Joint Embedding)
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../latent_diffusion/" class="md-tabs__link">
+          
+  
+  
+  Latent Diffusion
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../DDPM/" class="md-tabs__link">
+          
+  
+  
+  DDPM (Denoising Diffusion)
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../VAE/VAE-01-overview/" class="md-tabs__link">
+          
+  
+  
+  VAE (Variational Autoencoders)
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../score_matching/" class="md-tabs__link">
+          
+  
+  
+  Score Matching & EBM
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../flow_matching/" class="md-tabs__link">
+          
+  
+  
+  Flow Matching
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../SDE/" class="md-tabs__link">
+          
+  
+  
+  SDE (Stochastic Differential Equations)
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../datasets/" class="md-tabs__link">
+          
+  
+  
+  Datasets
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../diffusion/01_ddpm/01_ddpm_basics/" class="md-tabs__link">
+          
+  
+  
+  Diffusion (Technical Deep Dives)
+
+        </a>
+      </li>
+    
+  
+
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../notebooks/" class="md-tabs__link">
+          
+  
+  
+  Notebooks
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../SETUP/" class="md-tabs__link">
+          
+  
+  
+  About
+
+        </a>
+      </li>
+    
+  
+
+      
+    </ul>
+  </div>
+</nav>
+    
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="GenAI Lab" class="md-nav__button md-logo" aria-label="GenAI Lab" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    GenAI Lab
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/pleiadian53/genai-lab" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+  </div>
+  <div class="md-source__repository">
+    pleiadian53/genai-lab
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../ROADMAP/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Roadmap
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Foundation Models
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Foundation Models
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../foundation_models/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../foundation_models/leveraging_foundation_models_v2/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Leveraging Foundation Models
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../foundation_models/data_shape_v2/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Data Shape & Tensors
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../foundation_models/IMPLEMENTATION_GUIDE/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Implementation Guide
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Diffusion Transformers (DiT)
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Diffusion Transformers (DiT)
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../DiT/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Series Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../DiT/00_dit_overview/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    00: DiT Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../DiT/01_dit_foundations/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    01: Foundations
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../DiT/02_dit_training/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    02: Training
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../DiT/03_dit_sampling/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    03: Sampling
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../DiT/open_research_tokenization/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Research: Tokenization
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    JEPA (Joint Embedding)
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    JEPA (Joint Embedding)
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../JEPA/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Series Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../JEPA/00_jepa_overview/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    00: JEPA Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../JEPA/01_jepa_foundations/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    01: Foundations
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../JEPA/02_jepa_training/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    02: Training
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../JEPA/03_jepa_applications/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    03: Applications
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../JEPA/04_jepa_perturbseq/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    04: Perturb-seq
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../JEPA/open_research_joint_latent/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Research: Joint Latent
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_6" >
+        
+          
+          <label class="md-nav__link" for="__nav_6" id="__nav_6_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Latent Diffusion
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Latent Diffusion
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../latent_diffusion/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Series Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../latent_diffusion/00_latent_diffusion_overview/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    00: Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../latent_diffusion/01_latent_diffusion_foundations/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    01: Foundations
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../latent_diffusion/02_latent_diffusion_training/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    02: Training
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../latent_diffusion/03_latent_diffusion_applications/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    03: Applications
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../latent_diffusion/04_latent_diffusion_combio/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    04: ComBio Implementation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_7" >
+        
+          
+          <label class="md-nav__link" for="__nav_7" id="__nav_7_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    DDPM (Denoising Diffusion)
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_7_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_7">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    DDPM (Denoising Diffusion)
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../DDPM/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../DDPM/02a_diffusion_arch_gene_expression/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Architectures for Gene Expression
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../DDPM/02b_diffusion_arch_qa/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Architecture Q&A
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_8" >
+        
+          
+          <label class="md-nav__link" for="__nav_8" id="__nav_8_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    VAE (Variational Autoencoders)
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_8_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_8">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    VAE (Variational Autoencoders)
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../VAE/VAE-01-overview/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    01: Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../VAE/VAE-02-elbo/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    02: ELBO
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../VAE/VAE-03-inference/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    03: Inference
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../VAE/VAE-for-prediction/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    VAE for Prediction
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../VAE/VAE-model-training/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Model Training
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../beta-VAE/beta_vae/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Beta-VAE
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_9" >
+        
+          
+          <label class="md-nav__link" for="__nav_9" id="__nav_9_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Score Matching & EBM
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_9_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_9">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Score Matching & EBM
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../score_matching/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Score Matching
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../EBM/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Energy-Based Models
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../EBM/EBM-stein-vs-fisher-score/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Stein vs Fisher Score
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_10" >
+        
+          
+          <label class="md-nav__link" for="__nav_10" id="__nav_10_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Flow Matching
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_10_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_10">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Flow Matching
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../flow_matching/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_11" >
+        
+          
+          <label class="md-nav__link" for="__nav_11" id="__nav_11_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    SDE (Stochastic Differential Equations)
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_11_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_11">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    SDE (Stochastic Differential Equations)
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../SDE/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_12" >
+        
+          
+          <label class="md-nav__link" for="__nav_12" id="__nav_12_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Datasets
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_12_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_12">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Datasets
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../datasets/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_13" >
+        
+          
+          <label class="md-nav__link" for="__nav_13" id="__nav_13_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Diffusion (Technical Deep Dives)
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_13_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_13">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Diffusion (Technical Deep Dives)
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_13_1" >
+        
+          
+          <label class="md-nav__link" for="__nav_13_1" id="__nav_13_1_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    DDPM Basics
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_13_1_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_13_1">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    DDPM Basics
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../diffusion/01_ddpm/01_ddpm_basics/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Notebook
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_13_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_13_2" id="__nav_13_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    SDE Formulation
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_13_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_13_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    SDE Formulation
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../diffusion/02_sde_formulation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../diffusion/02_sde_formulation/02_sde_formulation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Notebook
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_13_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_13_3" id="__nav_13_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Medical Imaging Diffusion
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_13_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_13_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Medical Imaging Diffusion
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../diffusion/03_medical_imaging_diffusion/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../diffusion/03_medical_imaging_diffusion/03_medical_imaging_diffusion/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Notebook
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_13_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_13_4" id="__nav_13_4_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Gene Expression Diffusion
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_13_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_13_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Gene Expression Diffusion
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../diffusion/04_gene_expression_diffusion/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../diffusion/04_gene_expression_diffusion/04_gene_expression_diffusion/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Notebook
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_14" >
+        
+          
+          <label class="md-nav__link" for="__nav_14" id="__nav_14_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Notebooks
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_14_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_14">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Notebooks
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../notebooks/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_15" >
+        
+          
+          <label class="md-nav__link" for="__nav_15" id="__nav_15_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    About
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_15_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_15">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    About
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../SETUP/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Setup & Installation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../INDUSTRY_LANDSCAPE/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Industry Landscape
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#the-evaluation-challenge" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The Evaluation Challenge
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="The Evaluation Challenge">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#why-evaluation-is-hard" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Why Evaluation is Hard
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#key-questions" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Key Questions
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#evaluation-metrics-by-category" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Evaluation Metrics by Category
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Evaluation Metrics by Category">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1-sample-quality-metrics" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Sample Quality Metrics
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-likelihood-based-metrics" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Likelihood-Based Metrics
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3-perceptual-metrics" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. Perceptual Metrics
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#4-domain-specific-metrics" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. Domain-Specific Metrics
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#evaluating-diffusion-models-specifically" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Evaluating Diffusion Models Specifically
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Evaluating Diffusion Models Specifically">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#standard-diffusion-model-metrics" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Standard Diffusion Model Metrics
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#diffusion-specific-considerations" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Diffusion-Specific Considerations
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#comparing-modeling-approaches" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Comparing Modeling Approaches
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Comparing Modeling Approaches">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#how-to-determine-better-or-worse" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        How to Determine "Better" or "Worse"
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#evaluation-for-biological-data" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Evaluation for Biological Data
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Evaluation for Biological Data">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#unique-challenges" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Unique Challenges
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#recommended-metrics" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Recommended Metrics
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#practical-evaluation-workflow" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Practical Evaluation Workflow
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Practical Evaluation Workflow">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#step-1-baseline-metrics" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 1: Baseline Metrics
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#step-2-comprehensive-evaluation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 2: Comprehensive Evaluation
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#step-3-domain-specific-validation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 3: Domain-Specific Validation
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#step-4-efficiency-analysis" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 4: Efficiency Analysis
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#step-5-reporting" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 5: Reporting
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#common-pitfalls" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Common Pitfalls
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Common Pitfalls">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1-single-metric-optimization" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Single-Metric Optimization
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-cherry-picking-samples" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Cherry-Picking Samples
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3-ignoring-computational-cost" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. Ignoring Computational Cost
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#4-overfitting-to-validation-set" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. Overfitting to Validation Set
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#5-ignoring-statistical-significance" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. Ignoring Statistical Significance
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#6-domain-mismatch" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6. Domain Mismatch
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#decision-framework" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Decision Framework
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Decision Framework">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#when-is-model-a-better-than-model-b" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        When is Model A "Better" than Model B?
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#summary" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Summary
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Summary">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#key-principles" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Key Principles
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#recommended-metric-suites" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Recommended Metric Suites
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#the-bottom-line" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The Bottom Line
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#related-documents" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Related Documents
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#references" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        References
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="References">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#evaluation-metrics" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Evaluation Metrics
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#diffusion-model-evaluation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Diffusion Model Evaluation
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#epiplexity" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Epiplexity
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#best-practices" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Best Practices
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+    <a href="https://github.com/pleiadian53/genai-lab/edit/main/docs/eval/00_evaluating_generative_models.md" title="Edit this page" class="md-content__button md-icon" rel="edit">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20.71 7.04c.39-.39.39-1.04 0-1.41l-2.34-2.34c-.37-.39-1.02-.39-1.41 0l-1.84 1.83 3.75 3.75M3 17.25V21h3.75L17.81 9.93l-3.75-3.75z"/></svg>
+    </a>
+  
+  
+
+
+<h1 id="evaluating-generative-models-a-comprehensive-guide">Evaluating Generative Models: A Comprehensive Guide<a class="headerlink" href="#evaluating-generative-models-a-comprehensive-guide" title="Permanent link">&para;</a></h1>
+<p>Evaluating generative models is fundamentally challenging because there is no single "ground truth" metric. Different evaluation approaches capture different aspects of model quality, and the choice of metrics depends on the application domain and goals.</p>
+<p>This document provides a comprehensive overview of evaluation methods for generative models, with particular focus on diffusion models and biological data applications.</p>
+<hr />
+<h2 id="the-evaluation-challenge">The Evaluation Challenge<a class="headerlink" href="#the-evaluation-challenge" title="Permanent link">&para;</a></h2>
+<h3 id="why-evaluation-is-hard">Why Evaluation is Hard<a class="headerlink" href="#why-evaluation-is-hard" title="Permanent link">&para;</a></h3>
+<p>Generative models face unique evaluation challenges:</p>
+<ol>
+<li><strong>No single ground truth</strong>: Unlike supervised learning, there's no single correct output</li>
+<li><strong>Multiple objectives</strong>: Quality, diversity, efficiency, and utility often trade off</li>
+<li><strong>Domain-specific requirements</strong>: What matters for images differs from what matters for gene expression</li>
+<li><strong>Computational constraints</strong>: Some metrics are expensive to compute</li>
+<li><strong>Perceptual vs. statistical</strong>: Human perception doesn't always align with statistical measures</li>
+</ol>
+<h3 id="key-questions">Key Questions<a class="headerlink" href="#key-questions" title="Permanent link">&para;</a></h3>
+<p>When evaluating a generative model, ask:</p>
+<ul>
+<li><strong>Quality</strong>: Are individual samples realistic?</li>
+<li><strong>Diversity</strong>: Does the model cover the full data distribution?</li>
+<li><strong>Fidelity</strong>: Does the model match the training distribution?</li>
+<li><strong>Utility</strong>: Is the generated data useful for downstream tasks?</li>
+<li><strong>Efficiency</strong>: How much compute is required for training and sampling?</li>
+<li><strong>Controllability</strong>: Can we guide generation toward desired outputs?</li>
+</ul>
+<hr />
+<h2 id="evaluation-metrics-by-category">Evaluation Metrics by Category<a class="headerlink" href="#evaluation-metrics-by-category" title="Permanent link">&para;</a></h2>
+<h3 id="1-sample-quality-metrics">1. Sample Quality Metrics<a class="headerlink" href="#1-sample-quality-metrics" title="Permanent link">&para;</a></h3>
+<h4 id="inception-score-is">Inception Score (IS)<a class="headerlink" href="#inception-score-is" title="Permanent link">&para;</a></h4>
+<p><strong>What it measures</strong>: Quality and diversity of generated images</p>
+<div class="arithmatex">\[
+\text{IS} = \exp\left(\mathbb{E}_{x \sim p_g} \left[D_{KL}(p(y|x) \| p(y))\right]\right)
+\]</div>
+<p>where <span class="arithmatex">\(p(y|x)\)</span> is a pre-trained classifier's prediction.</p>
+<p><strong>Interpretation</strong>:</p>
+<ul>
+<li>Higher is better</li>
+<li>Good samples should have confident class predictions (low <span class="arithmatex">\(p(y|x)\)</span> entropy)</li>
+<li>Diverse samples should cover many classes (high <span class="arithmatex">\(p(y)\)</span> entropy)</li>
+</ul>
+<p><strong>Limitations</strong>:</p>
+<ul>
+<li>Requires pre-trained classifier (typically ImageNet-trained Inception network)</li>
+<li>Doesn't detect overfitting or mode collapse well</li>
+<li>Not applicable to non-image domains</li>
+</ul>
+<p><strong>Typical values</strong>:</p>
+<ul>
+<li>Random noise: ~1</li>
+<li>CIFAR-10 real data: ~11.2</li>
+<li>Good generative models: 8-10</li>
+</ul>
+<h4 id="frechet-inception-distance-fid">Fréchet Inception Distance (FID)<a class="headerlink" href="#frechet-inception-distance-fid" title="Permanent link">&para;</a></h4>
+<p><strong>What it measures</strong>: Distance between real and generated data distributions in feature space</p>
+<div class="arithmatex">\[
+\text{FID} = \|\mu_r - \mu_g\|^2 + \text{Tr}(\Sigma_r + \Sigma_g - 2(\Sigma_r \Sigma_g)^{1/2})
+\]</div>
+<p>where <span class="arithmatex">\(\mu_r, \Sigma_r\)</span> are mean and covariance of real data features, and <span class="arithmatex">\(\mu_g, \Sigma_g\)</span> for generated data.</p>
+<p><strong>Interpretation</strong>:</p>
+<ul>
+<li>Lower is better</li>
+<li>Measures both quality and diversity</li>
+<li>More robust than IS</li>
+</ul>
+<p><strong>Limitations</strong>:</p>
+<ul>
+<li>Requires pre-trained feature extractor</li>
+<li>Sensitive to sample size (need 10k+ samples)</li>
+<li>Assumes Gaussian distributions in feature space</li>
+</ul>
+<p><strong>Typical values</strong>:</p>
+<ul>
+<li>Perfect match: 0</li>
+<li>Excellent: &lt;10</li>
+<li>Good: 10-30</li>
+<li>Poor: &gt;100</li>
+</ul>
+<h4 id="precision-and-recall">Precision and Recall<a class="headerlink" href="#precision-and-recall" title="Permanent link">&para;</a></h4>
+<p><strong>What it measures</strong>: Quality vs. diversity trade-off</p>
+<ul>
+<li><strong>Precision</strong>: Fraction of generated samples that are realistic</li>
+<li><strong>Recall</strong>: Fraction of real distribution covered by generated samples</li>
+</ul>
+<p><strong>Interpretation</strong>:</p>
+<ul>
+<li>Precision measures quality (are generated samples realistic?)</li>
+<li>Recall measures diversity (does the model cover the full distribution?)</li>
+<li>High precision, low recall = mode collapse</li>
+<li>Low precision, high recall = poor quality but diverse</li>
+</ul>
+<p><strong>Advantages</strong>:</p>
+<ul>
+<li>Separates quality and diversity</li>
+<li>More interpretable than FID</li>
+<li>Detects mode collapse</li>
+</ul>
+<h3 id="2-likelihood-based-metrics">2. Likelihood-Based Metrics<a class="headerlink" href="#2-likelihood-based-metrics" title="Permanent link">&para;</a></h3>
+<h4 id="negative-log-likelihood-nll">Negative Log-Likelihood (NLL)<a class="headerlink" href="#negative-log-likelihood-nll" title="Permanent link">&para;</a></h4>
+<p><strong>What it measures</strong>: How well the model assigns probability to real data</p>
+<div class="arithmatex">\[
+\text{NLL} = -\mathbb{E}_{x \sim p_{\text{data}}}[\log p_\theta(x)]
+\]</div>
+<p><strong>Interpretation</strong>:</p>
+<ul>
+<li>Lower is better</li>
+<li>Directly measures distributional fit</li>
+<li>Theoretically principled</li>
+</ul>
+<p><strong>Limitations</strong>:</p>
+<ul>
+<li>Requires tractable likelihood (not available for GANs)</li>
+<li>Can be dominated by imperceptible details</li>
+<li>Doesn't measure perceptual quality</li>
+</ul>
+<h4 id="evidence-lower-bound-elbo">Evidence Lower Bound (ELBO)<a class="headerlink" href="#evidence-lower-bound-elbo" title="Permanent link">&para;</a></h4>
+<p><strong>What it measures</strong>: Lower bound on log-likelihood (for VAEs, diffusion models)</p>
+<div class="arithmatex">\[
+\text{ELBO} = \mathbb{E}_{q(z|x)}[\log p_\theta(x|z)] - D_{KL}(q(z|x) \| p(z))
+\]</div>
+<p><strong>Interpretation</strong>:</p>
+<ul>
+<li>Higher is better</li>
+<li>Balances reconstruction and regularization</li>
+<li>Tractable for many models</li>
+</ul>
+<p><strong>Limitations</strong>:</p>
+<ul>
+<li>Only a lower bound (gap to true likelihood unknown)</li>
+<li>May not correlate with sample quality</li>
+</ul>
+<h3 id="3-perceptual-metrics">3. Perceptual Metrics<a class="headerlink" href="#3-perceptual-metrics" title="Permanent link">&para;</a></h3>
+<h4 id="learned-perceptual-image-patch-similarity-lpips">Learned Perceptual Image Patch Similarity (LPIPS)<a class="headerlink" href="#learned-perceptual-image-patch-similarity-lpips" title="Permanent link">&para;</a></h4>
+<p><strong>What it measures</strong>: Perceptual distance between images using deep features</p>
+<div class="arithmatex">\[
+\text{LPIPS}(x, x') = \sum_l w_l \|f_l(x) - f_l(x')\|^2
+\]</div>
+<p>where <span class="arithmatex">\(f_l\)</span> are features from layer <span class="arithmatex">\(l\)</span> of a pre-trained network.</p>
+<p><strong>Interpretation</strong>:</p>
+<ul>
+<li>Lower is better</li>
+<li>Correlates better with human perception than pixel-wise metrics</li>
+<li>Useful for image-to-image tasks</li>
+</ul>
+<p><strong>Advantages</strong>:</p>
+<ul>
+<li>Captures perceptual similarity</li>
+<li>More robust than MSE or SSIM</li>
+</ul>
+<p><strong>Limitations</strong>:</p>
+<ul>
+<li>Requires pre-trained network</li>
+<li>Domain-specific (primarily images)</li>
+</ul>
+<h3 id="4-domain-specific-metrics">4. Domain-Specific Metrics<a class="headerlink" href="#4-domain-specific-metrics" title="Permanent link">&para;</a></h3>
+<h4 id="for-images">For Images<a class="headerlink" href="#for-images" title="Permanent link">&para;</a></h4>
+<ul>
+<li><strong>SSIM</strong>: Structural similarity</li>
+<li><strong>PSNR</strong>: Peak signal-to-noise ratio</li>
+<li><strong>Human evaluation</strong>: Perceptual studies</li>
+</ul>
+<h4 id="for-text">For Text<a class="headerlink" href="#for-text" title="Permanent link">&para;</a></h4>
+<ul>
+<li><strong>BLEU</strong>: N-gram overlap with references</li>
+<li><strong>Perplexity</strong>: Language model likelihood</li>
+<li><strong>Human evaluation</strong>: Fluency, coherence</li>
+</ul>
+<h4 id="for-biological-data">For Biological Data<a class="headerlink" href="#for-biological-data" title="Permanent link">&para;</a></h4>
+<ul>
+<li><strong>Correlation with real data</strong>: Gene-gene correlations</li>
+<li><strong>Pathway enrichment</strong>: Biological pathway preservation</li>
+<li><strong>Cell type classification</strong>: Downstream task performance</li>
+<li><strong>Perturbation response</strong>: Causal structure preservation</li>
+</ul>
+<hr />
+<h2 id="evaluating-diffusion-models-specifically">Evaluating Diffusion Models Specifically<a class="headerlink" href="#evaluating-diffusion-models-specifically" title="Permanent link">&para;</a></h2>
+<h3 id="standard-diffusion-model-metrics">Standard Diffusion Model Metrics<a class="headerlink" href="#standard-diffusion-model-metrics" title="Permanent link">&para;</a></h3>
+<h4 id="1-sample-quality">1. Sample Quality<a class="headerlink" href="#1-sample-quality" title="Permanent link">&para;</a></h4>
+<ul>
+<li><strong>FID</strong>: Primary metric for image diffusion models</li>
+<li><strong>IS</strong>: Secondary metric</li>
+<li><strong>Precision/Recall</strong>: Trade-off analysis</li>
+</ul>
+<h4 id="2-likelihood">2. Likelihood<a class="headerlink" href="#2-likelihood" title="Permanent link">&para;</a></h4>
+<ul>
+<li><strong>ELBO</strong>: Variational bound</li>
+<li><strong>Bits per dimension (BPD)</strong>: Normalized likelihood
+  $$
+  \text{BPD} = -\frac{\log_2 p(x)}{D}
+  $$</li>
+</ul>
+<p>where <span class="arithmatex">\(D\)</span> is data dimensionality</p>
+<h4 id="3-sampling-efficiency">3. Sampling Efficiency<a class="headerlink" href="#3-sampling-efficiency" title="Permanent link">&para;</a></h4>
+<ul>
+<li><strong>NFE (Number of Function Evaluations)</strong>: How many denoising steps?</li>
+<li><strong>Wall-clock time</strong>: Actual sampling time</li>
+<li><strong>FID vs. NFE trade-off</strong>: Quality-speed curve</li>
+</ul>
+<p><strong>Typical trade-offs</strong>:</p>
+<ul>
+<li>DDPM: 1000 steps, high quality</li>
+<li>DDIM: 50-100 steps, good quality</li>
+<li>Fast samplers: 10-20 steps, acceptable quality</li>
+</ul>
+<h4 id="4-training-efficiency">4. Training Efficiency<a class="headerlink" href="#4-training-efficiency" title="Permanent link">&para;</a></h4>
+<ul>
+<li><strong>Training time</strong>: Hours/days to convergence</li>
+<li><strong>Compute cost</strong>: GPU-hours</li>
+<li><strong>Sample efficiency</strong>: Performance vs. dataset size</li>
+</ul>
+<h3 id="diffusion-specific-considerations">Diffusion-Specific Considerations<a class="headerlink" href="#diffusion-specific-considerations" title="Permanent link">&para;</a></h3>
+<h4 id="noise-schedule-evaluation">Noise Schedule Evaluation<a class="headerlink" href="#noise-schedule-evaluation" title="Permanent link">&para;</a></h4>
+<ul>
+<li><strong>Loss curve shape</strong>: Progressive learning vs. flat</li>
+<li><strong>Timestep importance</strong>: Which timesteps matter most?</li>
+<li><strong>Schedule ablations</strong>: Linear vs. cosine vs. learned</li>
+</ul>
+<h4 id="guidance-strength">Guidance Strength<a class="headerlink" href="#guidance-strength" title="Permanent link">&para;</a></h4>
+<ul>
+<li><strong>FID vs. guidance scale</strong>: Quality-diversity trade-off</li>
+<li><strong>Classifier-free guidance</strong>: Typical range <span class="arithmatex">\(w \in [1, 10]\)</span></li>
+<li><strong>Optimal guidance</strong>: Task-dependent</li>
+</ul>
+<hr />
+<h2 id="comparing-modeling-approaches">Comparing Modeling Approaches<a class="headerlink" href="#comparing-modeling-approaches" title="Permanent link">&para;</a></h2>
+<h3 id="how-to-determine-better-or-worse">How to Determine "Better" or "Worse"<a class="headerlink" href="#how-to-determine-better-or-worse" title="Permanent link">&para;</a></h3>
+<h4 id="1-define-your-objectives">1. Define Your Objectives<a class="headerlink" href="#1-define-your-objectives" title="Permanent link">&para;</a></h4>
+<p><strong>For research</strong>:</p>
+<ul>
+<li>State-of-the-art sample quality (FID)</li>
+<li>Theoretical contributions (likelihood bounds)</li>
+<li>Novel capabilities (controllability, efficiency)</li>
+</ul>
+<p><strong>For applications</strong>:</p>
+<ul>
+<li>Downstream task performance</li>
+<li>Computational efficiency</li>
+<li>Robustness and reliability</li>
+</ul>
+<h4 id="2-multi-metric-evaluation">2. Multi-Metric Evaluation<a class="headerlink" href="#2-multi-metric-evaluation" title="Permanent link">&para;</a></h4>
+<p>Never rely on a single metric. Use a <strong>suite of complementary metrics</strong>:</p>
+<table>
+<thead>
+<tr>
+<th>Aspect</th>
+<th>Metrics</th>
+<th>Why</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Quality</td>
+<td>FID, IS, Precision</td>
+<td>Are samples realistic?</td>
+</tr>
+<tr>
+<td>Diversity</td>
+<td>Recall, Mode coverage</td>
+<td>Full distribution?</td>
+</tr>
+<tr>
+<td>Fidelity</td>
+<td>Likelihood, ELBO</td>
+<td>Statistical match?</td>
+</tr>
+<tr>
+<td>Utility</td>
+<td>Downstream tasks</td>
+<td>Practical value?</td>
+</tr>
+<tr>
+<td>Efficiency</td>
+<td>NFE, Training time</td>
+<td>Computational cost?</td>
+</tr>
+</tbody>
+</table>
+<h4 id="3-ablation-studies">3. Ablation Studies<a class="headerlink" href="#3-ablation-studies" title="Permanent link">&para;</a></h4>
+<p>Systematically vary one component at a time:
+- Architecture (U-Net vs. Transformer)
+- Noise schedule (linear vs. cosine)
+- Training procedure (batch size, learning rate)
+- Sampling method (DDPM vs. DDIM)</p>
+<p><strong>Example ablation</strong>:
+<div class="language-text highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>Baseline: FID = 15.2
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>+ Cosine schedule: FID = 12.8 (improvement)
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>+ Larger batch: FID = 11.5 (improvement)
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>+ EMA: FID = 10.9 (improvement)
+</span></code></pre></div></p>
+<h4 id="4-statistical-significance">4. Statistical Significance<a class="headerlink" href="#4-statistical-significance" title="Permanent link">&para;</a></h4>
+<p><strong>Best practices</strong>:</p>
+<ul>
+<li>Multiple random seeds (at least 3-5)</li>
+<li>Report mean ± standard deviation</li>
+<li>Statistical tests (t-test, bootstrap)</li>
+<li>Confidence intervals</li>
+</ul>
+<p><strong>Example</strong>:
+<div class="language-text highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>Model A: FID = 12.3 ± 0.5
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>Model B: FID = 11.8 ± 0.6
+</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>Difference: 0.5 (not significant, p=0.15)
+</span></code></pre></div></p>
+<h4 id="5-computational-budget">5. Computational Budget<a class="headerlink" href="#5-computational-budget" title="Permanent link">&para;</a></h4>
+<p><strong>Report full costs</strong>:</p>
+<ul>
+<li>Training: GPU-hours, wall-clock time</li>
+<li>Sampling: Seconds per sample, NFE</li>
+<li>Memory: Peak GPU memory</li>
+<li>Total cost: Dollar cost estimate</li>
+</ul>
+<p><strong>Example comparison</strong>:
+<div class="language-text highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>Model A: FID=10, 100 GPU-hours training, 1s/sample
+</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>Model B: FID=12, 10 GPU-hours training, 0.1s/sample
+</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a>→ Model B may be better for deployment
+</span></code></pre></div></p>
+<hr />
+<h2 id="evaluation-for-biological-data">Evaluation for Biological Data<a class="headerlink" href="#evaluation-for-biological-data" title="Permanent link">&para;</a></h2>
+<h3 id="unique-challenges">Unique Challenges<a class="headerlink" href="#unique-challenges" title="Permanent link">&para;</a></h3>
+<ol>
+<li><strong>High dimensionality</strong>: Thousands of genes</li>
+<li><strong>Sparse structure</strong>: Many zeros (scRNA-seq)</li>
+<li><strong>Biological constraints</strong>: Pathway structure, regulatory networks</li>
+<li><strong>Limited ground truth</strong>: No "correct" cell state</li>
+<li><strong>Batch effects</strong>: Technical variability</li>
+</ol>
+<h3 id="recommended-metrics">Recommended Metrics<a class="headerlink" href="#recommended-metrics" title="Permanent link">&para;</a></h3>
+<h4 id="statistical-fidelity">Statistical Fidelity<a class="headerlink" href="#statistical-fidelity" title="Permanent link">&para;</a></h4>
+<ul>
+<li><strong>Marginal distributions</strong>: Per-gene statistics</li>
+<li><strong>Correlation structure</strong>: Gene-gene correlations</li>
+<li><strong>Higher-order moments</strong>: Skewness, kurtosis</li>
+</ul>
+<h4 id="biological-validity">Biological Validity<a class="headerlink" href="#biological-validity" title="Permanent link">&para;</a></h4>
+<ul>
+<li><strong>Pathway enrichment</strong>: Gene set enrichment analysis (GSEA)</li>
+<li><strong>Cell type markers</strong>: Known marker gene expression</li>
+<li><strong>Regulatory networks</strong>: Transcription factor activity</li>
+<li><strong>Developmental trajectories</strong>: Pseudotime consistency</li>
+</ul>
+<h4 id="downstream-utility">Downstream Utility<a class="headerlink" href="#downstream-utility" title="Permanent link">&para;</a></h4>
+<ul>
+<li><strong>Cell type classification</strong>: Train classifier on synthetic, test on real</li>
+<li><strong>Perturbation prediction</strong>: Drug response accuracy</li>
+<li><strong>Batch correction</strong>: Integration with real data</li>
+<li><strong>Data augmentation</strong>: Improved downstream task performance</li>
+</ul>
+<h4 id="epiplexity-based-evaluation-new">Epiplexity-Based Evaluation (NEW)<a class="headerlink" href="#epiplexity-based-evaluation-new" title="Permanent link">&para;</a></h4>
+<p><strong>Setup</strong>:
+1. Train observer model on real data
+2. Train observer model on synthetic data
+3. Compare loss trajectories</p>
+<p><strong>Metrics</strong>:</p>
+<div class="arithmatex">\[
+\text{Epiplexity proxy} = \int_0^T (L(t) - L_\infty) dt
+\]</div>
+<p><strong>Interpretation</strong>:</p>
+<ul>
+<li>High epiplexity → synthetic data teaches biological structure</li>
+<li>Low epiplexity → synthetic data is noise-matching without structure</li>
+</ul>
+<p><strong>Advantages</strong>:</p>
+<ul>
+<li>Detects whether synthetic data contains learnable biology</li>
+<li>Goes beyond statistical matching</li>
+<li>Measures utility for downstream learning</li>
+</ul>
+<hr />
+<h2 id="practical-evaluation-workflow">Practical Evaluation Workflow<a class="headerlink" href="#practical-evaluation-workflow" title="Permanent link">&para;</a></h2>
+<h3 id="step-1-baseline-metrics">Step 1: Baseline Metrics<a class="headerlink" href="#step-1-baseline-metrics" title="Permanent link">&para;</a></h3>
+<p>Compute standard metrics for quick assessment:
+- FID (if applicable)
+- Likelihood/ELBO
+- Visual inspection (if images)</p>
+<h3 id="step-2-comprehensive-evaluation">Step 2: Comprehensive Evaluation<a class="headerlink" href="#step-2-comprehensive-evaluation" title="Permanent link">&para;</a></h3>
+<p>If baseline looks promising:
+- Precision/Recall
+- Multiple sample sizes
+- Ablation studies
+- Statistical significance tests</p>
+<h3 id="step-3-domain-specific-validation">Step 3: Domain-Specific Validation<a class="headerlink" href="#step-3-domain-specific-validation" title="Permanent link">&para;</a></h3>
+<p>For your specific application:
+- Downstream task performance
+- Expert evaluation
+- Biological validation (for bio data)
+- Epiplexity analysis</p>
+<h3 id="step-4-efficiency-analysis">Step 4: Efficiency Analysis<a class="headerlink" href="#step-4-efficiency-analysis" title="Permanent link">&para;</a></h3>
+<p>Practical deployment considerations:
+- Training cost
+- Sampling speed
+- Memory requirements
+- Scalability</p>
+<h3 id="step-5-reporting">Step 5: Reporting<a class="headerlink" href="#step-5-reporting" title="Permanent link">&para;</a></h3>
+<p><strong>Minimum reporting standards</strong>:</p>
+<ul>
+<li>Multiple metrics (quality, diversity, efficiency)</li>
+<li>Statistical significance (multiple seeds)</li>
+<li>Computational costs</li>
+<li>Failure cases and limitations</li>
+<li>Reproducibility information (code, hyperparameters)</li>
+</ul>
+<hr />
+<h2 id="common-pitfalls">Common Pitfalls<a class="headerlink" href="#common-pitfalls" title="Permanent link">&para;</a></h2>
+<h3 id="1-single-metric-optimization">1. Single-Metric Optimization<a class="headerlink" href="#1-single-metric-optimization" title="Permanent link">&para;</a></h3>
+<p><strong>Problem</strong>: Optimizing only FID can hurt diversity
+<strong>Solution</strong>: Use multiple complementary metrics</p>
+<h3 id="2-cherry-picking-samples">2. Cherry-Picking Samples<a class="headerlink" href="#2-cherry-picking-samples" title="Permanent link">&para;</a></h3>
+<p><strong>Problem</strong>: Showing only best samples
+<strong>Solution</strong>: Report aggregate statistics, show random samples</p>
+<h3 id="3-ignoring-computational-cost">3. Ignoring Computational Cost<a class="headerlink" href="#3-ignoring-computational-cost" title="Permanent link">&para;</a></h3>
+<p><strong>Problem</strong>: Achieving SOTA quality with 10x compute
+<strong>Solution</strong>: Report efficiency metrics, Pareto frontiers</p>
+<h3 id="4-overfitting-to-validation-set">4. Overfitting to Validation Set<a class="headerlink" href="#4-overfitting-to-validation-set" title="Permanent link">&para;</a></h3>
+<p><strong>Problem</strong>: Tuning hyperparameters on test set
+<strong>Solution</strong>: Proper train/val/test splits, hold-out evaluation</p>
+<h3 id="5-ignoring-statistical-significance">5. Ignoring Statistical Significance<a class="headerlink" href="#5-ignoring-statistical-significance" title="Permanent link">&para;</a></h3>
+<p><strong>Problem</strong>: Claiming improvement from noise
+<strong>Solution</strong>: Multiple seeds, significance tests</p>
+<h3 id="6-domain-mismatch">6. Domain Mismatch<a class="headerlink" href="#6-domain-mismatch" title="Permanent link">&para;</a></h3>
+<p><strong>Problem</strong>: Using ImageNet-trained metrics for non-image data
+<strong>Solution</strong>: Domain-appropriate metrics, custom evaluations</p>
+<hr />
+<h2 id="decision-framework">Decision Framework<a class="headerlink" href="#decision-framework" title="Permanent link">&para;</a></h2>
+<h3 id="when-is-model-a-better-than-model-b">When is Model A "Better" than Model B?<a class="headerlink" href="#when-is-model-a-better-than-model-b" title="Permanent link">&para;</a></h3>
+<p><strong>Model A is strictly better if</strong>:</p>
+<ul>
+<li>Better on all metrics</li>
+<li>Same computational cost</li>
+<li>No significant trade-offs</li>
+</ul>
+<p><strong>Model A is better for research if</strong>:</p>
+<ul>
+<li>Significantly better on primary metric (e.g., FID)</li>
+<li>Novel capabilities or insights</li>
+<li>Reasonable computational cost</li>
+</ul>
+<p><strong>Model A is better for deployment if</strong>:</p>
+<ul>
+<li>Sufficient quality for application</li>
+<li>Much more efficient</li>
+<li>More robust and reliable</li>
+</ul>
+<p><strong>Model A is better for your specific use case if</strong>:</p>
+<ul>
+<li>Better on task-specific metrics</li>
+<li>Better downstream performance</li>
+<li>Fits your computational budget</li>
+</ul>
+<hr />
+<h2 id="summary">Summary<a class="headerlink" href="#summary" title="Permanent link">&para;</a></h2>
+<h3 id="key-principles">Key Principles<a class="headerlink" href="#key-principles" title="Permanent link">&para;</a></h3>
+<ol>
+<li><strong>No single metric</strong>: Use multiple complementary metrics</li>
+<li><strong>Define objectives</strong>: Research vs. application goals differ</li>
+<li><strong>Statistical rigor</strong>: Multiple seeds, significance tests</li>
+<li><strong>Report costs</strong>: Computational efficiency matters</li>
+<li><strong>Domain-specific</strong>: Adapt metrics to your data type</li>
+<li><strong>Utility matters</strong>: Downstream task performance is crucial</li>
+</ol>
+<h3 id="recommended-metric-suites">Recommended Metric Suites<a class="headerlink" href="#recommended-metric-suites" title="Permanent link">&para;</a></h3>
+<p><strong>For image diffusion models</strong>:</p>
+<ul>
+<li>FID (primary)</li>
+<li>Precision/Recall (quality-diversity)</li>
+<li>Sampling efficiency (NFE, time)</li>
+<li>Human evaluation (if budget allows)</li>
+</ul>
+<p><strong>For biological data</strong>:</p>
+<ul>
+<li>Statistical fidelity (correlations, distributions)</li>
+<li>Biological validity (pathways, markers)</li>
+<li>Downstream utility (classification, prediction)</li>
+<li>Epiplexity (learnable structure)</li>
+</ul>
+<p><strong>For general generative models</strong>:</p>
+<ul>
+<li>Quality metric (FID, IS, or domain-specific)</li>
+<li>Diversity metric (Recall, mode coverage)</li>
+<li>Likelihood (if tractable)</li>
+<li>Efficiency (training and sampling cost)</li>
+<li>Task performance (downstream applications)</li>
+</ul>
+<h3 id="the-bottom-line">The Bottom Line<a class="headerlink" href="#the-bottom-line" title="Permanent link">&para;</a></h3>
+<blockquote>
+<p><strong>A model is "better" when it achieves your specific objectives more effectively, considering quality, diversity, efficiency, and utility—validated through rigorous multi-metric evaluation.</strong></p>
+</blockquote>
+<hr />
+<h2 id="related-documents">Related Documents<a class="headerlink" href="#related-documents" title="Permanent link">&para;</a></h2>
+<ul>
+<li><a href="../epiplexity/01_from_entropy_to_epiplexity/">Epiplexity: From Entropy to Epiplexity</a> — Observer-dependent information</li>
+<li><a href="../epiplexity/02_random_noise/">Why Random Noise Has High Entropy but Low Epiplexity</a> — Structure vs. randomness</li>
+<li><a href="../../DDPM/01_ddpm_foundations/">DDPM Foundations</a> — Diffusion model theory</li>
+<li><a href="../../DDPM/02_ddpm_training/">DDPM Training</a> — Training considerations</li>
+<li><a href="../../DDPM/03_ddpm_sampling/">DDPM Sampling</a> — Sampling methods and efficiency</li>
+</ul>
+<hr />
+<h2 id="references">References<a class="headerlink" href="#references" title="Permanent link">&para;</a></h2>
+<h3 id="evaluation-metrics">Evaluation Metrics<a class="headerlink" href="#evaluation-metrics" title="Permanent link">&para;</a></h3>
+<ol>
+<li><strong>Salimans, T., et al. (2016)</strong>. Improved Techniques for Training GANs. <em>NeurIPS</em>. (Inception Score)</li>
+<li><strong>Heusel, M., et al. (2017)</strong>. GANs Trained by a Two Time-Scale Update Rule Converge to a Local Nash Equilibrium. <em>NeurIPS</em>. (FID)</li>
+<li><strong>Kynkäänniemi, T., et al. (2019)</strong>. Improved Precision and Recall Metric for Assessing Generative Models. <em>NeurIPS</em>.</li>
+<li><strong>Zhang, R., et al. (2018)</strong>. The Unreasonable Effectiveness of Deep Features as a Perceptual Metric. <em>CVPR</em>. (LPIPS)</li>
+</ol>
+<h3 id="diffusion-model-evaluation">Diffusion Model Evaluation<a class="headerlink" href="#diffusion-model-evaluation" title="Permanent link">&para;</a></h3>
+<ol>
+<li><strong>Ho, J., et al. (2020)</strong>. Denoising Diffusion Probabilistic Models. <em>NeurIPS</em>.</li>
+<li><strong>Song, J., et al. (2021)</strong>. Denoising Diffusion Implicit Models. <em>ICLR</em>.</li>
+<li><strong>Dhariwal, P., &amp; Nichol, A. (2021)</strong>. Diffusion Models Beat GANs on Image Synthesis. <em>NeurIPS</em>.</li>
+</ol>
+<h3 id="epiplexity">Epiplexity<a class="headerlink" href="#epiplexity" title="Permanent link">&para;</a></h3>
+<ol>
+<li><strong>From Entropy to Epiplexity</strong> (2024). <a href="https://arxiv.org/abs/2601.03220">arXiv:2601.03220</a></li>
+</ol>
+<h3 id="best-practices">Best Practices<a class="headerlink" href="#best-practices" title="Permanent link">&para;</a></h3>
+<ol>
+<li><strong>Borji, A. (2019)</strong>. Pros and Cons of GAN Evaluation Measures. <em>Computer Vision and Image Understanding</em>.</li>
+<li><strong>Theis, L., et al. (2016)</strong>. A Note on the Evaluation of Generative Models. <em>ICLR</em>.</li>
+</ol>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">
+      Copyright &copy; 2026 GenAI Lab Research Team
+    </div>
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+        
+<div class="md-social">
+  
+    
+    
+    
+    
+      
+      
+    
+    <a href="https://github.com/pleiadian53/genai-lab" target="_blank" rel="noopener" title="github.com" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.tracking", "navigation.tabs", "navigation.tabs.sticky", "navigation.sections", "navigation.expand", "navigation.top", "search.suggest", "search.highlight", "content.code.copy", "content.action.edit"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"provider": "mike"}}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+        <script src="../../javascripts/mathjax.js"></script>
+      
+        <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+      
+        <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+      
+    
+  </body>
+</html>
