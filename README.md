@@ -13,10 +13,12 @@ This project investigates generative modeling approaches across computational bi
 
 **Research Goals:**
 
-1. **Investigate** state-of-the-art generative architectures (VAE, flows, diffusion, transformers) for biological sequences and multi-omics data
-2. **Develop** reusable, modular components for conditional generation and counterfactual simulation
-3. **Explore** causal inference methods for predicting treatment responses and perturbation effects
-4. **Contribute** to the growing field of generative biology with reproducible implementations and benchmarks
+1. **Learn & Document** state-of-the-art generative architectures (VAE, flows, diffusion, transformers) for biological data - *extensive theory documentation complete*
+2. **Implement** end-to-end applications that demonstrate practical value - *current focus: perturbation prediction*
+3. **Benchmark** against published methods with reproducible workflows - *in progress*
+4. **Integrate** causal inference methods for counterfactual validation - *planned collaboration with [causal-bio-lab](../causal-bio-lab/)*
+
+**Current Stage:** Transitioning from methodology exploration to application consolidation. Priority is completing one flagship application (Perturb-seq perturbation prediction) before expanding to additional use cases.
 
 See [docs/INDUSTRY_LANDSCAPE.md](docs/INDUSTRY_LANDSCAPE.md) for a comprehensive survey of companies and technologies in this space.
 
@@ -91,21 +93,25 @@ Detailed theory, derivations, and mathematical foundations:
 | [datasets](docs/datasets/) | Datasets & preprocessing pipelines | [README.md](docs/datasets/README.md) |
 | [incubation](docs/incubation/) | Ideas under development | [README.md](docs/incubation/README.md) |
 
+### Application Guides (`docs/applications/`)
+
+Application-specific architectures and implementation strategies:
+
+| Application | Description | Status |
+|-------------|-------------|--------|
+| [perturbation_prediction](docs/applications/perturbation_prediction.md) | End-to-end guide for Perturb-seq modeling | 🎯 Active |
+| Gene expression prediction | Hybrid predictive-generative models | 📋 Planned |
+| Synthetic data generation | Biology-aware generative pipelines | 📋 Planned |
+
 ### Ideas Under Incubation (`docs/incubation/`)
 
-Exploratory architectural proposals and application ideas not yet implemented:
+Early-stage architectural explorations not yet integrated into active applications:
 
-| Document | Focus |
-|----------|-------|
-| [joint_latent_space_and_JEPA.md](docs/incubation/joint_latent_space_and_JEPA.md) | Joint latent spaces for static/dynamic data, JEPA for Perturb-seq |
-| [generative-ai-for-gene-expression-prediction.md](docs/incubation/generative-ai-for-gene-expression-prediction.md) | Diffusion/VAE/Flow for gene expression with uncertainty |
-| [generative-ai-for-perturbation-modeling.md](docs/incubation/generative-ai-for-perturbation-modeling.md) | Generative approaches for scPerturb, beyond GEM-1 |
-
-**Key insights from incubation:**
-
-- **Joint latent spaces**: Static (bulk RNA-seq) and dynamic (Perturb-seq) data can share the same manifold
-- **JEPA over reconstruction**: Predicting embeddings is more robust for biology
-- **Hybrid predictive-generative**: Combine GEM-1-style predictors with generative wrappers for uncertainty
+| Document | Focus | Status |
+|----------|-------|--------|
+| [alternative_backbones_for_biology.md](docs/incubation/alternative_backbones_for_biology.md) | SSMs, non-tokenization approaches | Conceptual |
+| [generative-ai-for-gene-expression-prediction.md](docs/incubation/generative-ai-for-gene-expression-prediction.md) | Hybrid models for gene expression | Next after Perturb-seq |
+| [numerical_embeddings_and_continuous_values.md](docs/incubation/numerical_embeddings_and_continuous_values.md) | Encoding strategies for continuous biological values | Research |
 
 ### Interactive Tutorials (`notebooks/`)
 
@@ -167,10 +173,11 @@ python -c "import genailab; print(genailab.__version__)"
 genailab-train --config configs/cvae_toy.yaml
 ```
 
-## Milestones
+## Project Status
 
-### Stage 1: Variational Autoencoders ✅
+### Mature Components (Production-Ready ✅)
 
+**VAE Family** - Battle-tested implementations:
 - [x] Core CVAE implementation with condition encoding
 - [x] Gaussian decoder (MSE reconstruction)
 - [x] Negative Binomial decoder for count data (`CVAE_NB`)
@@ -179,58 +186,63 @@ genailab-train --config configs/cvae_toy.yaml
 - [x] Comprehensive documentation (VAE-01 through VAE-09)
 - [x] Unit tests for all model variants
 
-### Stage 2: Data Pipeline ✅
-
+**Data Pipeline** - Operational:
 - [x] Standardized data path management (`genailab.data.paths`)
 - [x] scRNA-seq preprocessing with Scanpy
 - [x] Bulk RNA-seq preprocessing (Python + R/recount3)
 - [x] Environment setup (conda/mamba + Poetry)
 - [x] Data preparation documentation
 
-### Stage 3: Score Matching & Energy Functions ✅
+### Theory Complete, Implementation Validated 🔬
 
-- [x] Score matching overview documentation
-- [x] Energy functions deep dive (Boltzmann, partition function)
-- [x] VP-SDE and VE-SDE formulations
-- [x] Denoising score matching loss
-
-### Stage 4: Diffusion Models ✅
-
+**Diffusion Infrastructure** - Core diffusion mechanics working:
 - [x] Forward/reverse diffusion process (VP-SDE, VE-SDE)
 - [x] Score networks (MLP, TabularScoreNetwork, UNet2D, UNet3D)
-- [x] Medical imaging diffusion (synthetic X-rays)
+- [x] Medical imaging diffusion (synthetic X-rays) - proof of concept validated
 - [x] Training scripts with configurable model sizes
 - [x] RunPod setup documentation for GPU training
 - [x] Comprehensive DDPM documentation series
-- [x] Gene expression architectures (latent tokens, pathway tokens)
-- [ ] Conditional generation with classifier-free guidance
+- [x] Score matching theory (denoising score matching, energy functions)
+
+### Active Development 🎯
+
+**Application: Perturbation Prediction (Perturb-seq)** - Current focus:
+- [x] JEPA architecture documented for Perturb-seq ([04_jepa_perturbseq.md](docs/JEPA/04_jepa_perturbseq.md))
+- [x] Perturbation modeling strategy documented ([docs/applications/](docs/applications/))
+- [ ] JEPA implementation for Perturb-seq
+- [ ] Latent diffusion for uncertainty quantification
+- [ ] Benchmark against scGen/CPA/scPPDM on Norman et al. 2019 dataset
+
+### Research Prototypes (Theory Complete, Implementation Pending 📝)
+
+**Advanced Architectures** - Fully documented, awaiting implementation:
+- [x] DiT (Diffusion Transformers) - complete documentation series
+- [x] Latent Diffusion with NB/ZINB decoders - complete documentation
+- [x] Flow Matching & Rectified Flow - theory documented
+- [ ] DiT implementation for gene expression
 - [ ] Flow matching implementation
 
-### Stage 5: Foundation Model Adaptation ✅
-
+**Foundation Model Adaptation Framework** - Partially implemented:
 - [x] Resource-aware model configurations (small/medium/large)
 - [x] Auto-detection of hardware (M1 Mac, RunPod, Cloud)
 - [x] LoRA (Low-Rank Adaptation) implementation
-- [x] Comprehensive documentation (DiT, JEPA, Latent Diffusion)
 - [ ] Adapters and freezing strategies
 - [ ] Conditioning modules (FiLM, cross-attention, CFG)
 - [ ] Tutorial notebooks for each adaptation pattern
 - [ ] End-to-end recipes for gene expression tasks
 
-### Stage 6: Advanced Architectures 📝
+### Planned (After Current Focus) 🔮
 
-- [x] DiT (Diffusion Transformers) documentation
-- [x] JEPA (Joint Embedding Predictive Architecture) documentation
-- [x] Latent Diffusion documentation
-- [ ] DiT implementation for gene expression
-- [ ] JEPA implementation for Perturb-seq
-- [ ] Flow matching implementation
+**Additional Applications:**
+- [ ] Gene expression prediction (GTEx, harmonized bulk RNA-seq)
+- [ ] Synthetic biological dataset generation with validation pipeline
+- [ ] Conditional generation with classifier-free guidance
 
-### Stage 7: Counterfactual & Causal (Planned)
-
+**Causal & Counterfactual Methods:**
 - [ ] Counterfactual generation pipeline
 - [ ] Deconfounding / SCM-flavored latent model
 - [ ] Causal regularization via invariance
+- [ ] Integration with [causal-bio-lab](../causal-bio-lab/) for causal validation
 
 ## Industry Landscape
 

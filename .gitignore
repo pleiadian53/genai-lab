@@ -106,6 +106,13 @@ data/processed/
 # Dev directory (private notes)
 dev/
 
+# RunPods configuration (user-specific, NOT for public)
+# Contains local paths, SSH configs, and personal workflow
+runpods/
+runpods/**/*
+!runpods.example/
+!runpods.example/**/*
+
 # OS
 .DS_Store
 Thumbs.db

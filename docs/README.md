@@ -10,6 +10,7 @@ Use these documents alongside the code and notebooks to understand the theory, i
 
 | Topic | Description | Start Here |
 |-------|-------------|------------|
+| 🎯 [applications/](./applications/) | **End-to-end biological applications** | [README.md](./applications/README.md) |
 | 🆕 [foundation_models/](./foundation_models/) | Foundation model adaptation | [leveraging_foundation_models_v2.md](./foundation_models/leveraging_foundation_models_v2.md) |
 | 🆕 [DiT/](./DiT/) | Diffusion Transformers | [README.md](./DiT/README.md) |
 | 🆕 [JEPA/](./JEPA/) | Joint Embedding Predictive Architecture | [README.md](./JEPA/README.md) |
@@ -23,6 +24,19 @@ Use these documents alongside the code and notebooks to understand the theory, i
 | [datasets/](./datasets/) | Datasets & pipelines | [README.md](./datasets/README.md) |
 | [runpods/](./runpods/) | GPU cloud setup (RunPod) | [project_setup_on_new_pod.md](./runpods/project_setup_on_new_pod.md) |
 | [incubation/](./incubation/) | Experimental ideas | [README.md](./incubation/README.md) |
+
+---
+
+## Application Guides (New!)
+
+End-to-end implementations for biological applications:
+
+| Application | Description | Status |
+|-------------|-------------|--------|
+| [perturbation_prediction](./applications/perturbation_prediction.md) | Predict cellular responses to perturbations (Perturb-seq) | 🎯 Active |
+| [architectural_approaches](./applications/architectural_approaches.md) | Comparison of generative architectures for perturbations | Supporting |
+
+**Philosophy**: Application guides are **results-oriented**—they start with a biological question and work backwards to the appropriate architecture, unlike methodology guides which start with a technique and explore its applications.
 
 ---
 

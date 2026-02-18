@@ -50,16 +50,21 @@ This documentation series covers JEPA from first principles through computationa
 - Evaluation metrics
 - Comparison with scGen/CPA
 
+### 6. Joint Latent Spaces
+**[05_joint_latent_spaces.md](05_joint_latent_spaces.md)** — Unified approach for static and dynamic data
+- Goku model insights: joint image-video generation
+- Joint latent spaces for bulk + time-series biology
+- Patch n' Pack for variable-length sequences
+- JEPA architecture for Perturb-seq
+- When (not) to use joint latent spaces
+
 ---
 
 ## Supplementary Documents
 
 ### Open Research
-**[open_research_joint_latent.md](open_research_joint_latent.md)** — Joint latent spaces
-- Goku model insights
-- Static + dynamic data in one latent space
-- Patch n' Pack for variable-length sequences
-- Biology applications
+**[open_research_joint_latent.md](open_research_joint_latent.md)** — Joint latent spaces (legacy)
+> **Note**: Content graduated to [05_joint_latent_spaces.md](05_joint_latent_spaces.md)
 
 ---
 

@@ -6,10 +6,19 @@ A systematic progression from classical latent-variable models to modern generat
 
 ## Overview
 
+**Learning Path (Theory):**
 ```
 VAE → β-VAE → Score Matching → DDPM → Flow Matching → EBMs → JEPA → World Models
  │                                │
  └── cVAE (conditional)           └── Classifier-Free Guidance
+```
+
+**Current Implementation Focus:**
+```
+Perturbation Prediction (Perturb-seq)
+    ├── Phase 1: VAE baseline (CVAE_NB on Norman et al. dataset)
+    ├── Phase 2: JEPA predictor (latent space prediction)
+    └── Phase 3: Diffusion wrapper (uncertainty quantification)
 ```
 
 ---
@@ -562,110 +571,180 @@ The `docs/incubation/` directory contains exploratory ideas and architectural pr
 
 ---
 
+## Implementation Status by Stage
+
+### ✅ Completed (Validated & Documented)
+
+**Stages 1-3: Foundation**
+- VAE family (CVAE, CVAE_NB, CVAE_ZINB) with comprehensive documentation
+- Data pipeline (preprocessing, path management, environment setup)
+- Score matching theory (Fisher/Stein scores, energy functions, denoising score matching)
+
+**Stage 4: Diffusion (Core Infrastructure)**
+- Forward/reverse diffusion (VP-SDE, VE-SDE)
+- Score networks (MLP, TabularScoreNetwork, UNet2D, UNet3D)
+- Training/sampling infrastructure
+- Proof-of-concept validated on medical imaging
+
+### 🎯 Active Development
+
+**Flagship Application: Perturbation Prediction (Perturb-seq)**
+
+Current milestone: End-to-end pipeline for Norman et al. 2019 dataset
+
+**Week 1-2: Data + VAE Baseline**
+- [ ] Download and preprocess Norman et al. Perturb-seq dataset
+- [ ] Establish data loaders and quality control
+- [ ] Train CVAE_NB baseline with perturbation conditioning
+- [ ] Establish evaluation metrics (DEG recovery, perturbation accuracy)
+
+**Week 3-4: JEPA Implementation**
+- [ ] Implement JEPA encoder-predictor architecture
+- [ ] VICReg regularization for collapse prevention
+- [ ] Train with perturbation conditioning
+- [ ] Compare latent space quality vs. CVAE baseline
+
+**Week 5-6: Diffusion Wrapper + Benchmarking**
+- [ ] Add diffusion in latent space for uncertainty quantification
+- [ ] Implement sampling for diverse cellular responses
+- [ ] Benchmark against scGen, CPA, scPPDM
+- [ ] Document results and create example notebook
+
+**Success Criteria:**
+- ✅ End-to-end notebook: `examples/perturbation/01_perturbseq_jepa_diffusion.ipynb`
+- ✅ Benchmark table comparing with published methods
+- ✅ Validation: DEG recovery, held-out perturbation accuracy, compositional generalization
+- ✅ Documentation: Application guide in `docs/applications/perturbation_prediction.md`
+
+### 📝 Research Prototypes (Theory Complete, Awaiting Implementation)
+
+**Advanced Architectures:**
+- DiT (Diffusion Transformers) - 5-part documentation series complete
+- Latent Diffusion with NB/ZINB decoders - 5-part series complete
+- Flow Matching & Rectified Flow - theory documented
+- Foundation model adaptation framework - LoRA implemented, adapters/conditioning pending
+
+**Stage 5: Foundation Model Adaptation** - Partially implemented:
+- [x] Resource-aware configs, hardware auto-detection, LoRA
+- [ ] Adapters and freezing strategies
+- [ ] Conditioning modules (FiLM, cross-attention, CFG)
+- [ ] Tutorial notebooks
+
+### 🔮 Planned (After Current Focus)
+
+**Next Applications** (one at a time after Perturb-seq):
+1. Gene expression prediction (GTEx, harmonized bulk RNA-seq)
+2. Synthetic biological dataset generation with validation pipeline
+
+**Architectural Extensions:**
+- Flow matching implementation (after JEPA + diffusion validated)
+- Classifier-free guidance for conditional generation
+- World models for trajectory prediction
+
+**Integration with Causal Methods:**
+- Counterfactual generation pipeline
+- Causal regularization via invariance
+- Integration with [causal-bio-lab](../../causal-bio-lab/) for causal validation
+
+---
+
 ## Target Applications
 
-### Application 1: Gene Expression Prediction
+### 🎯 Application 1: Perturbation Prediction (scPerturb) — ACTIVE
+
+**Goal**: Predict cellular response to genetic/chemical perturbations at single-cell resolution
+
+**Scientific Impact**: Central problem in computational biology; enables in silico perturbation screening
+
+**Why This Application First**:
+- Clear benchmarks (scGen, CPA, GEARS, scPPDM)
+- Leverages existing strengths (VAE with NB/ZINB decoders, JEPA theory, latent diffusion)
+- Natural progression: VAE → JEPA → Diffusion wrapper
+
+**Generative AI Value-Add**:
+- Compositional generalization (unseen perturbation combinations)
+- Cell-level heterogeneity modeling (not just population means)
+- Uncertainty quantification for experimental planning
+- Counterfactual reasoning ("what if we perturb X instead?")
+
+**Implementation Approach**:
+1. **Phase 1**: CVAE_NB baseline on Norman et al. 2019 (K562 Perturb-seq)
+2. **Phase 2**: JEPA predictor for latent space prediction
+3. **Phase 3**: Diffusion in latent space for uncertainty quantification
+
+**Evaluation Metrics**:
+- DEG recovery (differential expression gene prediction)
+- Held-out perturbation accuracy
+- Compositional generalization (double knockouts from single)
+- Pathway consistency (biological validation)
+
+**See**:
+- [docs/applications/perturbation_prediction.md](applications/perturbation_prediction.md) — Complete implementation guide
+- [docs/JEPA/04_jepa_perturbseq.md](JEPA/04_jepa_perturbseq.md) — Architecture details
+
+### 📋 Application 2: Gene Expression Prediction — NEXT
 
 **Goal**: Predict gene expression from metadata with uncertainty quantification
 
 **Current State**: GEM-1 (Synthesize Bio) demonstrates supervised prediction at scale
 
 **Generative AI Value-Add**:
-
 - Model full distribution $p(x \mid \text{metadata})$, not just $\mathbb{E}[x]$
 - Uncertainty quantification for experimental planning
 - Diverse synthetic data for augmentation
 
-**Proposed Approach**: Hybrid model (predictive foundation + diffusion on residuals)
+**Proposed Approach**: Hybrid model (GEM-1-style predictor + diffusion on residuals)
 
-**See**: `docs/incubation/generative-ai-for-gene-expression-prediction.md`
+**When**: After Perturb-seq application is benchmarked and documented
 
-### Application 2: Perturbation Prediction (scPerturb)
+**See**: [docs/incubation/generative-ai-for-gene-expression-prediction.md](incubation/generative-ai-for-gene-expression-prediction.md)
 
-**Goal**: Predict cellular response to genetic/chemical perturbations
-
-**Current State**: scGen, CPA, GEARS use VAE/GNN approaches
-
-**Generative AI Value-Add**:
-
-- Compositional generalization (unseen perturbation combinations)
-- Cell-level heterogeneity modeling
-- Counterfactual reasoning
-
-**Proposed Approaches**:
-1. Conditional diffusion on scPerturb
-2. Causal VAE with perturbation operators
-3. JEPA for Perturb-seq (predict perturbed latent from baseline + perturbation)
-
-**See**: `docs/incubation/generative-ai-for-perturbation-modeling.md`, `docs/incubation/joint_latent_space_and_JEPA.md`
-
-### Application 3: Synthetic Biological Datasets
+### 📋 Application 3: Synthetic Biological Datasets — NEXT
 
 **Goal**: Generate realistic synthetic datasets for drug/target discovery
 
 **Use Cases**:
-
 - Data augmentation for rare conditions
 - Privacy-preserving data sharing
 - Benchmarking computational methods
 - Training downstream classifiers
 
 **Generative AI Value-Add**:
-
 - Diverse, realistic samples (not just mean predictions)
 - Controllable generation (condition on disease, tissue, perturbation)
 - Validation via biological consistency checks
 
 **Proposed Approach**: Conditional diffusion with metadata conditioning
 
-### Application 4: scPPDM (Single-cell Perturbation Prediction via Diffusion Models)
-
-**Goal**: Implement and extend scPPDM methodology
-
-**Status**: Deferred (see `dev/references/scPPDM.pdf`)
-
-**Key Ideas**:
-
-- Diffusion models for single-cell perturbation response prediction
-- Conditional generation on perturbation identity
-- Comparison with VAE-based methods (scGen, CPA)
+**When**: After at least one prediction-focused application (Perturb-seq or Gene Expression) is complete
 
 ---
 
-## Efficient Paths to Applications
+## Implementation Strategy
 
-### Path A: Gene Expression Prediction (Fastest)
+### Principle: Depth Over Breadth
 
-```
-Current State → Conditional VAE → Conditional Diffusion → Hybrid Model
-     ↓              (2 weeks)        (3 weeks)           (2 weeks)
-  Stage 2          Add metadata     Add uncertainty      Combine with
-  (cVAE)           conditioning     quantification       predictive model
-```
+The project has completed extensive theory exploration. The current phase focuses on **consolidating one complete application** as a flagship demonstration before expanding.
 
-**Dataset**: GTEx or harmonized bulk RNA-seq
+**Chosen Path: Perturbation Prediction (Perturb-seq)**
 
-### Path B: Perturbation Prediction (Most Impactful)
+Rationale:
+- **Scientific impact**: Central problem in computational biology
+- **Clear benchmarks**: Published methods (scGen, CPA, GEARS, scPPDM) for comparison
+- **Leverages strengths**: VAE infrastructure, JEPA theory, latent diffusion documentation
+- **Natural progression**: Demonstrates VAE → JEPA → Diffusion wrapper integration
 
-```
-Current State → JEPA Prototype → Perturb-seq JEPA → Generative Wrapper
-     ↓            (3 weeks)         (4 weeks)          (3 weeks)
-  Stage 6        Basic JEPA on     Add perturbation    Add diffusion
-  (Diffusion)    toy data          conditioning        for uncertainty
-```
+**Success = One Complete Vertical**
 
-**Dataset**: Norman et al. 2019 (Perturb-seq, K562 cells)
+A complete application means:
+1. ✅ End-to-end implementation (data → model → evaluation)
+2. ✅ Benchmarked against published methods
+3. ✅ Documented with reproducible examples
+4. ✅ Biologically validated (DEG recovery, pathway consistency)
 
-### Path C: Synthetic Data Generation (Most General)
-
-```
-Current State → Conditional Diffusion → Multi-modal → Validation Pipeline
-     ↓              (3 weeks)            (4 weeks)       (2 weeks)
-  Stage 6         Gene expression      Add metadata,    Biological
-  (Diffusion)     generation           perturbations    consistency checks
-```
-
-**Dataset**: scPerturb or CellxGene
+**After Perturbation Prediction:**
+- Decision point: Extend current application OR start next application
+- Options: Gene expression prediction, Synthetic data generation, or deeper Perturb-seq extensions
 
 ---
 
@@ -744,25 +823,67 @@ Current State → Conditional Diffusion → Multi-modal → Validation Pipeline
 
 ## Next Steps
 
-### Immediate (This Week)
+### Week 1-2: Data + VAE Baseline (Immediate Focus)
 
-1. Test diffusion training on RunPod with large preset
-2. Add conditional diffusion (classifier-free guidance)
+1. **Dataset acquisition**:
+   - Download Norman et al. 2019 Perturb-seq dataset (K562 cells, CRISPR knockouts)
+   - Implement data loaders with quality control
+   - Document data statistics and preprocessing choices
 
-### Short-term (2-4 Weeks)
+2. **VAE baseline**:
+   - Train CVAE_NB with perturbation conditioning
+   - Implement evaluation metrics (DEG recovery, perturbation classification accuracy)
+   - Establish baseline performance for comparison
 
-3. Implement conditional VAE for gene expression prediction
-4. Begin JEPA prototype on toy biological data
-5. Download and preprocess Norman et al. Perturb-seq dataset
+3. **Infrastructure**:
+   - Create `examples/perturbation/` directory structure
+   - Set up experiment tracking (wandb or similar)
+   - Document training procedures
 
-### Medium-term (1-2 Months)
+### Week 3-4: JEPA Implementation
 
-6. Flow matching implementation
-7. JEPA for Perturb-seq with perturbation conditioning
-8. Benchmark against scGen/CPA on perturbation prediction
+4. **Core JEPA architecture**:
+   - Implement context encoder + target encoder (EMA)
+   - Perturbation encoder (embedding lookup + set encoder for multi-perturbations)
+   - Predictor network with perturbation conditioning
 
-### Long-term (3+ Months)
+5. **Collapse prevention**:
+   - VICReg regularization (variance/covariance losses)
+   - Multi-view augmentation strategies for gene expression
+   - Diagnostic tools for monitoring latent space quality
 
-9. Hybrid predictive-generative model for gene expression
-10. Synthetic biological dataset generation pipeline
-11. Integration with real drug discovery workflows
+6. **Evaluation**:
+   - Compare JEPA vs. CVAE latent spaces
+   - Held-out perturbation prediction accuracy
+   - Latent space visualization (UMAP/t-SNE)
+
+### Week 5-6: Diffusion Wrapper + Benchmarking
+
+7. **Latent diffusion**:
+   - Diffusion model in JEPA latent space
+   - Sampling for diverse cellular responses
+   - Uncertainty quantification metrics
+
+8. **Comprehensive benchmarking**:
+   - Compare against scGen, CPA, scPPDM (if code available)
+   - Evaluation: DEG recovery, compositional generalization, pathway consistency
+   - Create benchmark table for documentation
+
+9. **Documentation & examples**:
+   - Complete `examples/perturbation/01_perturbseq_jepa_diffusion.ipynb`
+   - Update `docs/applications/perturbation_prediction.md` with results
+   - Create reproducible training scripts
+
+### After Current Milestone: Decision Point
+
+**Option A: Extend Perturb-seq Application**
+- Multi-dataset validation (other Perturb-seq datasets)
+- Compositional perturbations (double/triple knockouts)
+- Transfer learning across cell types
+- Integration with causal-bio-lab for counterfactual validation
+
+**Option B: Start Next Application**
+- Gene expression prediction (GTEx, hybrid predictive-generative)
+- Synthetic data generation pipeline
+
+**Decision criteria**: Based on impact assessment and scientific priorities after completing flagship application

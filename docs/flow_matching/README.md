@@ -23,6 +23,7 @@ This series mirrors the structure of the DDPM documentation, providing a complet
 ## Quick Navigation
 
 ### For Beginners
+
 1. Start with [Rectifying Flow Tutorial](rectifying_flow.md) for intuitive introduction
 2. Read [Foundations](01_flow_matching_foundations.md) for mathematical details
 3. Review [Training](02_flow_matching_training.md) for implementation

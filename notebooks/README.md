@@ -158,8 +158,83 @@ When adding new notebooks:
 
 ---
 
+## Publishing Notebooks to Documentation Site
+
+### **Dual-Location Strategy**
+
+Notebooks live in **two locations**:
+
+1. **`notebooks/`** (this directory) — **Primary / Development**
+   - Work here, experiment freely
+   - Messy outputs OK
+   - Not all notebooks need to be published
+
+2. **`docs/notebooks/`** — **Published / Rendered**
+   - Copy here when ready for public viewing
+   - Renders reliably on GitHub Pages
+   - Clean, polished versions only
+
+### **Why This Approach?**
+
+**Standard location + Reliable rendering:**
+- ✅ Developers find notebooks where they expect (`notebooks/`)
+- ✅ GitHub Pages renders them beautifully with math/plots
+- ✅ Selective publishing (only show polished work)
+- ✅ Simple workflow (explicit "publish" step)
+
+**Duplication is minimal:**
+- Only publish polished notebooks
+- Git handles text files efficiently
+- Clear separation between dev and prod
+
+### **Publishing Workflow**
+
+When a notebook is ready to share publicly:
+
+```bash
+# 1. Polish the notebook
+# - Clear unnecessary outputs or save clean outputs
+# - Add markdown explanations
+# - Test end-to-end execution
+
+# 2. Copy to docs/notebooks/
+cp notebooks/diffusion/my_tutorial.ipynb docs/notebooks/diffusion/
+
+# 3. (Optional) Add to mkdocs.yml navigation
+# Edit mkdocs.yml to include in nav structure
+
+# 4. Commit and push
+git add docs/notebooks/diffusion/my_tutorial.ipynb
+git commit -m "Publish diffusion tutorial notebook"
+git push
+
+# 5. Site updates automatically at https://pleiadian53.github.io/genai-lab/
+```
+
+### **When to Publish?**
+
+Publish a notebook when it's:
+- ✅ Clean and well-documented
+- ✅ Tested end-to-end (runs without errors)
+- ✅ Educational value for public audience
+- ✅ Outputs are saved and informative
+
+**Don't publish:**
+- ❌ Experimental/WIP notebooks
+- ❌ Notebooks with messy debugging
+- ❌ Personal scratch notebooks
+- ❌ Notebooks requiring non-public data
+
+### **Viewing Published Notebooks**
+
+- **GitHub Pages:** https://pleiadian53.github.io/genai-lab/notebooks/
+- **Raw files:** https://github.com/pleiadian53/genai-lab/tree/main/docs/notebooks/
+
+---
+
 ## Related Resources
 
 - **Documentation**: `docs/` for detailed theory and derivations
 - **Examples**: `examples/` for production scripts
 - **Source code**: `src/genailab/` for reusable modules
+- **Published notebooks**: https://pleiadian53.github.io/genai-lab/notebooks/

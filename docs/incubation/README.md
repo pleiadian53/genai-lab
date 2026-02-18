@@ -6,10 +6,18 @@ This directory contains exploratory architectural proposals and application idea
 
 | Document | Focus | Status |
 |----------|-------|--------|
-| [joint_latent_space_and_JEPA.md](joint_latent_space_and_JEPA.md) | Joint latent spaces for static/dynamic data, JEPA for Perturb-seq | Conceptual |
-| [generative-ai-for-gene-expression-prediction.md](generative-ai-for-gene-expression-prediction.md) | Diffusion/VAE/Flow for gene expression with uncertainty, count data handling | Documented |
-| [generative-ai-for-perturbation-modeling.md](generative-ai-for-perturbation-modeling.md) | Generative approaches for scPerturb, beyond GEM-1 | Conceptual |
 | [alternative_backbones_for_biology.md](alternative_backbones_for_biology.md) | SSMs, tokenization alternatives, architectures for biology | Conceptual |
+| [generative-ai-for-gene-expression-prediction.md](generative-ai-for-gene-expression-prediction.md) | Diffusion/VAE/Flow for gene expression with uncertainty, count data handling | Next after Perturb-seq |
+| [numerical_embeddings_and_continuous_values.md](numerical_embeddings_and_continuous_values.md) | Encoding strategies for continuous biological values | Research |
+
+## Graduated Documents
+
+Documents that have been promoted from incubation to active use:
+
+| Original Document | Graduated To | Reason |
+|-------------------|--------------|--------|
+| `joint_latent_space_and_JEPA.md` | [docs/JEPA/05_joint_latent_spaces.md](../JEPA/05_joint_latent_spaces.md) | Supports active Perturb-seq application; JEPA theory complete |
+| `generative-ai-for-perturbation-modeling.md` | [docs/applications/architectural_approaches.md](../applications/architectural_approaches.md) | Foundational for active perturbation prediction application |
 
 ## Key Themes
 
