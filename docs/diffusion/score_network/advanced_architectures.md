@@ -14,7 +14,7 @@ The simple MLP used in the tutorial notebook works well for 2D toy data, but rea
 
 ## Referenced From
 
-- **Notebook**: [`notebooks/diffusion/02_sde_formulation/02_sde_formulation.ipynb`](../../../notebooks/diffusion/02_sde_formulation/02_sde_formulation.ipynb)
+- **Notebook**: `notebooks/diffusion/02_sde_formulation/02_sde_formulation.ipynb`
 - **Related**: [Time Embedding and FiLM](./time_embedding_and_film.md) — Component details for time conditioning
 
 ---
@@ -639,6 +639,5 @@ The key insight: **match the architecture's inductive biases to your data's stru
 
 ## Related Documents
 
+- [Score Network Basics](./basics.md) — SiLU activation, SimpleScoreNetwork MLP, architecture comparison
 - [Time Embedding and FiLM](./time_embedding_and_film.md) — Detailed explanation of time conditioning components
-- [Score Network Architecture (private)](../../../dev/notebooks/diffusion/02_sde_formulation/score_network_architecture.md) — Implementation notes
-- [Training Loss and Denoising](../../../dev/notebooks/diffusion/02_sde_formulation/training_loss_and_denoising.md) — How training works

@@ -11,7 +11,7 @@ This document derives the Fokker-Planck equation from first principles and expla
 ## Referenced From
 
 - **Main Document**: [`docs/diffusion/reverse_process/reverse_process_derivation.md`](./reverse_process_derivation.md) — Uses the Fokker-Planck equation to derive the reverse SDE
-- **Related**: [`notebooks/diffusion/02_sde_formulation/supplements/07_fokker_planck_equation.md`](../../../notebooks/diffusion/02_sde_formulation/supplements/07_fokker_planck_equation.md)
+- **Related**: `notebooks/diffusion/02_sde_formulation/supplements/07_fokker_planck_equation.md`
 
 ---
 
@@ -541,5 +541,5 @@ $$
 ### Related Documents
 - **Reverse Process**: [`reverse_process_derivation.md`](./reverse_process_derivation.md)
 - **Forward Process**: [`forward_process_derivation.md`](../forward_process_derivation.md)
-- **Supplement in Notebook**: [`notebooks/diffusion/02_sde_formulation/supplements/07_fokker_planck_equation.md`](../../../notebooks/diffusion/02_sde_formulation/supplements/07_fokker_planck_equation.md)
+- **Supplement in Notebook**: `notebooks/diffusion/02_sde_formulation/supplements/07_fokker_planck_equation.md`
 

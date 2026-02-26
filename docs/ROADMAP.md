@@ -182,7 +182,7 @@ $$
 ### References
 
 - Song & Ermon, "Generative Modeling by Estimating Gradients of the Data Distribution" (2019)
-- `dev/references/Principles of diffusion models.pdf` — Section 2
+- Cao et al., "A Survey on Generative Diffusion Models" (2024) — Section 2
 
 ---
 
@@ -236,7 +236,7 @@ $$
 
 - Ho et al., "Denoising Diffusion Probabilistic Models" (2020)
 - Song et al., "Score-Based Generative Modeling through Stochastic Differential Equations" (2021)
-- `dev/references/Principles of diffusion models.pdf` — Sections 3-4
+- Cao et al., "A Survey on Generative Diffusion Models" (2024) — Sections 3-4
 
 ---
 
@@ -644,7 +644,7 @@ Current milestone: End-to-end pipeline for Norman et al. 2019 dataset
 **Integration with Causal Methods:**
 - Counterfactual generation pipeline
 - Causal regularization via invariance
-- Integration with [causal-bio-lab](../../causal-bio-lab/) for causal validation
+- Integration with `causal-bio-lab` (sibling project) for causal validation
 
 ---
 
@@ -779,11 +779,11 @@ A complete application means:
 
 1. Kingma & Welling, "Auto-Encoding Variational Bayes" (2014)
 2. Rezende et al., "Stochastic Backpropagation" (2014)
-3. `dev/references/Principles of diffusion models.pdf`
+3. Cao et al., "A Survey on Generative Diffusion Models" (2024)
 
 ### Surveys
 
-1. `dev/references/Diffusion Models- A Comprehensive Survey of Methods and Applications.pdf`
+1. Yang et al., "Diffusion Models: A Comprehensive Survey of Methods and Applications" (2023)
 2. Bond-Taylor et al., "Deep Generative Modelling: A Comparative Review" (2022)
 
 ### Biology-Specific
@@ -791,7 +791,7 @@ A complete application means:
 1. Lopez et al., "Deep generative modeling for single-cell transcriptomics" (scVI, 2018)
 2. Lotfollahi et al., "scGen: Predicting single-cell perturbation responses" (2019)
 3. Bunne et al., "Learning Single-Cell Perturbation Responses using Neural Optimal Transport" (2023)
-4. **scPPDM**: "Single-cell Perturbation Prediction via Diffusion Models" — `dev/references/scPPDM.pdf`
+4. **scPPDM**: "Single-cell Perturbation Prediction via Diffusion Models"
    - Applies diffusion models to predict single-cell perturbation responses
    - Key target for implementation in this project
 

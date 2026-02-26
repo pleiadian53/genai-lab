@@ -282,9 +282,8 @@ Found an error or have suggestions? This is a living document!
 
 ### Within This Project
 
-- [`../../diffusion/`](../../diffusion/): Standard Euclidean diffusion models
-- [`../../SDE/`](../../SDE/): SDE formulation background
-- [`../../dev/ddpm_learning_process/`](../../dev/ddpm_learning_process/): DDPM mechanics
+- [`../diffusion/`](../diffusion/): Standard Euclidean diffusion models
+- [`../SDE/`](../SDE/): SDE formulation background
 
 ### External Resources
 

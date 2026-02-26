@@ -289,7 +289,7 @@ Companies and platforms pioneering generative AI for drug discovery and biologic
 
 ## Related Projects
 
-### [causal-bio-lab](../causal-bio-lab/) — Causal AI/ML for Computational Biology
+### `causal-bio-lab` — Causal AI/ML for Computational Biology
 
 **Complementary Focus:** While `genai-lab` focuses on **modeling data-generating processes** through generative models, `causal-bio-lab` focuses on **uncovering causal structures** and **estimating causal effects** from observational and interventional data.
 

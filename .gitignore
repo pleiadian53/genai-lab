@@ -116,3 +116,6 @@ runpods/**/*
 # OS
 .DS_Store
 Thumbs.db
+.cursor/
+.windsurf/
+tasks/

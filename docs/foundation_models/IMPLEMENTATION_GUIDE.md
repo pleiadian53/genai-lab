@@ -381,8 +381,8 @@ for x in batch:
 - [Foundation Models Overview](leveraging_foundation_models_v2.md)
 - [Transformer Data Shapes](data_shape_v2.md)
 - [Latent Diffusion Series](../latent_diffusion/)
-- [Package README](../../src/genailab/foundation/README.md)
-- [Notebook Tutorials](../../notebooks/foundation_models/README.md)
+- Package README: `src/genailab/foundation/README.md`
+- Notebook Tutorials: `notebooks/foundation_models/README.md`
 
 ---
 

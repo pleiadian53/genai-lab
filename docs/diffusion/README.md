@@ -6,7 +6,7 @@ Reference materials and deep-dive documents for understanding diffusion models f
 
 ## 🎯 Looking for SDE Supplements?
 
-**Most comprehensive SDE materials are now in**: [`notebooks/diffusion/02_sde_formulation/supplements/`](../../notebooks/diffusion/02_sde_formulation/supplements/)
+**Most comprehensive SDE materials are now in**: `notebooks/diffusion/02_sde_formulation/supplements/`
 
 **8 focused supplements covering**:
 
@@ -15,7 +15,7 @@ Reference materials and deep-dive documents for understanding diffusion models f
 - Dimensional analysis and units
 - Training loss, reverse SDEs, and more
 
-**Start here**: [`notebooks/diffusion/02_sde_formulation/README.md`](../../notebooks/diffusion/02_sde_formulation/README.md)
+**Start here**: `notebooks/diffusion/02_sde_formulation/README.md`
 
 ---
 
@@ -396,7 +396,7 @@ This directory explains how to build neural networks that estimate $\nabla_x \lo
 
 ### For Implementing Score Networks
 
-1. **Architecture basics**: `dev/notebooks/diffusion/02_sde_formulation/score_network_architecture.md`
+1. **Architecture basics**: [`score_network/basics.md`](score_network/basics.md)
    - Activation functions (SiLU)
    - Basic MLP implementation
    - Why `y.sum().backward()`

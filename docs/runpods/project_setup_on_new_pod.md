@@ -436,7 +436,7 @@ dataset = load_dataset("your-dataset-name")
 
 ## Related Documents
 
-- [INSTALL.md](../../INSTALL.md) - Local installation guide
+- `INSTALL.md` (project root) - Local installation guide
 - [SETUP.md](../SETUP.md) - Detailed configuration documentation
 
 ---

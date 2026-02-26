@@ -291,9 +291,9 @@ After mastering the SDE formulation:
 ## Contributing
 
 These materials are part of the `genai-lab` project. For questions or suggestions:
-- See main project: [`../../README.md`](../../README.md)
-- Theory documents: [`../../../docs/`](../../../docs/)
-- Production examples: [`../../../examples/`](../../../examples/)
+- See main project: `README.md` (project root)
+- Theory documents: `docs/`
+- Production examples: `examples/`
 
 ---
 

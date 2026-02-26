@@ -120,10 +120,10 @@ This dual-location approach:
 
 | Notebook | Description | Link | Status |
 |----------|-------------|------|--------|
-| **DDPM Basics** | Introduction to Denoising Diffusion Probabilistic Models | [View Notebook](../diffusion/01_ddpm/01_ddpm_basics/) | ✅ Available |
-| **SDE Formulation** | Stochastic Differential Equations for diffusion | [View Notebook](../diffusion/02_sde_formulation/02_sde_formulation/) | ✅ Available |
-| **Medical Imaging Diffusion** | Diffusion models for medical images | [View Notebook](../diffusion/03_medical_imaging_diffusion/03_medical_imaging_diffusion/) | ✅ Available |
-| **Gene Expression Diffusion** | Applying diffusion to gene expression data | [View Notebook](../diffusion/04_gene_expression_diffusion/04_gene_expression_diffusion/) | ✅ Available |
+| **DDPM Basics** | Introduction to Denoising Diffusion Probabilistic Models | `notebooks/diffusion/01_ddpm/` | ✅ Available |
+| **SDE Formulation** | Stochastic Differential Equations for diffusion | `notebooks/diffusion/02_sde_formulation/` | ✅ Available |
+| **Medical Imaging Diffusion** | Diffusion models for medical images | `notebooks/diffusion/03_medical_imaging_diffusion/` | ✅ Available |
+| **Gene Expression Diffusion** | Applying diffusion to gene expression data | `notebooks/diffusion/04_gene_expression_diffusion/` | ✅ Available |
 
 **Quick access:** Navigate to **"Diffusion (Technical Deep Dives)"** in the top navigation tabs or sidebar!
 

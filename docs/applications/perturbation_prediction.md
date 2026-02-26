@@ -835,7 +835,7 @@ Once the core application is validated, natural extensions include:
 - Morphological features
 
 ### Causal Validation
-- Integration with [causal-bio-lab](../../causal-bio-lab/)
+- Integration with `causal-bio-lab` (sibling project)
 - Counterfactual validation using structural causal models
 - Causal discovery from perturbation data
 
@@ -909,7 +909,7 @@ This is an active research application. For questions, suggestions, or collabora
 
 - Open an issue in the GitHub repository
 - Refer to [docs/ROADMAP.md](../ROADMAP.md) for current progress
-- See related work in [causal-bio-lab](../../causal-bio-lab/) for causal validation methods
+- See related work in `causal-bio-lab` (sibling project) for causal validation methods
 
 ---
 

@@ -155,7 +155,7 @@ $$
 
 **For hands-on learning with code**:
 
-- **Location**: [`notebooks/diffusion/02_sde_formulation/`](../../notebooks/diffusion/02_sde_formulation/)
+- **Location**: `notebooks/diffusion/02_sde_formulation/`
 - **Contents**:
   - `README.md` — Comprehensive theory document
   - `02_sde_formulation.ipynb` — Interactive notebook with visualizations
@@ -254,9 +254,9 @@ This `docs/SDE/` directory contains **tutorial-style mathematical derivations** 
 ## Quick Links
 
 ### Notebooks (Interactive + Code)
-- [SDE Tutorial (Theory)](../../notebooks/diffusion/02_sde_formulation/README.md)
-- [SDE Tutorial (Code)](../../notebooks/diffusion/02_sde_formulation/02_sde_formulation.ipynb)
-- [DDPM Basics](../../notebooks/diffusion/01_ddpm_basics.ipynb)
+- SDE Tutorial (Theory): `notebooks/diffusion/02_sde_formulation/README.md`
+- SDE Tutorial (Code): `notebooks/diffusion/02_sde_formulation/02_sde_formulation.ipynb`
+- DDPM Basics: `notebooks/diffusion/01_ddpm/01_ddpm_basics.ipynb`
 
 ### Docs (Mathematical Derivations)
 - [SDE View Overview](01_diffusion_sde_view.md)
@@ -276,7 +276,7 @@ This `docs/SDE/` directory contains **tutorial-style mathematical derivations** 
 2. Read [DDPM from VP-SDE](02_sde_and_ddpm.md) to see discrete-continuous connection
 3. Understand [Solving VP-SDE](03_solving_vpsde.md) for the forward solution
 4. See [DDIM Update Coefficients](03b_ddim_update_coeff.md) for exact code formulas
-5. Work through the [interactive notebook](../../notebooks/diffusion/02_sde_formulation/02_sde_formulation.ipynb)
+5. Work through the interactive notebook: `notebooks/diffusion/02_sde_formulation/02_sde_formulation.ipynb`
 
 ### For Deep Dive
 
@@ -303,9 +303,7 @@ This `docs/SDE/` directory contains **tutorial-style mathematical derivations** 
 
 **Note**: Original draft files have been moved to `dev/diffusion/sde/` (private development area).
 
-These drafts have been superseded by comprehensive tutorials in [`notebooks/diffusion/02_sde_formulation/supplements/`](../../notebooks/diffusion/02_sde_formulation/supplements/):
+These drafts have been superseded by comprehensive tutorials in `notebooks/diffusion/02_sde_formulation/supplements/`:
 - Supplement 07: Fokker-Planck Equation (replaces div_and_laplace content)
 - Supplement 08: Dimensional Analysis (replaces unit_analysis content)
 - Main sde_QA.md: Canonical Q&A version
-
-**For historical reference**: See `dev/diffusion/sde/README.md` (not tracked in git)

@@ -16,7 +16,7 @@ appear throughout machine learning. This document explains how to implement them
 
 This document was motivated by studying the diffusion model training loss:
 
-- **Source**: [`notebooks/diffusion/02_sde_formulation/supplements/03_training_loss_and_denoising.md`](../notebooks/diffusion/sde_formulation/training_loss_and_denoising.md)
+- **Source**: `notebooks/diffusion/02_sde_formulation/supplements/03_training_loss_and_denoising.md`
 
 The weighted loss in diffusion models is:
 

@@ -257,7 +257,7 @@ When you’re ready, we can deliberately “break” the VAE and watch diffusion
 
 ### Bridge to Diffusion
 
-7. **`dev/references/Principles of diffusion models.pdf`** — Comprehensive treatment of score matching and diffusion
+7. Cao et al., "A Survey on Generative Diffusion Models" (2024) — Comprehensive treatment of score matching and diffusion
 8. **Song & Ermon** (2019) — "Generative Modeling by Estimating Gradients of the Data Distribution"
 9. **Ho et al.** (2020) — "Denoising Diffusion Probabilistic Models" (DDPM)
 

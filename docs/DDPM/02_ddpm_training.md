@@ -488,7 +488,7 @@ scaler.update()
 
 - [DDPM Foundations](01_ddpm_foundations.md) — Mathematical theory
 - [DDPM Sampling](03_ddpm_sampling.md) — Sampling algorithms
-- [DDPM Basics Notebook](../../notebooks/diffusion/01_ddpm/01_ddpm_basics.ipynb) — Implementation
+- DDPM Basics Notebook: `notebooks/diffusion/01_ddpm/01_ddpm_basics.ipynb`
 - [SDE View](../SDE/01_diffusion_sde_view.md) — Continuous-time perspective
 
 ---

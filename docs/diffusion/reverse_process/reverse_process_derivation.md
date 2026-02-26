@@ -20,7 +20,7 @@ This document derives the reverse-time SDE, which is the mathematical key to gen
 
 ## Referenced From
 
-- **Notebook**: [`notebooks/diffusion/02_sde_formulation/sde_formulation.md`](../../notebooks/diffusion/02_sde_formulation/sde_formulation.md) — Section on Reverse SDE
+- **Notebook**: `notebooks/diffusion/02_sde_formulation/sde_formulation.md` — Section on Reverse SDE
 
 ---
 
@@ -487,7 +487,7 @@ $$
 - **Song et al. (2021)**: [Score-Based Generative Modeling through SDEs](https://arxiv.org/abs/2011.13456) — Application to generative models
 - **Haussmann & Pardoux (1986)**: "Time reversal of diffusions" — Mathematical treatment
 - **Föllmer (1986)**: "Random fields and diffusion processes" — Connections to optimal transport
-- **Fokker-Planck Derivation**: [`notebooks/diffusion/02_sde_formulation/supplements/07_fokker_planck_equation.md`](../../../notebooks/diffusion/02_sde_formulation/supplements/07_fokker_planck_equation.md)
+- **Fokker-Planck Derivation**: `notebooks/diffusion/02_sde_formulation/supplements/07_fokker_planck_equation.md`
 
 ## Related Documents
 

@@ -82,7 +82,7 @@ This document provides a complete mathematical introduction from first principle
 **Then**: 
 1. Read [DDPM Training](02_ddpm_training.md) for practical training details
 2. Read [DDPM Sampling](03_ddpm_sampling.md) for sampling algorithms
-3. Work through the [DDPM Basics Notebook](../../notebooks/diffusion/01_ddpm/01_ddpm_basics.ipynb) for hands-on implementation
+3. Work through the DDPM Basics Notebook: `notebooks/diffusion/01_ddpm/01_ddpm_basics.ipynb`
 
 ### For Deep Dive
 
@@ -98,7 +98,7 @@ After understanding the foundations:
   - [Training Details](02_ddpm_training.md) — Architectures, loss functions, hyperparameters
   - [Sampling Methods](03_ddpm_sampling.md) — DDPM, DDIM, fast sampling, guidance
 
-- **Notebook**: [01_ddpm_basics.ipynb](../../notebooks/diffusion/01_ddpm/01_ddpm_basics.ipynb)
+- **Notebook**: `notebooks/diffusion/01_ddpm/01_ddpm_basics.ipynb`
   - Complete PyTorch implementation
   - Gene expression application
   - Conditional generation
@@ -207,7 +207,7 @@ DDPM can be viewed as a hierarchical VAE with:
    - Learn fast sampling and guidance
 
 4. **Implementation** (notebooks)
-   - Work through [DDPM Basics](../../notebooks/diffusion/01_ddpm/01_ddpm_basics.ipynb)
+   - Work through DDPM Basics: `notebooks/diffusion/01_ddpm/01_ddpm_basics.ipynb`
    - Implement training loop
    - Generate samples
 
@@ -234,7 +234,7 @@ DDPM can be viewed as a hierarchical VAE with:
 
 ### Biological Data
 
-- **Gene expression**: Generate cell states (see [DDPM Basics](../../notebooks/diffusion/01_ddpm_basics.ipynb))
+- **Gene expression**: Generate cell states (see `notebooks/diffusion/01_ddpm/01_ddpm_basics.ipynb`)
 - **Protein design**: Generate protein sequences and structures
 - **Drug response**: Predict perturbation effects (scPPDM)
 - **Single-cell data**: Generate realistic cell populations
@@ -311,7 +311,7 @@ DDPM can be viewed as a hierarchical VAE with:
   - [Brownian Motion Tutorial](../diffusion/brownian_motion_tutorial.md)
   - General diffusion theory
 
-- **Notebooks**: [notebooks/diffusion/](../../notebooks/diffusion/)
+- **Notebooks**: `notebooks/diffusion/`
   - DDPM basics implementation
   - SDE formulation with code
   - Advanced topics

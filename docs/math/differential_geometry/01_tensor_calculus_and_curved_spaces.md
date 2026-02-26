@@ -772,6 +772,5 @@ class CircleScoreNetworkIntrinsic(nn.Module):
 
 ## Related Documents
 
-- [`../../dev/ddpm_learning_process/03_gradient_operator_and_independence.md`](../../dev/ddpm_learning_process/03_gradient_operator_and_independence.md): Gradient operator in different coordinate systems
 - [`../diffusion/brownian_motion_tutorial.md`](../diffusion/brownian_motion_tutorial.md): Brownian motion in Euclidean space
 - [`../SDE/01_diffusion_sde_view.md`](../SDE/01_diffusion_sde_view.md): SDE formulation of diffusion models

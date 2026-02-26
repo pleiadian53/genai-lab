@@ -12,8 +12,7 @@ These techniques are essential for building score networks that can accurately e
 
 ## Referenced From
 
-- **Notebook**: [`notebooks/diffusion/02_sde_formulation/02_sde_formulation.ipynb`](../../../notebooks/diffusion/02_sde_formulation/02_sde_formulation.ipynb)
-- **Implementation Note**: [`dev/notebooks/diffusion/02_sde_formulation/score_network_architecture.md`](../../../dev/notebooks/diffusion/02_sde_formulation/score_network_architecture.md)
+- **Notebook**: `notebooks/diffusion/02_sde_formulation/02_sde_formulation.ipynb`
 - **Module**: `genailab.diffusion` (contains the production implementation)
 
 ---
@@ -524,9 +523,7 @@ They form the backbone of modern score network architectures, enabling the netwo
 
 ## Back References
 
-- **Where this is used**: [`notebooks/diffusion/02_sde_formulation/02_sde_formulation.ipynb`](../../../notebooks/diffusion/02_sde_formulation/02_sde_formulation.ipynb)
-- **Related concepts**: 
-  - [Score Network Architecture](../../../dev/notebooks/diffusion/02_sde_formulation/score_network_architecture.md)
+- **Where this is used**: `notebooks/diffusion/02_sde_formulation/02_sde_formulation.ipynb`
+- **Related concepts**:
   - [Forward Process Derivation](../forward_process_derivation.md)
-  - [Training Loss and Denoising](../../../dev/notebooks/diffusion/02_sde_formulation/training_loss_and_denoising.md)
-- **Related topic**: [Numerical Embeddings and Continuous Values](../../../docs/incubation/numerical_embeddings_and_continuous_values.md) - Explores how similar sinusoidal embedding techniques are used for numerical values in LLMs and their relevance to time embedding
+- **Related topic**: [Numerical Embeddings and Continuous Values](../../incubation/numerical_embeddings_and_continuous_values.md) - Explores how similar sinusoidal embedding techniques are used for numerical values in LLMs and their relevance to time embedding

@@ -639,7 +639,7 @@ Similarly, the MLP in DiT learns: **"Given THIS noise level, modulate features T
 ### Related Topics
 - [Adaptive LayerNorm in diffusion_transformer.md](diffusion_transformer.md#5-conditioning-time-and-labels-via-adaln)
 - [Time embedding in DDPM training](../score_network/time_embedding_and_film.md)
-- [Sinusoidal positional encoding](../../math/positional_encodings.md) (if exists)
+- Sinusoidal positional encoding: `docs/math/positional_encodings.md` (planned)
 
 ---
 
