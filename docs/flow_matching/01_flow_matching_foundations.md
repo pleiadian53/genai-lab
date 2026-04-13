@@ -78,7 +78,19 @@ The continuity equation is the PDE counterpart of the particle ODE $\frac{dx}{dt
 
 #### Physical Intuition: Probability as a Fluid
 
-Think of $p_t(x)$ as the density of an incompressible fluid at position $x$ and time $t$, and $v(x, t)$ as the local fluid velocity. The product $p_t(x)\, v(x, t)$ is then the *probability flux* — the rate at which probability mass flows past a given point per unit area. The divergence $\nabla \cdot (p_t v)$ measures how much of that flux is *leaving* a small region per unit volume:
+Think of $p_t(x)$ as the density of an incompressible fluid at position $x$ and time $t$, and $v(x, t)$ as the local fluid velocity. The product $p_t(x)\, v(x, t)$ is then the *probability flux* — a vector field describing how much probability mass flows through a surface element per unit time. The divergence $\nabla \cdot (p_t v)$ measures how much of that flux is *leaving* a small region per unit volume.
+
+**Dimensional analysis** (working in $\mathbb{R}^d$, using $L$ for length):
+
+| Quantity | Units | Reasoning |
+|----------|-------|-----------|
+| $p_t(x)$ | $\text{prob} \cdot L^{-d}$ | Probability per unit $d$-volume (integrates to 1 over $\mathbb{R}^d$) |
+| $v(x, t)$ | $L \cdot T^{-1}$ | Velocity |
+| $p_t v$ (flux) | $\text{prob} \cdot L^{-(d-1)} \cdot T^{-1}$ | Density × velocity; reduces the spatial dimension by one |
+| $\nabla \cdot (p_t v)$ | $\text{prob} \cdot L^{-d} \cdot T^{-1}$ | Divergence applies $\partial/\partial x_i$, adding one inverse length |
+| $\partial p_t / \partial t$ | $\text{prob} \cdot L^{-d} \cdot T^{-1}$ | Time derivative of density; units match ✓ |
+
+The flux $p_t v$ carries units of probability per $(d-1)$-dimensional surface element per unit time. When integrated over the boundary $\partial\Omega$ — a $(d-1)$-dimensional hypersurface — the result has units of probability per unit time: the rate at which probability mass crosses that boundary. In three dimensions this boundary is literally an *area* ($L^2$), which is where the "per unit area" phrasing originates; in general it is a $(d-1)$-dimensional hypersurface element.
 
 > **Rate of local density change = −(net outflow of probability flux)**
 
@@ -105,13 +117,15 @@ Applying the divergence theorem to the right-hand side converts the surface inte
 
 #### Connection to the ODE and the Pushforward
 
-The continuity equation reveals the deep link between particle trajectories and distribution evolution. If every particle starting at $x(0)$ follows the ODE $\frac{dx}{dt} = v(x, t)$, it traces a path $x(t) = \phi_t(x(0))$, where $\phi_t$ is called the **flow map**. The distribution evolves as the *pushforward* of $p_0$ under this map:
+The continuity equation reveals the deep link between particle trajectories and distribution evolution. If every particle starting at $x_0$ follows the ODE $\frac{dx}{dt} = v(x, t)$, it traces a path $x(t) = \phi_t(x_0)$, where $\phi_t : \mathbb{R}^d \to \mathbb{R}^d$ is called the **flow map**. The distribution at time $t$ is simply the distribution you get by applying $\phi_t$ to every sample from $p_0$, called the *pushforward* of $p_0$ under $\phi_t$:
 
 $$
-p_t = (\phi_t)_\# \, p_0
+p_t = {\phi_t}_{\,\#}\, p_0
+\quad \Longleftrightarrow \quad
+\text{if } X_0 \sim p_0 \text{, then } \phi_t(X_0) \sim p_t
 $$
 
-In words: to find $p_t$, take every sample from $p_0$ and push it forward along the flow. The continuity equation is simply the differential form of this statement. The goal of flow matching is to learn a velocity field $v_\theta$ whose induced flow map $\phi_1$ transports $p_{\text{noise}}$ to $p_{\text{data}}$.
+The $\#$ subscript is notation for "push forward through": ${\phi_t}_{\,\#}\, p_0$ means "apply $\phi_t$ to samples drawn from $p_0$." The continuity equation is the differential form of this statement — instead of asking where particles end up after a finite time $t$, it tracks how density changes over an infinitesimal step $dt$. The goal of flow matching is to learn a velocity field $v_\theta$ whose induced flow map $\phi_1$ transports $p_{\text{noise}}$ to $p_{\text{data}}$.
 
 ### The Forward Process
 
@@ -119,43 +133,51 @@ Unlike diffusion models, which define the forward process by *adding noise* stoc
 
 This design choice is deliberate: by decoupling path construction from learning, we can analyze trajectories analytically and choose path families that are convenient for training (e.g., straight lines) or that satisfy constraints (e.g., variance preservation). The model does not need to know which pair $(x_0, x_1)$ generated a given $x_t$ — it only needs to know the *velocity* at that $x_t$.
 
-**Conditional flow**: Given a data-noise pair $(x_0, x_1)$ where $x_0 \sim p_{\text{data}}$ and $x_1 \sim p_{\text{noise}}$, define a path:
+**Conditional flow**: Given a data-noise pair $(x_0, x_1)$ where $x_0 \sim p_{\text{data}}$ and $x_1 \sim p_{\text{noise}}$, define a smooth path connecting them:
 
 $$
-x_t = \psi_t(x_0, x_1)
+x_t = \psi_t(x_0, x_1), \qquad t \in [0, 1]
 $$
+
+Here $\psi_t : \mathbb{R}^d \times \mathbb{R}^d \to \mathbb{R}^d$ is the **interpolant** — a family of functions indexed by time $t$ that smoothly interpolates between the endpoints. It must satisfy the boundary conditions:
+
+$$
+\psi_0(x_0, x_1) = x_0 \quad \text{(starts at data)} \qquad \psi_1(x_0, x_1) = x_1 \quad \text{(ends at noise)}
+$$
+
+Beyond these endpoints, the shape of the path is a design choice. The conditional velocity along any such path is the time derivative of $\psi_t$:
+
+$$
+u_t(x_0, x_1) = \frac{d}{dt}\,\psi_t(x_0, x_1)
+$$
+
+This is the quantity the model is trained to predict. Different choices of $\psi_t$ lead to different velocity targets and different training dynamics.
 
 **Common choices**:
 
 **1. Linear interpolation (Rectified Flow)**:
 
 $$
-x_t = (1-t) x_0 + t x_1
+\psi_t(x_0, x_1) = (1-t)\, x_0 + t\, x_1
 $$
+
+The path is a straight line from $x_0$ to $x_1$, giving a constant conditional velocity $u_t = x_1 - x_0$ that does not depend on $t$. This is the simplest and most widely used choice.
 
 **2. Geodesic interpolation**:
 
 $$
-x_t = \exp_{x_0}(t \log_{x_0}(x_1))
+\psi_t(x_0, x_1) = \exp_{x_0}\!\left(t \log_{x_0}(x_1)\right)
 $$
 
-(useful for manifold-valued data)
+The path follows the shortest curve on a Riemannian manifold between $x_0$ and $x_1$. Reduces to linear interpolation in Euclidean space; useful for manifold-valued data such as rotations, shapes, or hyperbolic embeddings.
 
 **3. Variance-preserving interpolation**:
 
 $$
-x_t = \sqrt{1-t} \, x_0 + \sqrt{t} \, x_1
+\psi_t(x_0, x_1) = \sqrt{1-t}\, x_0 + \sqrt{t}\, x_1
 $$
 
-(maintains variance like diffusion)
-
-**Conditional velocity**: The velocity along this path is:
-
-$$
-u_t(x_0, x_1) = \frac{d}{dt} \psi_t(x_0, x_1)
-$$
-
-For linear interpolation: $u_t(x_0, x_1) = x_1 - x_0$ (constant velocity).
+The coefficients are chosen so that $\mathbb{E}[\|\psi_t\|^2] \approx \text{const}$ when $x_0$ and $x_1$ have unit variance. This mimics the signal-to-noise schedule of diffusion models and is useful when comparing against DDPM-style baselines.
 
 ### The Marginal Flow
 
@@ -197,6 +219,78 @@ where:
 - $x_0 \sim p_{\text{data}}$
 - $x_1 \sim p_{\text{noise}}$
 - $x_t = \psi_t(x_0, x_1)$
+
+#### What a Training Example Looks Like
+
+Each gradient step consumes a batch of independently sampled tuples. One tuple is constructed as follows (using linear interpolation throughout):
+
+**Step 1 — Sample a data point and a noise point**:
+
+$$
+x_0 \sim p_{\text{data}}, \qquad x_1 \sim \mathcal{N}(0, I)
+$$
+
+For example, $x_0$ might be a flattened image vector and $x_1$ a random Gaussian sample of the same dimension.
+
+**Step 2 — Sample a time**:
+
+$$
+t \sim \text{Uniform}[0, 1], \quad \text{e.g. } t = 0.3
+$$
+
+**Step 3 — Interpolate to get the noisy input**:
+
+$$
+x_t = (1 - t)\,x_0 + t\,x_1 = 0.7\,x_0 + 0.3\,x_1
+$$
+
+This is a point 30% of the way along the straight-line path from data to noise. It is what the network *sees* as input, together with $t$.
+
+**Step 4 — Compute the velocity target**:
+
+$$
+u_t = x_1 - x_0
+$$
+
+This is the direction and magnitude of the straight-line step from $x_0$ to $x_1$. It is the same for all $t$ along this path (constant velocity), so no additional computation is needed.
+
+**Step 5 — Evaluate the loss for this example**:
+
+$$
+\ell = \left\| v_\theta(x_t,\, t) - u_t \right\|^2 = \left\| v_\theta(x_t,\, t) - (x_1 - x_0) \right\|^2
+$$
+
+The network takes $(x_t, t)$ as input and should predict the direction from the original data point to the noise point. The loss penalizes any deviation from that direction.
+
+**Summary — the five objects in one training example**:
+
+| Object | What it is | Role |
+|--------|-----------|------|
+| $x_0$ | A real data sample | Anchor: the path starts here |
+| $x_1$ | A Gaussian noise sample | Anchor: the path ends here |
+| $t$ | A uniform random time in $[0,1]$ | Where along the path to evaluate |
+| $x_t = (1-t)x_0 + tx_1$ | The interpolated point | Network input |
+| $u_t = x_1 - x_0$ | The conditional velocity | Regression target |
+
+A minibatch is formed by independently drawing $B$ such tuples and averaging the per-example losses. In pseudocode:
+
+```python
+# One training step (linear / rectified flow)
+x0 = sample_data(batch_size)           # (B, d) — real data
+x1 = torch.randn_like(x0)             # (B, d) — Gaussian noise
+t  = torch.rand(batch_size, 1)        # (B, 1) — uniform time
+
+x_t    = (1 - t) * x0 + t * x1       # (B, d) — interpolated input
+target = x1 - x0                      # (B, d) — constant velocity target
+
+pred = model(x_t, t)                  # (B, d) — network prediction
+loss = ((pred - target) ** 2).mean()
+
+loss.backward()
+optimizer.step()
+```
+
+Note how little machinery is required: no score functions, no importance weights, no carefully calibrated noise schedules. The entire forward pass is three lines.
 
 **Why this works**: Although we train on conditional velocities $u_t(x_0, x_1)$ for specific pairs, the loss is equivalent to matching the marginal field. This follows from the **conditional expectation property**:
 
@@ -638,6 +732,7 @@ $$
 
 ## Related Documents
 
+- [Flow Map and Pushforward](01b_flowmap.md) — Deep dive on the flow map $\phi_t$, pushforward notation, and the ODE → distribution chain
 - [Flow Matching Training](02_flow_matching_training.md) — Training strategies and implementation
 - [Flow Matching Sampling](03_flow_matching_sampling.md) — ODE solvers and sampling efficiency
 - [Rectifying Flow Tutorial](rectifying_flow.md) — Detailed walkthrough
