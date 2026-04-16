@@ -56,8 +56,8 @@ vae = GeneVAE_NB(n_genes=2000, latent_dim=128)
 ## Related Notebooks
 
 - `notebooks/diffusion/04_gene_expression_diffusion/` — Latent diffusion for gene expression
-- `examples/01_bulk_cvae.ipynb` — CVAE on bulk RNA-seq
-- `examples/02_pbmc3k_cvae_nb.ipynb` — CVAE with NB decoder on PBMC
+- `notebooks/vae/01_bulk_cvae.ipynb` — CVAE on bulk RNA-seq
+- `notebooks/vae/02_pbmc3k_cvae_nb.ipynb` — CVAE with NB decoder on PBMC
 
 ---
 

@@ -149,8 +149,8 @@ Each topic folder corresponds to implementations in `src/genailab/`:
 
 | Docs Folder | Code Location | Example Notebook |
 |-------------|---------------|------------------|
-| `docs/VAE/` | `src/genailab/model/vae.py` | `examples/01_bulk_cvae.ipynb` |
-| `docs/datasets/` | `src/genailab/data/`, `src/genailab/diffusion/datasets.py` | `examples/02_pbmc3k_cvae_nb.ipynb` |
+| `docs/VAE/` | `src/genailab/model/vae.py` | `notebooks/vae/01_bulk_cvae.ipynb` |
+| `docs/datasets/` | `src/genailab/data/`, `src/genailab/diffusion/datasets.py` | `notebooks/vae/02_pbmc3k_cvae_nb.ipynb` |
 
 ### Reference Style
 

@@ -156,7 +156,7 @@ This allows the model to first learn good reconstructions, then gradually enforc
 
 ## Example: Healthy Training Curves
 
-The figure below shows training curves from a cVAE trained on synthetic bulk RNA-seq data (`examples/01_bulk_cvae.ipynb`):
+The figure below shows training curves from a cVAE trained on synthetic bulk RNA-seq data (`notebooks/vae/01_bulk_cvae.ipynb`):
 
 ![Healthy VAE Training Curves](figures/training_curves_healthy.png)
 
