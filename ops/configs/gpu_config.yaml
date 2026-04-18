@@ -1,0 +1,62 @@
+# GPU Runner Infrastructure Defaults
+#
+# This file configures the infrastructure for remote GPU jobs.
+# Edit once, reuse across all tasks. CLI flags override these values.
+#
+# Usage:
+#   python ops/provision_cluster.py
+#
+# Override specific values on the CLI:
+#   python ops/provision_cluster.py --gpu a100 --data-path scrna/pbmc/68k
+
+# GPU type: a40, a100, h100, rtx4090, rtxa5000, rtx5090, rtx4000ada, l4
+gpu: a40
+
+# Cloud provider
+cloud: runpod
+
+# Docker image (must have Python >= 3.11)
+docker_image: "docker:nvcr.io/nvidia/pytorch:25.02-py3"
+
+# RunPod Network Volume for persistent data (avoids re-uploading datasets each run)
+# Stage data once: python ops/provision_cluster.py --stage-data
+use_volume: true
+volume_name: "AI lab extension"
+
+# Data paths — compose as {data_prefix}/{data_path}
+# Convention: organize datasets as data/<modality>/<sub-topic>/<dataset>/ (e.g.,
+#   data/scrna/perturb_seq/norman_2019/, data/scrna/pbmc/68k/,
+#   data/scrna/pbmc/azimuth_ref/, data/bulk/gtex/).
+# Override data_path on the CLI to target a different dataset for a given run.
+data_prefix: "data"
+data_path: "scrna/perturb_seq/norman_2019"
+
+# Model dependency profiles — pip packages per model/framework.
+# Select via CLI: --model scvi  (or any key below)
+# The runner generates: pip show <pkg> >/dev/null 2>&1 || pip install <pkg>
+# Most genailab work runs on the stock PyTorch image + the genailab package —
+# leave default_model as 'none' unless your task needs extra deps.
+models:
+  scvi:
+    pip: "scvi-tools"
+    description: "scvi-tools — reference single-cell VAE framework (Lopez et al., 2018+)"
+  scgen:
+    pip: "scgen"
+    description: "scGen — perturbation response prediction baseline (Lotfollahi et al., 2019)"
+  cpa:
+    pip: "cpa-tools"
+    description: "Compositional Perturbation Autoencoder (Lotfollahi et al., 2023)"
+  diffusers:
+    pip: "diffusers accelerate"
+    description: "HuggingFace diffusers — reference diffusion model implementations"
+
+# Default model (must match a key in 'models' above; set to 'none' to skip model deps)
+default_model: none
+
+# Extra setup commands beyond model deps (leave empty unless you need custom installs)
+extra_setup: ""
+
+# Additional file mounts (remote_path: local_path)
+# Uncomment and edit as needed for your task:
+# extra_file_mounts:
+#   /workspace/cached_embeddings: ./output/embeddings

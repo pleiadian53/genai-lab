@@ -1,0 +1,545 @@
+"""Generic GPU task runner for SkyPilot.
+
+Separates infrastructure (GPU, cloud, volumes) from task commands.
+The runner builds SkyPilot YAML configs and handles launch/download/teardown.
+
+Model-agnostic: dependency profiles in gpu_config.yaml support any ML framework
+(single-cell tools, diffusion models, vision, NLP, etc.). Select via
+``--model <name>`` on the CLI.
+
+Usage from Python::
+
+    from ops.gpu_runner import InfraConfig, build_skypilot_config, launch
+
+    infra = InfraConfig.from_yaml("ops/configs/gpu_config.yaml")
+    config = build_skypilot_config(infra, run_command="python my_script.py --arg val")
+    launch(config, output_local=Path("./output/my_run/"))
+
+Usage from CLI: see ``ops/provision_cluster.py``.
+
+Adapted from agentic-spliceai/foundation_models/gpu_runner.py. Spliceai-specific
+model-registry integration removed; pip install reduced to a single editable
+install of the genailab package.
+"""
+
+from __future__ import annotations
+
+import logging
+import re
+import subprocess
+import sys
+import time
+from dataclasses import dataclass, field
+from pathlib import Path
+from typing import Optional
+
+import yaml
+
+logger = logging.getLogger(__name__)
+
+# ---------------------------------------------------------------------------
+# GPU specs and pricing
+# ---------------------------------------------------------------------------
+
+GPU_SPECS = {
+    "rtx4000ada": {
+        "accelerator": "RTX4000-Ada:1",
+        "vram_gb": 20,
+        "hourly_rate": 0.26,
+        "hardware_profile": "rtx4000ada-20gb",
+        "label": "NVIDIA RTX 4000 Ada 20 GB",
+    },
+    "rtxa5000": {
+        "accelerator": "RTXA5000:1",
+        "vram_gb": 24,
+        "hourly_rate": 0.27,
+        "hardware_profile": "rtxa5000-24gb",
+        "label": "NVIDIA RTX A5000 24 GB",
+    },
+    "rtx5090": {
+        "accelerator": "RTX5090:1",
+        "vram_gb": 32,
+        "hourly_rate": 0.89,
+        "hardware_profile": "rtx5090-32gb",
+        "label": "NVIDIA RTX 5090 32 GB",
+    },
+    "rtx4090": {
+        "accelerator": "RTX4090:1",
+        "vram_gb": 24,
+        "hourly_rate": 0.59,
+        "hardware_profile": "rtx4090-24gb",
+        "label": "NVIDIA RTX 4090 24 GB",
+    },
+    "l4": {
+        "accelerator": "L4:1",
+        "vram_gb": 24,
+        "hourly_rate": 0.39,
+        "hardware_profile": "l4-24gb",
+        "label": "NVIDIA L4 24 GB",
+    },
+    "a40": {
+        "accelerator": "A40:1",
+        "vram_gb": 48,
+        "hourly_rate": 0.39,
+        "hardware_profile": "a40-48gb",
+        "label": "NVIDIA A40 48 GB",
+    },
+    "a100": {
+        "accelerator": "A100-80GB:1",
+        "vram_gb": 80,
+        "hourly_rate": 1.64,
+        "hardware_profile": "a100-80gb",
+        "label": "NVIDIA A100 80 GB",
+    },
+    "h100": {
+        "accelerator": "H100-80GB:1",
+        "vram_gb": 80,
+        "hourly_rate": 3.29,
+        "hardware_profile": "h100-80gb",
+        "label": "NVIDIA H100 80 GB",
+    },
+}
+
+# ---------------------------------------------------------------------------
+# Infrastructure config
+# ---------------------------------------------------------------------------
+
+_DEFAULT_DOCKER_IMAGE = "docker:nvcr.io/nvidia/pytorch:25.02-py3"
+_DEFAULT_VOLUME_NAME = "AI lab extension"
+_DEFAULT_VOLUME_MOUNT = "/runpod-volume"
+_DEFAULT_OUTPUT_REMOTE = "/runpod-volume/output"
+
+
+@dataclass
+class InfraConfig:
+    """Infrastructure settings for remote GPU jobs.
+
+    Data paths are composed from two fields:
+      - ``data_prefix``: local root directory (default ``"data"``).
+      - ``data_path``: dataset subpath organized as
+        ``<modality>/<sub-topic>/<dataset>`` (e.g.,
+        ``scrna/perturb_seq/norman_2019``, ``scrna/pbmc/10k_v3``,
+        ``bulk/gtex``).
+
+    Together they form the full local path ``{data_prefix}/{data_path}`` and
+    the volume path ``{volume_mount}/{data_prefix}/{data_path}``.
+    """
+
+    gpu: str = "a40"
+    cloud: str = "runpod"
+    docker_image: str = _DEFAULT_DOCKER_IMAGE
+    use_volume: bool = False
+    volume_name: str = _DEFAULT_VOLUME_NAME
+    volume_mount: str = _DEFAULT_VOLUME_MOUNT
+    data_prefix: str = "data"
+    data_path: str = "scrna/perturb_seq/norman_2019"
+    model: str = ""
+    models: dict[str, dict] = field(default_factory=dict)
+    default_model: str = "none"
+    extra_setup: str = ""
+    extra_file_mounts: dict[str, str] = field(default_factory=dict)
+    output_remote: str = _DEFAULT_OUTPUT_REMOTE
+
+    @property
+    def resolved_model(self) -> str:
+        """Active model name: explicit ``model`` field, or ``default_model``."""
+        return self.model or self.default_model
+
+    @property
+    def model_pip(self) -> str:
+        """Pip install spec for the active model, or empty string if 'none'."""
+        name = self.resolved_model
+        if not name or name == "none":
+            return ""
+        profile = self.models.get(name)
+        if profile:
+            return profile.get("pip", "")
+        return ""
+
+    @property
+    def local_data_dir(self) -> str:
+        """Full local path: ``{data_prefix}/{data_path}``."""
+        return f"{self.data_prefix}/{self.data_path}"
+
+    @property
+    def volume_data_dir(self) -> str:
+        """Full volume path: ``{volume_mount}/{data_prefix}/{data_path}``."""
+        return f"{self.volume_mount}/{self.data_prefix}/{self.data_path}"
+
+    @classmethod
+    def from_yaml(cls, path: str | Path) -> InfraConfig:
+        """Load infrastructure config from a YAML file."""
+        path = Path(path)
+        if not path.exists():
+            logger.warning("Config file not found: %s — using defaults", path)
+            return cls()
+
+        with open(path) as f:
+            data = yaml.safe_load(f) or {}
+
+        return cls(
+            gpu=data.get("gpu", cls.gpu),
+            cloud=data.get("cloud", cls.cloud),
+            docker_image=data.get("docker_image", cls.docker_image),
+            use_volume=data.get("use_volume", cls.use_volume),
+            volume_name=data.get("volume_name", cls.volume_name),
+            volume_mount=data.get("volume_mount", cls.volume_mount),
+            data_prefix=data.get("data_prefix", cls.data_prefix),
+            data_path=data.get("data_path", cls.data_path),
+            model=data.get("model", cls.model),
+            models=data.get("models", None) or {},
+            default_model=data.get("default_model", cls.default_model),
+            extra_setup=data.get("extra_setup", cls.extra_setup),
+            extra_file_mounts=data.get("extra_file_mounts", None) or {},
+            output_remote=data.get("output_remote", cls.output_remote),
+        )
+
+    def apply_overrides(self, **kwargs: object) -> None:
+        """Apply CLI overrides (only non-None values)."""
+        for key, value in kwargs.items():
+            if value is not None and hasattr(self, key):
+                setattr(self, key, value)
+
+
+# ---------------------------------------------------------------------------
+# SkyPilot config builder
+# ---------------------------------------------------------------------------
+
+
+def _derive_job_name(run_command: str) -> str:
+    """Derive a job name from the script path in the run command."""
+    match = re.search(r"python\s+\S*?(\w+)\.py", run_command)
+    if match:
+        name = match.group(1)
+        # Strip numeric prefix (e.g., "03_train_jepa" -> "train-jepa")
+        name = re.sub(r"^\d+_?", "", name)
+        name = name.replace("_", "-")
+        return f"genai-{name}"
+    return "genai-job"
+
+
+def build_skypilot_config(
+    infra: InfraConfig,
+    run_command: str,
+    job_name: Optional[str] = None,
+) -> dict:
+    """Build a complete SkyPilot config dict from infrastructure + run command.
+
+    Args:
+        infra: Infrastructure configuration.
+        run_command: The shell command to execute on the remote pod.
+        job_name: Job name (auto-derived from run_command if omitted).
+
+    Returns:
+        A dict ready to be dumped as SkyPilot YAML.
+    """
+    if not job_name:
+        job_name = _derive_job_name(run_command)
+
+    gpu = GPU_SPECS[infra.gpu]
+
+    # Base setup: install genailab package (editable)
+    # Use volume pip cache if available to speed up repeated provisions
+    setup_lines = ["set -e"]
+    if infra.use_volume:
+        pip_cache = f"{infra.volume_mount}/pip-cache"
+        setup_lines.append(f"export PIP_CACHE_DIR={pip_cache}")
+        setup_lines.append(f"mkdir -p {pip_cache}")
+    setup_lines.append("pip install -e .")
+    # Jupyter for interactive work on the pod.
+    setup_lines.append(
+        "pip show jupyterlab >/dev/null 2>&1 || pip install jupyterlab ipykernel"
+    )
+    # Experiment tracking + .env loader.
+    setup_lines.append(
+        "pip show wandb >/dev/null 2>&1 || pip install wandb python-dotenv"
+    )
+    # Model dependency: conditional install (skip if already cached)
+    model_pip = infra.model_pip
+    if model_pip:
+        for pkg in model_pip.split():
+            setup_lines.append(f"pip show {pkg} >/dev/null 2>&1 || pip install {pkg}")
+    if infra.extra_setup:
+        setup_lines.append(infra.extra_setup)
+
+    config: dict = {
+        "name": job_name,
+        "workdir": ".",
+        "resources": {
+            "accelerators": gpu["accelerator"],
+            "cloud": infra.cloud,
+            "image_id": infra.docker_image,
+        },
+        "setup": "\n".join(setup_lines),
+    }
+
+    # Data source: network volume (fast) or file_mounts upload (slow)
+    # Scripts expect data at {data_prefix}/{data_path} relative to CWD.
+    # If the local data/ is a symlink, workdir sync copies a broken symlink.
+    # Remove before mkdir.
+    data_local = infra.local_data_dir
+    data_parent = str(Path(data_local).parent)
+    prefix = infra.data_prefix
+
+    run_lines = ["set -e", f"[ -L {prefix} ] && rm -f {prefix} || true", f"mkdir -p {data_parent}"]
+
+    if infra.use_volume:
+        config["volumes"] = {infra.volume_mount: infra.volume_name}
+        run_lines.append(f"ln -sfn {infra.volume_data_dir} {data_local}")
+        run_lines.append("echo 'Using network volume data:'")
+        run_lines.append(f"ls {data_local}/ | head -5")
+    else:
+        file_mounts = {"/workspace/data": f"./{data_local}"}
+        run_lines.append(f"ln -sfn /workspace/data {data_local}")
+        config["file_mounts"] = file_mounts
+
+    # Extra file mounts (e.g., cached embeddings, extra datasets)
+    if infra.extra_file_mounts:
+        if "file_mounts" not in config:
+            config["file_mounts"] = {}
+        config["file_mounts"].update(infra.extra_file_mounts)
+
+    # Output directory
+    run_lines.append(f"mkdir -p {infra.output_remote}")
+    run_lines.append("")
+
+    # User's task command
+    run_lines.append(run_command)
+    run_lines.append("")
+
+    # Completion banner
+    run_lines.extend([
+        'echo ""',
+        'echo "============================================"',
+        'echo "DONE - download results before tearing down:"',
+        f'echo "  rsync -Pavz {job_name}:{infra.output_remote}/ ./output/"',
+        f'echo "  sky down {job_name} -y"',
+        'echo "============================================"',
+    ])
+
+    config["run"] = "\n".join(run_lines)
+    return config
+
+
+# ---------------------------------------------------------------------------
+# Launcher
+# ---------------------------------------------------------------------------
+
+
+def _find_cluster_name(requested_name: str) -> str:
+    """Find the actual SkyPilot cluster name matching our requested job name.
+
+    SkyPilot may prefix/hash the name we put in the YAML config.
+    Falls back to the requested name if no match is found.
+    """
+    result = subprocess.run(
+        ["sky", "status", "--refresh"],
+        capture_output=True, text=True, check=False,
+    )
+    if result.returncode != 0:
+        logger.warning("sky status failed - using requested name: %s", requested_name)
+        return requested_name
+
+    for line in result.stdout.splitlines():
+        columns = line.split()
+        if columns and requested_name in columns[0]:
+            return columns[0]
+
+    return requested_name
+
+
+def _write_config(config: dict, job_name: str) -> Path:
+    """Write SkyPilot config to ops/configs/skypilot/generated/."""
+    config_dir = Path("ops/configs/skypilot/generated")
+    config_dir.mkdir(parents=True, exist_ok=True)
+    yaml_path = config_dir / f"{job_name}.yaml"
+    with open(yaml_path, "w") as f:
+        yaml.dump(config, f, default_flow_style=False, sort_keys=False)
+    logger.info("Wrote SkyPilot config: %s", yaml_path)
+    return yaml_path
+
+
+def print_dry_run(config: dict, infra: InfraConfig, output_dir: Path) -> None:
+    """Print the generated SkyPilot config and commands."""
+    job_name = config["name"]
+    gpu = GPU_SPECS[infra.gpu]
+
+    print()
+    print("=" * 70)
+    print("GPU Task Runner - Dry Run")
+    print("=" * 70)
+    print()
+
+    print("Generated SkyPilot Config")
+    print("-" * 40)
+    print(yaml.dump(config, default_flow_style=False, sort_keys=False))
+
+    print("Commands to Execute")
+    print("-" * 40)
+    print("  # 1. Launch")
+    print("  sky launch <config>.yaml -y")
+    print()
+    print("  # 2. Download results")
+    print(f"  rsync -Pavz {job_name}:{infra.output_remote}/ {output_dir}/")
+    print()
+    print("  # 3. Tear down")
+    print(f"  sky down {job_name} -y")
+    print()
+
+    print("Cost Estimate")
+    print("-" * 40)
+    rate = gpu["hourly_rate"]
+    print(f"  GPU:   {gpu['label']} (${rate:.2f}/hr)")
+    print()
+    print("To execute, re-run with --execute")
+    print("To reuse an existing cluster: --execute --cluster <name> --no-teardown")
+    print()
+
+
+def launch(
+    config: dict,
+    output_local: Path,
+    infra: InfraConfig,
+    cluster: Optional[str] = None,
+    teardown: bool = True,
+) -> None:
+    """Launch a SkyPilot job, download results, and optionally tear down.
+
+    Args:
+        config: SkyPilot config dict.
+        output_local: Local directory for downloaded results.
+        infra: Infrastructure configuration.
+        cluster: Existing cluster name to reuse (skips provisioning + setup).
+        teardown: Whether to tear down the cluster after the job. Set False
+            for iterative runs on the same pod.
+    """
+    job_name = config["name"]
+    gpu = GPU_SPECS[infra.gpu]
+
+    yaml_path = _write_config(config, job_name)
+    output_local.mkdir(parents=True, exist_ok=True)
+    t0 = time.time()
+
+    print()
+    print("=" * 70)
+    if cluster:
+        print(f"Reusing cluster: {cluster} - running: {job_name}")
+    else:
+        print(f"Launching: {job_name} ({gpu['label']})")
+    print("=" * 70)
+    print()
+
+    launch_cmd = ["sky", "launch", str(yaml_path), "-y"]
+    if cluster:
+        launch_cmd.extend(["--cluster", cluster])
+
+    result = subprocess.run(launch_cmd, check=False)
+    if result.returncode != 0:
+        logger.error("sky launch failed (exit code %d)", result.returncode)
+        sys.exit(result.returncode)
+
+    cluster_name = cluster or _find_cluster_name(job_name)
+
+    logger.info("Downloading results...")
+    rsync_result = subprocess.run(
+        ["rsync", "-Pavz", f"{cluster_name}:{infra.output_remote}/", str(output_local) + "/"],
+        check=False,
+    )
+    if rsync_result.returncode != 0:
+        logger.error("rsync failed - pod may still be running. Download manually:")
+        logger.error("  rsync -Pavz %s:%s/ %s/", cluster_name, infra.output_remote, output_local)
+        sys.exit(rsync_result.returncode)
+
+    if teardown:
+        logger.info("Tearing down pod (cluster: %s)...", cluster_name)
+        subprocess.run(["sky", "down", cluster_name, "-y"], check=False)
+    else:
+        print()
+        print(f"Cluster kept alive: {cluster_name}")
+        print(f"  Reuse:     --cluster {cluster_name}")
+        print(f"  Tear down: sky down {cluster_name} -y")
+
+    elapsed = time.time() - t0
+    rate = gpu["hourly_rate"]
+    hours = elapsed / 3600
+
+    print()
+    print("=" * 70)
+    print("Job Complete")
+    print("=" * 70)
+    print(f"  Output:     {output_local}")
+    print(f"  GPU:        {gpu['label']}")
+    print(f"  Cluster:    {cluster_name}" + (" (still running)" if not teardown else ""))
+    print(f"  Duration:   {elapsed / 60:.1f} min")
+    print(f"  Est. cost:  ${rate * hours:.2f} ({rate:.2f}/hr x {hours:.2f} hr)")
+    print()
+
+
+def stage_data(infra: InfraConfig) -> None:
+    """One-time: upload reference data to the network volume."""
+    local_data = Path(infra.local_data_dir)
+    if not local_data.exists():
+        logger.error("Local data not found: %s", local_data)
+        logger.error("Ensure data exists at '%s' before staging.", infra.local_data_dir)
+        sys.exit(1)
+
+    job_name = "stage-data"
+    gpu = GPU_SPECS[infra.gpu]
+
+    config = {
+        "name": job_name,
+        "resources": {
+            "accelerators": gpu["accelerator"],
+            "cloud": infra.cloud,
+            "image_id": infra.docker_image,
+        },
+        "volumes": {
+            infra.volume_mount: infra.volume_name,
+        },
+        "file_mounts": {
+            "/tmp/upload-data": str(local_data),
+        },
+        "run": (
+            "set -e\n"
+            "echo 'Staging reference data to network volume...'\n"
+            f"mkdir -p {infra.volume_data_dir}\n"
+            f"rsync -av --progress /tmp/upload-data/ {infra.volume_data_dir}/\n"
+            "echo ''\n"
+            "echo 'Data staged. Contents:'\n"
+            f"ls -lh {infra.volume_data_dir}/\n"
+            f"du -sh {infra.volume_data_dir}\n"
+            "echo ''\n"
+            "echo '============================================'\n"
+            "echo 'DONE - tear down staging pod:'\n"
+            f"echo '  sky down {job_name} -y'\n"
+            "echo '============================================'"
+        ),
+    }
+
+    yaml_path = _write_config(config, job_name)
+
+    print()
+    print("=" * 70)
+    print("Staging Reference Data to Network Volume")
+    print("=" * 70)
+    print(f"  Volume:  {infra.volume_name}")
+    print(f"  Target:  {infra.volume_data_dir}")
+    print(f"  Source:  {local_data.resolve()}")
+    print()
+    print("This uploads data once. Future runs use --use-volume to skip re-upload.")
+    print()
+
+    result = subprocess.run(["sky", "launch", str(yaml_path), "-y"], check=False)
+    if result.returncode != 0:
+        logger.error("sky launch failed (exit code %d)", result.returncode)
+        sys.exit(result.returncode)
+
+    cluster_name = _find_cluster_name(job_name)
+
+    logger.info("Tearing down staging pod (cluster: %s)...", cluster_name)
+    subprocess.run(["sky", "down", cluster_name, "-y"], check=False)
+
+    print()
+    print("Data staged successfully. Future runs can reference this volume via")
+    print("  python ops/provision_cluster.py  (uses the volume by default)")
+    print()
