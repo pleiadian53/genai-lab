@@ -292,13 +292,75 @@ optimizer.step()
 
 Note how little machinery is required: no score functions, no importance weights, no carefully calibrated noise schedules. The entire forward pass is three lines.
 
-**Why this works**: Although we train on conditional velocities $u_t(x_0, x_1)$ for specific pairs, the loss is equivalent to matching the marginal field. This follows from the **conditional expectation property**:
+**Why this works**: Although we train on conditional velocities $u_t(x_0, x_1)$ for specific pairs, the loss is equivalent to matching the marginal field. This follows from a key identity called the **conditional expectation property**:
 
 $$
-\mathbb{E}_{x_0, x_1 \mid x_t} [u_t(x_0, x_1)] = v_t(x_t)
+\mathbb{E}_{x_0, x_1 \mid x_t = x} \bigl[u_t(x_0, x_1)\bigr] = v_t(x)
 $$
 
-The conditional velocity is an *unbiased estimator* of the marginal velocity at $x_t$. Minimizing the MSE loss in expectation over $(x_0, x_1, t)$ therefore trains the network toward the true marginal field — without ever computing it directly. This is analogous to how stochastic gradient descent minimizes a full-batch loss using minibatch gradients. The tractability of flow matching hinges entirely on this property.
+#### Reading the Notation
+
+The left-hand side is a **conditional expectation**. Written in full as an integral:
+
+$$
+\mathbb{E}_{x_0, x_1 \mid x_t = x} \bigl[u_t(x_0, x_1)\bigr]
+= \int u_t(x_0, x_1)\; p(x_0, x_1 \mid x_t = x)\; dx_0\, dx_1
+$$
+
+The subscript $x_0, x_1 \mid x_t = x$ specifies the distribution being averaged over: not all pairs $(x_0, x_1)$, but only those *consistent with the observed interpolated point $x_t = x$*. In other words, we weight each pair by the posterior probability $p(x_0, x_1 \mid x_t = x)$ — how likely is it that this particular pair generated the point we are currently standing at?
+
+#### Why the Equality Holds
+
+The derivation follows from combining two ingredients: the conditional continuity equation and Bayes' theorem.
+
+**Step 1 — Each conditional path satisfies its own continuity equation.**
+
+For a fixed pair $(x_0, x_1)$, the path $x_t = \psi_t(x_0, x_1)$ is a moving delta mass. Its "conditional distribution" $p_t(x \mid x_0, x_1) = \delta(x - \psi_t(x_0, x_1))$ satisfies a conditional continuity equation driven by the conditional velocity $u_t(x_0, x_1)$:
+
+$$
+\frac{\partial\, p_t(x \mid x_0, x_1)}{\partial t} + \nabla \cdot \bigl(p_t(x \mid x_0, x_1)\; u_t(x_0, x_1)\bigr) = 0
+$$
+
+**Step 2 — The marginal distribution is a mixture of conditional distributions.**
+
+Averaging over all pairs (weighted by $p(x_0)\,p(x_1)$):
+
+$$
+p_t(x) = \int p_t(x \mid x_0, x_1)\; p(x_0)\, p(x_1)\; dx_0\, dx_1
+$$
+
+**Step 3 — Integrate Step 1 over all pairs to get the marginal continuity equation.**
+
+Applying the same average to the conditional continuity equation:
+
+$$
+\frac{\partial p_t(x)}{\partial t} + \nabla \cdot \underbrace{\int p_t(x \mid x_0, x_1)\; u_t(x_0, x_1)\; p(x_0)\, p(x_1)\; dx_0\, dx_1}_{\text{probability-flux term}} = 0
+$$
+
+But the marginal distribution must itself satisfy *its own* continuity equation with some velocity $v_t(x)$:
+
+$$
+\frac{\partial p_t(x)}{\partial t} + \nabla \cdot \bigl(p_t(x)\; v_t(x)\bigr) = 0
+$$
+
+Matching the two expressions for the flux term:
+
+$$
+p_t(x)\; v_t(x) = \int p_t(x \mid x_0, x_1)\; u_t(x_0, x_1)\; p(x_0)\, p(x_1)\; dx_0\, dx_1
+$$
+
+**Step 4 — Divide both sides by $p_t(x)$ and apply Bayes' theorem.**
+
+$$
+v_t(x) = \int u_t(x_0, x_1)\; \underbrace{\frac{p_t(x \mid x_0, x_1)\; p(x_0)\, p(x_1)}{p_t(x)}}_{=\; p(x_0, x_1 \mid x_t = x)}\; dx_0\, dx_1
+= \mathbb{E}_{x_0, x_1 \mid x_t = x}\bigl[u_t(x_0, x_1)\bigr]
+$$
+
+The Bayes inversion in the last step is the key move: the weighting $p_t(x \mid x_0, x_1) \cdot p(x_0)\,p(x_1)\,/\,p_t(x)$ is exactly the posterior over which pairs could have produced the point $x$ at time $t$.
+
+#### What This Means for Training
+
+The equality says that $u_t(x_0, x_1)$ — computed from a single sampled pair — is an *unbiased estimator* of the target $v_t(x_t)$. Minimizing the MSE loss over many randomly drawn pairs therefore drives the network toward the true marginal field, without ever computing the intractable integral explicitly. This is directly analogous to how stochastic gradient descent minimizes a population loss using single-sample gradients: noise in each estimate cancels out in expectation, and the average over training converges to the correct target. The tractability of flow matching hinges entirely on this property.
 
 ### Comparison with Score Matching
 
@@ -332,11 +394,51 @@ $$
 
 3. **Output**: $x(0) \approx x_{\text{data}}$
 
+#### Why Backward, and What Does That Mean?
+
+During training, every interpolation path was defined to run from data at $t=0$ to noise at $t=1$. The learned velocity field $v_\theta(x, t)$ therefore points in the *data-to-noise* direction at every point in space. To generate a sample, we want to travel the opposite way — from noise back to data — which means traversing time in the decreasing direction: $t: 1 \to 0$.
+
+The ODE itself does not change. We run the same equation $\frac{dx}{dt} = v_\theta(x(t), t)$, but we integrate it with *negative* time steps. Concretely, if we divide the interval $[0, 1]$ into $N$ steps of size $\Delta t = 1/N$, each Euler update subtracts $\Delta t$ from the current time:
+
+$$
+x_{t - \Delta t} = x_t - \Delta t \cdot v_\theta(x_t,\; t), \qquad t = 1,\; 1-\Delta t,\; \ldots,\; \Delta t
+$$
+
+Because $v_\theta$ points from data toward noise, multiplying it by $-\Delta t$ reverses the direction: each step nudges $x$ back toward the data distribution.
+
+#### A Concrete Walkthrough ($N = 4$ steps)
+
+Start with a Gaussian noise sample $x_1 \sim \mathcal{N}(0, I)$ and take four equal steps of $\Delta t = 0.25$:
+
+| Step | Current time $t$ | Update | Next time |
+|------|-----------------|--------|-----------|
+| 1 | $t = 1.00$ | $x_{0.75} = x_{1.00} - 0.25 \cdot v_\theta(x_{1.00},\; 1.00)$ | $t = 0.75$ |
+| 2 | $t = 0.75$ | $x_{0.50} = x_{0.75} - 0.25 \cdot v_\theta(x_{0.75},\; 0.75)$ | $t = 0.50$ |
+| 3 | $t = 0.50$ | $x_{0.25} = x_{0.50} - 0.25 \cdot v_\theta(x_{0.50},\; 0.50)$ | $t = 0.25$ |
+| 4 | $t = 0.25$ | $x_{0.00} = x_{0.25} - 0.25 \cdot v_\theta(x_{0.25},\; 0.25)$ | $t = 0.00$ |
+
+At each step, the network is queried at the *current* position and time. The time argument $t$ tells the network where along the trajectory it is being evaluated — the velocity field is different at $t=1.0$ (near noise) than at $t=0.25$ (near data), so conditioning on $t$ is essential.
+
+After four steps, $x_0$ is the generated sample. In pseudocode:
+
+```python
+x = torch.randn(batch_size, d)   # x_1 ~ N(0, I)
+N = 50                            # number of integration steps
+dt = 1.0 / N
+
+for step in range(N):
+    t = 1.0 - step * dt           # t decreases: 1.0, 1-dt, 1-2dt, ...
+    t_tensor = torch.full((batch_size, 1), t)
+    x = x - dt * model(x, t_tensor)   # Euler step backward
+
+# x is now x_0 ≈ data sample
+```
+
 **Key properties**:
 
-- **Deterministic**: Same noise input always produces same output
-- **Reversible**: Can go forward and backward
-- **Continuous**: Smooth trajectories through state space
+- **Deterministic**: The same noise input $x_1$ always produces the same output $x_0$, since the ODE has a unique solution
+- **Reversible**: The forward pass (data → noise) and backward pass (noise → data) use the same network and ODE; only the direction of integration changes
+- **Step-count tradeoff**: More steps give a more accurate trajectory but cost more network evaluations; with straight paths (rectified flow), even $N = 10$–$20$ steps often suffices
 
 ### ODE Solvers
 
@@ -733,6 +835,7 @@ $$
 ## Related Documents
 
 - [Flow Map and Pushforward](01b_flowmap.md) — Deep dive on the flow map $\phi_t$, pushforward notation, and the ODE → distribution chain
+- [Bayes' Theorem with Three Variables](01c_bayes_three_variables.md) — How Bayes is applied to $(x_0, x_1, x_t)$ in the conditional expectation derivation
 - [Flow Matching Training](02_flow_matching_training.md) — Training strategies and implementation
 - [Flow Matching Sampling](03_flow_matching_sampling.md) — ODE solvers and sampling efficiency
 - [Rectifying Flow Tutorial](rectifying_flow.md) — Detailed walkthrough
