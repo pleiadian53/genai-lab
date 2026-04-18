@@ -1,0 +1,4 @@
+# Ignore all derived outputs; keep only the README and this file.
+*
+!.gitignore
+!README.md

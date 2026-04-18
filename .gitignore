@@ -95,7 +95,8 @@ dmypy.json
 *~
 
 # Project specific
-runs/
+# Note: runs/, output/, and data/ each have their own local .gitignore that
+# keeps the README + .gitignore tracked but excludes everything else.
 *.pt
 *.pth
 *.ckpt
@@ -103,8 +104,15 @@ runs/
 data/raw/
 data/processed/
 
-# Dev directory (private notes)
+# Dev directory (private notes, learning materials, scratch work)
 dev/
+
+# Claude Code private notes
+.claude/
+
+# Local artifacts not covered by per-dir .gitignores
+examples/runs/
+notebooks/**/data/
 
 # RunPods configuration (user-specific, NOT for public)
 # Contains local paths, SSH configs, and personal workflow

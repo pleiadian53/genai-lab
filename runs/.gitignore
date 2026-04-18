@@ -1,0 +1,4 @@
+# Ignore all training run artifacts; keep only the README and this file.
+*
+!.gitignore
+!README.md
