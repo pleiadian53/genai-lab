@@ -133,8 +133,10 @@ class NegativeBinomialDecoder(nn.Module):
         else:
             mu = rho
 
-        # Dispersion
-        theta = torch.exp(self.log_theta).unsqueeze(0).expand(z.shape[0], -1)
+        # Dispersion — .expand() creates a non-contiguous view (stride 0),
+        # which triggers incorrect results from torch.lgamma on MPS.
+        # Using .repeat() produces a contiguous tensor that works on all backends.
+        theta = torch.exp(self.log_theta).unsqueeze(0).repeat(z.shape[0], 1)
 
         return {"mu": mu, "theta": theta, "rho": rho}
 
