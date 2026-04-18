@@ -115,6 +115,25 @@ Most notebooks use small datasets for fast iteration:
 
 For full-scale experiments, use scripts in `examples/`.
 
+### Running on GPU (RunPod)
+
+Notebooks are primarily for laptop-scale exploration. When a tutorial grows
+into realistic training (e.g., PBMC 68k, Norman Perturb-seq, diffusion on
+full datasets), provision a pod via [`ops/`](../ops/):
+
+```bash
+# Spin up an A40 on RunPod, mount data volume, keep cluster alive
+python ops/provision_cluster.py
+
+# SSH in and launch Jupyter there
+ssh genai-workspace
+cd /workspace/genai-lab
+jupyter lab --ip=0.0.0.0 --port=8888
+```
+
+See [`ops/README.md`](../ops/README.md) for data staging, volume caching,
+and teardown. Always tear down when you're done — pods cost money while idle.
+
 ---
 
 ## Contributing
