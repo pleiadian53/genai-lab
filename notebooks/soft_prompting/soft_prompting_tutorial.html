@@ -1,0 +1,686 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Soft Prompting &amp; Parameter-Efficient Fine-Tuning — A Complete Tutorial</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"
+  onload="renderMathInElement(document.body, {
+    delimiters: [
+      {left: '$$', right: '$$', display: true},
+      {left: '$', right: '$', display: false}
+    ]
+  });"></script>
+<style>
+  :root { --bg: #fff; --fg: #1a1a1a; --accent: #2563eb; --code-bg: #f5f5f5; --border: #e0e0e0; --table-head: #f0f4ff; --note-bg: #f5f5f5; --diagram-bg: #fafbfc; --diagram-border: #d1d5db; --step-bg: #fafbff; --step-border: #c7d2fe; --warn-bg: #fffbeb; --warn-border: #f59e0b; --green-bg: #f0fdf4; --green-border: #22c55e; }
+  @media (prefers-color-scheme: dark) {
+    :root { --bg: #181a1b; --fg: #d4d4d4; --accent: #60a5fa; --code-bg: #242628; --border: #3a3d40; --table-head: #1e293b; --note-bg: #242628; --diagram-bg: #1e1e2e; --diagram-border: #3a3d40; --step-bg: #1e1e2e; --step-border: #3730a3; --warn-bg: #2a2518; --warn-border: #f59e0b; --green-bg: #0f2918; --green-border: #22c55e; }
+  }
+  * { box-sizing: border-box; }
+  body { font-family: 'Georgia', 'Times New Roman', serif; background: var(--bg); color: var(--fg); max-width: 800px; margin: 0 auto; padding: 2rem 1.5rem; line-height: 1.7; }
+  h1 { font-size: 1.9rem; margin-bottom: 0.3rem; }
+  h2 { font-size: 1.35rem; margin-top: 2.8rem; border-bottom: 1px solid var(--border); padding-bottom: 0.3rem; }
+  h3 { font-size: 1.1rem; margin-top: 1.8rem; }
+  .subtitle { color: #888; font-size: 0.95rem; margin-bottom: 0.3rem; }
+  .ref-link { font-size: 0.9rem; margin-bottom: 2rem; }
+  .ref-link a { color: var(--accent); text-decoration: none; }
+  .ref-link a:hover { text-decoration: underline; }
+  code { font-family: 'Menlo', 'Consolas', monospace; font-size: 0.88em; background: var(--code-bg); padding: 0.15em 0.4em; border-radius: 3px; }
+  pre { background: var(--code-bg); padding: 1rem 1.2rem; border-radius: 6px; overflow-x: auto; line-height: 1.45; }
+  pre code { background: none; padding: 0; }
+  table { border-collapse: collapse; width: 100%; margin: 1rem 0; font-size: 0.92rem; }
+  th, td { border: 1px solid var(--border); padding: 0.5rem 0.75rem; text-align: left; }
+  th { background: var(--table-head); font-weight: 600; }
+  .symbol-table { margin: 1.2rem 0; }
+  .symbol-table td:first-child { font-weight: 500; white-space: nowrap; width: 160px; }
+  .note { background: var(--note-bg); border-left: 3px solid var(--accent); padding: 0.8rem 1rem; margin: 1.2rem 0; border-radius: 0 4px 4px 0; font-size: 0.93rem; }
+  .warn { background: var(--warn-bg); border-left: 3px solid var(--warn-border); padding: 0.8rem 1rem; margin: 1.2rem 0; border-radius: 0 4px 4px 0; font-size: 0.93rem; }
+  .insight { background: var(--green-bg); border-left: 3px solid var(--green-border); padding: 0.8rem 1rem; margin: 1.2rem 0; border-radius: 0 4px 4px 0; font-size: 0.93rem; }
+  .diagram { background: var(--diagram-bg); border: 1px solid var(--diagram-border); padding: 1rem 1.2rem; border-radius: 6px; margin: 1.2rem 0; overflow-x: auto; }
+  .diagram pre { background: none; padding: 0; margin: 0; border: none; }
+  .step-box { background: var(--step-bg); border: 1px solid var(--step-border); padding: 1rem 1.2rem; margin: 1.2rem 0; border-radius: 6px; }
+  .step-box .step-label { font-weight: 700; color: var(--accent); margin-bottom: 0.4rem; font-size: 0.95rem; }
+  .toc { background: var(--note-bg); padding: 1rem 1.5rem; border-radius: 6px; margin: 1.5rem 0; }
+  .toc ol { margin: 0.3rem 0 0 0; padding-left: 1.5rem; }
+  .toc li { margin-bottom: 0.2rem; }
+  .toc a { color: var(--accent); text-decoration: none; }
+  .toc a:hover { text-decoration: underline; }
+</style>
+</head>
+<body>
+
+<h1>Soft Prompting &amp; Parameter-Efficient Fine-Tuning</h1>
+<p class="subtitle">Adapting frozen foundation models with minimal trainable parameters &nbsp;|&nbsp; May 2026</p>
+<p class="ref-link">Companion to: <a href="soft_prompting_hyenadna.ipynb">soft_prompting_hyenadna.ipynb</a> &nbsp;|&nbsp; See also: <a href="../ViT/vision_transformer_tutorial.html">ViT Tutorial</a> (CLS token context)</p>
+
+<!-- ============================================================ -->
+<div class="toc">
+<strong>Contents</strong>
+<ol>
+  <li><a href="#symbols">Symbol Glossary</a></li>
+  <li><a href="#problem">The Problem: Adapting Large Pretrained Models</a></li>
+  <li><a href="#landscape">The PEFT Landscape</a></li>
+  <li><a href="#soft-prompting">Soft Prompting (Prompt Tuning)</a></li>
+  <li><a href="#deep-prompting">Deep Prompting (Prefix-Tuning)</a></li>
+  <li><a href="#lora">LoRA: Low-Rank Adaptation</a></li>
+  <li><a href="#adapters">Adapter Layers</a></li>
+  <li><a href="#comparison">Unified Comparison</a></li>
+  <li><a href="#cls-connection">Connection to the ViT CLS Token</a></li>
+  <li><a href="#agentic-spliceai">Connection to AgenticSpliceAI</a></li>
+  <li><a href="#practical">Practical Guidance: When to Use What</a></li>
+  <li><a href="#refs">References</a></li>
+</ol>
+</div>
+
+<!-- ============================================================ -->
+<h2 id="symbols">1. Symbol Glossary</h2>
+
+<table class="symbol-table">
+<tr><td>$D$</td><td>Hidden dimension of the pretrained model. For HyenaDNA-tiny: $D = 128$.</td></tr>
+<tr><td>$N$</td><td>Input sequence length (number of tokens after tokenisation).</td></tr>
+<tr><td>$M$</td><td>Number of soft prompt tokens prepended to the input sequence.</td></tr>
+<tr><td>$L$</td><td>Number of layers (depth) in the backbone model.</td></tr>
+<tr><td>$\mathbf{P}$</td><td>Soft prompt embedding matrix, $\mathbf{P} \in \mathbb{R}^{M \times D}$.</td></tr>
+<tr><td>$\mathbf{P}^{(l)}$</td><td>Layer-specific prompt embeddings for deep prompting at layer $l$, $\mathbf{P}^{(l)} \in \mathbb{R}^{M \times D}$.</td></tr>
+<tr><td>$\mathbf{Z}$</td><td>Input token embeddings (from the frozen embedding layer), $\mathbf{Z} \in \mathbb{R}^{N \times D}$.</td></tr>
+<tr><td>$\mathbf{z}_i$</td><td>Embedding vector for the $i$-th input token, $\mathbf{z}_i \in \mathbb{R}^{D}$.</td></tr>
+<tr><td>$\mathbf{p}_j$</td><td>The $j$-th learnable prompt vector, $\mathbf{p}_j \in \mathbb{R}^{D}$.</td></tr>
+<tr><td>$W_Q, W_K, W_V$</td><td>Query, key, value projection matrices in attention. Each $\in \mathbb{R}^{D \times d_k}$.</td></tr>
+<tr><td>$\Delta W$</td><td>LoRA update matrix, $\Delta W = BA$ where $B \in \mathbb{R}^{D \times r}$, $A \in \mathbb{R}^{r \times D}$.</td></tr>
+<tr><td>$r$</td><td>LoRA rank — bottleneck dimension of the low-rank decomposition. Typically $r \in \{4, 8, 16\}$.</td></tr>
+<tr><td>$d_{\text{adapter}}$</td><td>Bottleneck dimension of adapter layers. Typically $d_{\text{adapter}} \ll D$.</td></tr>
+<tr><td>$\alpha$</td><td>LoRA scaling factor: $W' = W_0 + \frac{\alpha}{r}\Delta W$.</td></tr>
+<tr><td>$\theta_0$</td><td>Frozen pretrained model parameters.</td></tr>
+<tr><td>$\phi$</td><td>Trainable parameters (prompts, LoRA matrices, adapter weights, or head weights).</td></tr>
+<tr><td>$\mathcal{L}$</td><td>Task loss function (e.g., cross-entropy for classification).</td></tr>
+</table>
+
+<!-- ============================================================ -->
+<h2 id="problem">2. The Problem: Adapting Large Pretrained Models</h2>
+
+<p>
+Foundation models — large neural networks pretrained on massive corpora — learn rich, general-purpose representations. To use them for a specific downstream task, we must <em>adapt</em> those representations. The most direct approach, <strong>full fine-tuning</strong>, updates every parameter:
+</p>
+
+$$\theta^* = \arg\min_\theta \; \mathcal{L}(\text{model}(\mathbf{x}; \theta), \mathbf{y})$$
+
+<p>
+This works well when you have enough data and compute. But for a model with hundreds of millions (or billions) of parameters, full fine-tuning has serious practical drawbacks:
+</p>
+
+<table>
+<tr><th>Problem</th><th>Consequence</th></tr>
+<tr><td>Memory: must store gradients and optimizer state for all parameters</td><td>A 7B-parameter model needs ~56 GB in fp32 just for AdamW states</td></tr>
+<tr><td>Storage: each task requires a full copy of the model</td><td>10 tasks = 10 model copies on disk</td></tr>
+<tr><td>Overfitting: updating many parameters with few labels</td><td>Catastrophic forgetting of pretrained knowledge</td></tr>
+<tr><td>Deployment: serving multiple task-specific models</td><td>GPU memory scales linearly with number of tasks</td></tr>
+</table>
+
+<p>
+<strong>Parameter-efficient fine-tuning (PEFT)</strong> addresses all four problems by freezing $\theta_0$ and introducing a small set of trainable parameters $\phi$:
+</p>
+
+$$\phi^* = \arg\min_\phi \; \mathcal{L}(\text{model}(\mathbf{x}; \theta_0, \phi), \mathbf{y}), \qquad |\phi| \ll |\theta_0|$$
+
+<p>
+The key insight: we don't need to move all parameters — a small, strategically placed perturbation is enough to steer the model's behaviour toward a new task.
+</p>
+
+<!-- ============================================================ -->
+<h2 id="landscape">3. The PEFT Landscape</h2>
+
+<p>
+PEFT methods differ in <em>where</em> they inject trainable parameters and <em>how</em> those parameters interact with the frozen model. Here is the full spectrum, ordered from most to fewest trainable parameters:
+</p>
+
+<table>
+<tr><th>Method</th><th>What's Trained</th><th>Where Injected</th><th>Trainable Params</th><th>Expressiveness</th></tr>
+<tr><td><strong>Full fine-tuning</strong></td><td>All model weights</td><td>Everywhere</td><td>$|\theta_0|$ (100%)</td><td>Maximal</td></tr>
+<tr><td><strong>Last-$n$ unfreezing</strong></td><td>Top $n$ layers</td><td>Last $n$ layers</td><td>$\approx \frac{n}{L}|\theta_0|$</td><td>High</td></tr>
+<tr><td><strong>LoRA</strong></td><td>Low-rank $\Delta W$ per layer</td><td>Attention projections</td><td>$2rDL$</td><td>High</td></tr>
+<tr><td><strong>Adapter layers</strong></td><td>Bottleneck MLPs</td><td>After attention and/or MLP</td><td>$2Dd_{\text{adapter}}L$</td><td>Moderate–High</td></tr>
+<tr><td><strong>Deep prompting</strong></td><td>$M \times L$ learnable vectors</td><td>Every transformer layer</td><td>$MDL$</td><td>Moderate</td></tr>
+<tr><td><strong>Soft prompting</strong></td><td>$M$ learnable vectors</td><td>Input embedding layer</td><td>$MD$</td><td>Moderate</td></tr>
+<tr><td><strong>Head-only</strong> (linear probe)</td><td>Classification head</td><td>After last layer</td><td>$D \times K + K$</td><td>Low</td></tr>
+</table>
+
+<div class="diagram">
+<pre><code>                ┌─────────────────────────────────────────────────────┐
+Trainable       │                                                     │
+Parameters   ◄──┤  Full FT ≫ Last-n ≫ LoRA ≈ Adapters ≫ Deep ≫ Soft ≫ Head  │
+(decreasing)    │                                                     │
+                └─────────────────────────────────────────────────────┘
+                              ◄──── most expressive    least ────►
+</code></pre>
+</div>
+
+<p>
+The central trade-off: fewer trainable parameters means less risk of overfitting and cheaper training, but also less capacity to reshape the model's representations. The "sweet spot" depends on how different your downstream task is from the pretraining objective and how much labelled data you have.
+</p>
+
+<!-- ============================================================ -->
+<h2 id="soft-prompting">4. Soft Prompting (Prompt Tuning)</h2>
+
+<h3>Core idea</h3>
+
+<p>
+Prepend $M$ learnable vectors $\mathbf{p}_1, \dots, \mathbf{p}_M \in \mathbb{R}^D$ to the input token embeddings. These "virtual tokens" live in the same embedding space as the real input and are processed by the frozen model alongside the input sequence.
+</p>
+
+<div class="step-box">
+<div class="step-label">The prompted input</div>
+<p>
+Given input token embeddings $\mathbf{Z} = [\mathbf{z}_1, \dots, \mathbf{z}_N] \in \mathbb{R}^{N \times D}$ from the frozen embedding layer, the prompted input is:
+</p>
+$$\mathbf{Z}_{\text{prompted}} = [\underbrace{\mathbf{p}_1, \dots, \mathbf{p}_M}_{\text{learnable prompts}} \;|\; \underbrace{\mathbf{z}_1, \dots, \mathbf{z}_N}_{\text{frozen input embeddings}}] \;\in\; \mathbb{R}^{(M + N) \times D}$$
+</div>
+
+<h3>What happens during a forward pass</h3>
+
+<div class="diagram">
+<pre><code>Input tokens (B, N)
+    │
+    ▼
+┌─────────────────────────────────────────────┐
+│  FROZEN EMBEDDING LAYER                      │
+│  token IDs → dense vectors  (B, N, D)        │
+└─────────────────────────────────────────────┘
+    │                        ┌──────────────────────┐
+    ▼                        │  LEARNABLE PROMPTS    │
+    Z = (B, N, D)            │  P = (1, M, D)        │
+    │                        │  expand → (B, M, D)   │
+    │                        └──────────┬───────────┘
+    │                                   │
+    ▼                                   ▼
+┌─────────────────────────────────────────────┐
+│  torch.cat([P, Z], dim=1)                    │
+│  → Z_prompted = (B, M+N, D)                 │
+└─────────────────────────────────────────────┘
+    │
+    ▼
+┌─────────────────────────────────────────────┐
+│  FROZEN BACKBONE (all layers)                │
+│  (B, M+N, D) → (B, M+N, D)                  │
+│  Prompts interact with input tokens via      │
+│  attention / convolution (model-dependent)   │
+└─────────────────────────────────────────────┘
+    │
+    ▼
+┌─────────────────────────────────────────────┐
+│  POOL OVER PROMPT POSITIONS                  │
+│  hidden[:, :M, :].mean(dim=1) → (B, D)      │
+│  (prompts have aggregated task-relevant info) │
+└─────────────────────────────────────────────┘
+    │
+    ▼
+┌─────────────────────────────────────────────┐
+│  TRAINABLE CLASSIFICATION HEAD               │
+│  LayerNorm → Linear → (B, K)                 │
+└─────────────────────────────────────────────┘
+</code></pre>
+</div>
+
+<h3>Gradient flow</h3>
+
+<p>
+During backpropagation, the frozen backbone acts as a fixed differentiable function. Gradients flow <em>through</em> the backbone but only <em>update</em> the prompt embeddings $\mathbf{P}$ and the classification head:
+</p>
+
+$$\frac{\partial \mathcal{L}}{\partial \mathbf{P}} = \frac{\partial \mathcal{L}}{\partial \text{output}} \cdot \frac{\partial \text{backbone}(\mathbf{Z}_{\text{prompted}}; \theta_0)}{\partial \mathbf{Z}_{\text{prompted}}} \cdot \frac{\partial \mathbf{Z}_{\text{prompted}}}{\partial \mathbf{P}}$$
+
+<p>
+The backbone's Jacobian $\frac{\partial \text{backbone}}{\partial \mathbf{Z}_{\text{prompted}}}$ is computed but $\theta_0$ receives no gradient update (via <code>requires_grad=False</code>). The computational cost is roughly a full forward + backward pass through the backbone, which is the same as full fine-tuning — the savings come from optimizer memory (only $\mathbf{P}$ and the head need optimizer states) and from storage (one copy of $\theta_0$ serves all tasks).
+</p>
+
+<h3>Parameter count</h3>
+
+<p>
+For $M = 8$ prompt tokens and $D = 128$:
+</p>
+
+$$|\phi_{\text{prompt}}| = M \times D = 8 \times 128 = 1{,}024 \text{ parameters}$$
+
+<p>
+Plus the classification head (LayerNorm + Linear): $2D + D \times K + K$. For $K = 2$: $256 + 256 + 2 = 514$. Total trainable: <strong>1,538 parameters</strong> out of ~700K (0.22%).
+</p>
+
+<h3>Initialisation matters</h3>
+
+<p>
+Prompt vectors are typically initialised from $\mathcal{N}(0, \sigma^2)$ with small $\sigma$ (e.g., 0.02). Alternative strategies include initialising from the model's existing token embeddings for tokens related to the task (e.g., "classify", "promoter"). Lester et al. (2021) showed that initialisation from class label embeddings gives a warm start but the gap shrinks with model scale.
+</p>
+
+<div class="note">
+<strong>Why "soft" prompting?</strong> — In contrast to <em>hard</em> (discrete) prompting, where you hand-craft input text like "Classify this sequence as promoter or non-promoter:", soft prompting learns <em>continuous</em> vectors in embedding space. These vectors are not constrained to correspond to any real token in the vocabulary — they are free to land anywhere in $\mathbb{R}^D$.
+</div>
+
+<!-- ============================================================ -->
+<h2 id="deep-prompting">5. Deep Prompting (Prefix-Tuning)</h2>
+
+<h3>Limitation of input-layer prompts</h3>
+
+<p>
+Input-layer soft prompts inject signal at a single point: before layer 1. In a deep model with $L$ layers, the prompt signal may attenuate as it propagates, especially through non-linear operations and normalisation layers. By the time it reaches layer $L$, the prompt's influence may be negligible.
+</p>
+
+<h3>The fix: inject at every layer</h3>
+
+<p>
+Deep prompting (Li &amp; Liang, 2021) maintains a separate bank of prompt embeddings for each layer:
+</p>
+
+$$\mathbf{P} = \{\mathbf{P}^{(1)}, \mathbf{P}^{(2)}, \dots, \mathbf{P}^{(L)}\}, \qquad \mathbf{P}^{(l)} \in \mathbb{R}^{M \times D}$$
+
+<p>
+At each layer $l$, the layer-specific prompts are prepended to the hidden states:
+</p>
+
+$$\mathbf{H}^{(l)}_{\text{prompted}} = [\mathbf{P}^{(l)} \;|\; \mathbf{H}^{(l)}]$$
+
+<p>
+where $\mathbf{H}^{(l)}$ is the sequence of hidden states entering layer $l$.
+</p>
+
+<h3>Reparameterisation for stability</h3>
+
+<p>
+Directly optimising $M \times D \times L$ independent prompt parameters can be unstable. Li &amp; Liang (2021) introduced a <strong>reparameterisation MLP</strong>: a small feed-forward network that generates the per-layer prompts from a shared lower-dimensional embedding:
+</p>
+
+$$\mathbf{P}^{(l)} = \text{MLP}(\mathbf{E}^{(l)}), \qquad \mathbf{E}^{(l)} \in \mathbb{R}^{M \times d_{\text{reparam}}}$$
+
+<p>
+The MLP acts as a regulariser — it constrains the space of possible per-layer prompts, preventing them from overfitting. After training, the MLP can be discarded and only the generated $\mathbf{P}^{(l)}$ values are kept.
+</p>
+
+<div class="step-box">
+<div class="step-label">Parameter count comparison</div>
+<p>With $M = 8$, $D = 128$, $L$ layers:</p>
+<table>
+<tr><th>Variant</th><th>Prompt Parameters</th><th>Formula</th></tr>
+<tr><td>Input-layer soft prompting</td><td>1,024</td><td>$M \times D$</td></tr>
+<tr><td>Deep prompting (direct)</td><td>$1{,}024 \times L$</td><td>$M \times D \times L$</td></tr>
+<tr><td>Deep prompting (reparameterised)</td><td>$M \times d_{\text{reparam}} \times L + |\text{MLP}|$</td><td>Smaller, more stable</td></tr>
+</table>
+</div>
+
+<div class="warn">
+<strong>Implementation note for HyenaDNA:</strong> Deep prompting in the Transformer sense requires hooking into each layer's forward pass to prepend/strip prompt tokens. For non-Transformer architectures like HyenaDNA's Hyena backbone (which uses convolution-based sequence mixing rather than attention), this requires model-specific engineering. The companion notebook implements a simplified version using the reparameterisation MLP but injects only at the input layer.
+</div>
+
+<!-- ============================================================ -->
+<h2 id="lora">6. LoRA: Low-Rank Adaptation</h2>
+
+<h3>Core idea</h3>
+
+<p>
+Instead of injecting new tokens, LoRA modifies the <em>weight matrices themselves</em> — but in a parameter-efficient way. The key observation (Hu et al., 2021): the weight updates during fine-tuning tend to be <strong>low-rank</strong>. That is, the matrix $\Delta W = W_{\text{fine-tuned}} - W_{\text{pretrained}}$ can be well-approximated by a rank-$r$ factorisation.
+</p>
+
+<div class="step-box">
+<div class="step-label">LoRA decomposition</div>
+<p>For a frozen weight matrix $W_0 \in \mathbb{R}^{D_{\text{out}} \times D_{\text{in}}}$, LoRA learns two small matrices:</p>
+
+$$W' = W_0 + \frac{\alpha}{r} \Delta W = W_0 + \frac{\alpha}{r} BA$$
+
+<p>where $B \in \mathbb{R}^{D_{\text{out}} \times r}$ and $A \in \mathbb{R}^{r \times D_{\text{in}}}$, with $r \ll \min(D_{\text{out}}, D_{\text{in}})$.</p>
+</div>
+
+<h3>Forward pass</h3>
+
+<p>
+The modified forward pass for a linear layer $\mathbf{h} = W_0 \mathbf{x}$ becomes:
+</p>
+
+$$\mathbf{h} = W_0 \mathbf{x} + \frac{\alpha}{r} BA\mathbf{x}$$
+
+<p>
+The first term uses the frozen weights (computed as usual). The second term is a small parallel computation: project $\mathbf{x}$ down to $\mathbb{R}^r$ via $A$, then back up to $\mathbb{R}^{D_{\text{out}}}$ via $B$.
+</p>
+
+<div class="diagram">
+<pre><code>              ┌─────────────────┐
+              │  W₀  (frozen)    │ ─── main path ──────────┐
+  x ─────────►│  D_in × D_out   │                         │
+  (D_in)      └─────────────────┘                         │
+       │                                                   ▼
+       │      ┌───────┐    ┌───────┐               ┌──────────┐
+       └─────►│ A     │───►│ B     │──► (α/r)·BAx ►│   +      │──► h
+              │ r×D_in│    │D_out×r│               │ (D_out)  │
+              └───────┘    └───────┘               └──────────┘
+              trainable    trainable
+</code></pre>
+</div>
+
+<h3>Initialisation</h3>
+
+<p>
+$A$ is initialised from $\mathcal{N}(0, \sigma^2)$ and $B$ is initialised to zero. This ensures $\Delta W = BA = 0$ at the start of training — the model begins from the exact pretrained weights. This is a critical design choice: no random perturbation of a well-trained model at initialisation.
+</p>
+
+<h3>Where to apply LoRA</h3>
+
+<p>
+Typically applied to the attention projection matrices $W_Q$ and $W_V$ (and optionally $W_K$ and $W_O$) at every layer. Can also be applied to MLP layers, though this is less standard.
+</p>
+
+<h3>Parameter count</h3>
+
+<p>
+For rank $r = 8$, hidden dim $D = 128$, applied to $W_Q$ and $W_V$ across $L$ layers:
+</p>
+
+$$|\phi_{\text{LoRA}}| = 2 \times (D \times r + r \times D) \times L = 2 \times 2rD \times L = 4rDL$$
+
+<p>With $r = 8$, $D = 128$, $L = 4$: $4 \times 8 \times 128 \times 4 = 16{,}384$ parameters.</p>
+
+<div class="insight">
+<strong>Key advantage over soft prompting:</strong> LoRA modifies the model's weight matrices directly, so it can reshape representations at every layer without increasing the effective sequence length. Soft prompting adds $M$ tokens to every forward pass, increasing compute for attention-based models (attention is $O((M+N)^2)$). LoRA adds a small parallel computation at each layer but doesn't change the sequence length.
+</div>
+
+<h3>Merge at inference</h3>
+
+<p>
+After training, the LoRA matrices can be merged into the base weights: $W_{\text{deployed}} = W_0 + \frac{\alpha}{r}BA$. This means <strong>zero inference overhead</strong> — the adapted model has the exact same architecture and latency as the original.
+</p>
+
+<!-- ============================================================ -->
+<h2 id="adapters">7. Adapter Layers</h2>
+
+<h3>Core idea</h3>
+
+<p>
+Adapter layers (Houlsby et al., 2019) insert small bottleneck MLPs <em>inside</em> each transformer block. Unlike LoRA, which modifies existing weight matrices, adapters add entirely new modules.
+</p>
+
+<div class="step-box">
+<div class="step-label">Adapter architecture</div>
+<p>Each adapter is a residual bottleneck:</p>
+
+$$\text{Adapter}(\mathbf{h}) = \mathbf{h} + f(W_{\text{up}} \cdot \sigma(W_{\text{down}} \cdot \mathbf{h}))$$
+
+<p>where $W_{\text{down}} \in \mathbb{R}^{d_{\text{adapter}} \times D}$ projects down to the bottleneck, $\sigma$ is a nonlinearity (e.g., ReLU or GELU), and $W_{\text{up}} \in \mathbb{R}^{D \times d_{\text{adapter}}}$ projects back up.</p>
+</div>
+
+<h3>Placement</h3>
+
+<p>
+In the standard Houlsby configuration, two adapters are inserted per transformer block: one after multi-head attention, one after the MLP. Each has its own independent weights.
+</p>
+
+<div class="diagram">
+<pre><code>Standard Transformer Block          With Adapters
+─────────────────────────           ────────────────────────
+  LN → MHSA → residual               LN → MHSA → Adapter₁ → residual
+  LN → MLP  → residual               LN → MLP  → Adapter₂ → residual
+</code></pre>
+</div>
+
+<h3>Parameter count</h3>
+
+<p>
+Per adapter: $D \times d_{\text{adapter}} + d_{\text{adapter}} \times D = 2Dd_{\text{adapter}}$ (plus biases). With 2 adapters per layer across $L$ layers:
+</p>
+
+$$|\phi_{\text{adapter}}| = 2 \times 2Dd_{\text{adapter}} \times L = 4Dd_{\text{adapter}}L$$
+
+<p>With $D = 128$, $d_{\text{adapter}} = 32$, $L = 4$: $4 \times 128 \times 32 \times 4 = 65{,}536$ parameters.</p>
+
+<div class="note">
+<strong>Inference overhead:</strong> Unlike LoRA, adapters cannot be merged into the base weights. They are additional serial computation at every layer, adding latency. This makes them less attractive for latency-sensitive deployment.
+</div>
+
+<!-- ============================================================ -->
+<h2 id="comparison">8. Unified Comparison</h2>
+
+<h3>Where each method injects parameters</h3>
+
+<div class="diagram">
+<pre><code>Layer 1    Layer 2    ...    Layer L    Output
+  │          │                 │          │
+  ▼          ▼                 ▼          ▼
+┌────┐    ┌────┐            ┌────┐    ┌──────┐
+│    │    │    │            │    │    │ Head │  ◄── Head-only trains HERE
+│    │    │    │            │    │    └──────┘
+│    │    │    │            │    │
+│ W  │    │ W  │            │ W  │       ◄── LoRA modifies W at each layer
+│    │    │    │            │    │
+│    │    │    │            │    │       ◄── Adapters add MLPs at each layer
+│    │    │    │            │    │
+│    │    │    │            │    │       ◄── Deep prompts prepend tokens at each layer
+└────┘    └────┘            └────┘
+  ▲
+  │
+[P₁,...,Pₘ | z₁,...,zₙ]                 ◄── Soft prompts prepend tokens HERE only
+</code></pre>
+</div>
+
+<h3>Comparison table</h3>
+
+<table>
+<tr>
+  <th>Property</th>
+  <th>Soft Prompting</th>
+  <th>Deep Prompting</th>
+  <th>LoRA</th>
+  <th>Adapters</th>
+</tr>
+<tr>
+  <td><strong>What's trained</strong></td>
+  <td>$M$ vectors at input</td>
+  <td>$M \times L$ vectors</td>
+  <td>Low-rank $\Delta W$ per layer</td>
+  <td>Bottleneck MLPs per layer</td>
+</tr>
+<tr>
+  <td><strong>Modifies weights?</strong></td>
+  <td>No</td>
+  <td>No</td>
+  <td>Yes (additively)</td>
+  <td>No (adds new modules)</td>
+</tr>
+<tr>
+  <td><strong>Changes sequence length?</strong></td>
+  <td>Yes (+$M$)</td>
+  <td>Yes (+$M$ per layer)</td>
+  <td>No</td>
+  <td>No</td>
+</tr>
+<tr>
+  <td><strong>Mergeable at inference?</strong></td>
+  <td>No</td>
+  <td>No</td>
+  <td>Yes (zero overhead)</td>
+  <td>No (adds latency)</td>
+</tr>
+<tr>
+  <td><strong>Backbone-agnostic?</strong></td>
+  <td>Yes (only needs embedding layer)</td>
+  <td>No (needs per-layer hooks)</td>
+  <td>No (needs linear layers)</td>
+  <td>No (needs block structure)</td>
+</tr>
+<tr>
+  <td><strong>Params (typical)</strong></td>
+  <td>$MD$ (smallest)</td>
+  <td>$MDL$</td>
+  <td>$4rDL$</td>
+  <td>$4Dd_{\text{adapter}}L$</td>
+</tr>
+<tr>
+  <td><strong>Best regime</strong></td>
+  <td>Very few labels, quick adaptation</td>
+  <td>Few labels, needs depth</td>
+  <td>Moderate data, general use</td>
+  <td>Moderate data, need nonlinearity</td>
+</tr>
+<tr>
+  <td><strong>Scales with model size?</strong></td>
+  <td>Improves significantly (Lester et al.)</td>
+  <td>Improves</td>
+  <td>Consistently strong</td>
+  <td>Consistently strong</td>
+</tr>
+</table>
+
+<h3>A unifying view: all PEFT methods as residual perturbations</h3>
+
+<p>
+Every PEFT method can be understood as adding a small, task-specific perturbation to the frozen model's computation:
+</p>
+
+$$\text{output}_{\text{adapted}} = f_{\theta_0}(\mathbf{x}) + \underbrace{\Delta(\mathbf{x}; \phi)}_{\text{task-specific perturbation}}$$
+
+<p>
+For <strong>soft prompting</strong>, $\Delta$ enters by changing the input: $f_{\theta_0}([\mathbf{P}; \mathbf{x}]) - f_{\theta_0}(\mathbf{x})$. For <strong>LoRA</strong>, $\Delta$ modifies the weight matrices: the $\frac{\alpha}{r}BA\mathbf{x}$ terms at each layer. For <strong>adapters</strong>, $\Delta$ adds residual corrections at each layer. The <em>mechanism</em> differs, but the <em>intent</em> is the same: a lightweight, input-dependent correction on top of a frozen feature extractor.
+</p>
+
+<!-- ============================================================ -->
+<h2 id="cls-connection">9. Connection to the ViT CLS Token</h2>
+
+<p>
+In the <a href="../ViT/vision_transformer_tutorial.html">ViT tutorial</a>, we implemented a learnable <code>[CLS]</code> token — a single vector $\mathbf{z}_{\text{cls}} \in \mathbb{R}^D$ prepended to the patch sequence and trained end-to-end with the full model. Soft prompting generalises this mechanism:
+</p>
+
+<table>
+<tr><th>Property</th><th>CLS Token (ViT)</th><th>Soft Prompts</th></tr>
+<tr><td><strong>What</strong></td><td>1 learnable vector</td><td>$M$ learnable vectors</td></tr>
+<tr><td><strong>Where</strong></td><td>Prepended to patch sequence</td><td>Prepended to input embeddings</td></tr>
+<tr><td><strong>Backbone</strong></td><td>Trained end-to-end</td><td>Frozen</td></tr>
+<tr><td><strong>Purpose</strong></td><td>Aggregation point for classification</td><td>Task-specific steering of frozen model</td></tr>
+<tr><td><strong>Use case</strong></td><td>Training from scratch</td><td>Adapting a pretrained model</td></tr>
+<tr><td><strong>Gradient destination</strong></td><td>CLS token + all backbone weights</td><td>Only prompt tokens + head</td></tr>
+</table>
+
+<p>
+The conceptual leap: the CLS token is a <em>passive aggregator</em> — it collects information from the sequence through attention. Soft prompts are <em>active conditioners</em> — they inject task-specific context that modifies how the frozen model processes the input. When the backbone is frozen, prompts must work harder because they're the only channel through which task information enters the computation.
+</p>
+
+<div class="insight">
+<strong>Design pattern:</strong> "Prepend a learnable vector to a sequence and let the model figure out what to do with it" is one of the most reusable ideas in modern deep learning. It appears in CLS tokens, soft prompting, register tokens (Darcet et al., 2023), and retrieval-augmented generation (where retrieved chunks are prepended to the context).
+</div>
+
+<!-- ============================================================ -->
+<h2 id="agentic-spliceai">10. Connection to AgenticSpliceAI</h2>
+
+<p>
+The AgenticSpliceAI project implements a practical instance of the "frozen backbone + lightweight head" paradigm, specifically in <code>foundation_models/classifiers/finetune.py</code>:
+</p>
+
+<div class="diagram">
+<pre><code>AgenticSpliceAI Pipeline
+─────────────────────────
+DNA sequence
+    │
+    ▼
+┌──────────────────────────────────┐
+│  Frozen Foundation Models         │
+│  (HyenaDNA / Evo2 / SpliceBERT) │
+│                                   │
+│  Embeddings cached to HDF5       │
+└──────────────────────────────────┘
+    │  fixed feature vectors
+    ▼
+┌──────────────────────────────────┐
+│  Feature Engineering Layer        │
+│  + additional evidence sources    │
+│  (conservation, structure, etc.)  │
+└──────────────────────────────────┘
+    │  enriched feature set
+    ▼
+┌──────────────────────────────────┐
+│  SpliceClassifier (trainable)     │
+│  Lightweight head on combined     │
+│  features → splice predictions    │
+└──────────────────────────────────┘
+</code></pre>
+</div>
+
+<table>
+<tr><th>Aspect</th><th>AgenticSpliceAI (Head-Only)</th><th>Soft Prompting</th></tr>
+<tr><td><strong>Base model</strong></td><td>Frozen (HyenaDNA/Evo2)</td><td>Frozen (same)</td></tr>
+<tr><td><strong>Adaptation</strong></td><td>Head on cached embeddings</td><td>Learnable tokens modify embeddings</td></tr>
+<tr><td><strong>Gradient flow</strong></td><td>None through backbone</td><td>Through backbone (as fixed fn) to prompts</td></tr>
+<tr><td><strong>Can steer representations?</strong></td><td>No — takes what backbone gives</td><td>Yes — prompts influence internal computation</td></tr>
+<tr><td><strong>Cacheable?</strong></td><td>Yes — embeddings precomputed once</td><td>No — prompts change the computation</td></tr>
+<tr><td><strong>Multi-model ensemble?</strong></td><td>Yes — stack features from multiple models</td><td>No — works within a single model</td></tr>
+</table>
+
+<div class="note">
+<strong>When to prefer which:</strong> The head-only approach excels when you want to <em>combine evidence from multiple foundation models</em> — each model's embeddings are cached independently and the head learns to fuse them. Soft prompting excels when you want to <em>maximally extract from a single model</em> by steering its internal representations. They are complementary strategies, and a hybrid is possible: use soft-prompted embeddings as features for a downstream meta-learner.
+</div>
+
+<p>
+The <code>FreezingStrategy</code> enum in <code>finetune.py</code> already supports a progression from fully frozen to partially unfrozen backbone. Soft prompting slots naturally between <code>FREEZE_ALL</code> and <code>LAST_N</code>:
+</p>
+
+<table>
+<tr><th>Strategy</th><th><code>FreezingStrategy</code> equivalent</th><th>What's trained</th></tr>
+<tr><td>Head-only</td><td><code>FREEZE_ALL</code></td><td>Classifier head only</td></tr>
+<tr><td>Soft prompting</td><td>(new: <code>SOFT_PROMPT</code>)</td><td>Prompt tokens + head</td></tr>
+<tr><td>LoRA</td><td>(partially supported via <code>apply_lora_to_model</code>)</td><td>Low-rank deltas + head</td></tr>
+<tr><td>Last-$n$ unfreezing</td><td><code>LAST_N</code></td><td>Top $n$ layers + head</td></tr>
+<tr><td>Full fine-tuning</td><td><code>UNFREEZE_ALL</code></td><td>Everything</td></tr>
+</table>
+
+<!-- ============================================================ -->
+<h2 id="practical">11. Practical Guidance: When to Use What</h2>
+
+<h3>Decision flowchart</h3>
+
+<div class="diagram">
+<pre><code>                     How much labelled data?
+                    /                        \
+               Very little                Moderate–Plenty
+              (< 100 samples)            (> 1K samples)
+                  │                           │
+                  ▼                           ▼
+        Is the backbone a           Can you modify the
+        good feature extractor      model architecture?
+        for your task?              (access to layer internals)
+           /         \                  /            \
+         Yes          No              Yes             No
+          │            │               │               │
+          ▼            ▼               ▼               ▼
+      Head-only    Soft prompting   LoRA or         Soft prompting
+      (cheapest,   (steers frozen   Adapters        (backbone-agnostic,
+       cacheable)   representations) (strongest      works with any model
+                                     adaptation)     that accepts inputs_embeds)
+</code></pre>
+</div>
+
+<h3>Rules of thumb</h3>
+
+<table>
+<tr><th>Scenario</th><th>Recommended Method</th><th>Why</th></tr>
+<tr><td>Backbone features are already good for your task</td><td>Head-only</td><td>Cheapest; embeddings are cacheable; no risk of disturbing good representations</td></tr>
+<tr><td>Very few labels, opaque backbone (no layer access)</td><td>Soft prompting</td><td>Minimal parameters; only needs embedding layer access; backbone-agnostic</td></tr>
+<tr><td>Moderate data, need strong adaptation</td><td>LoRA</td><td>Best balance of efficiency and performance; mergeable at inference</td></tr>
+<tr><td>Need nonlinear adaptation at each layer</td><td>Adapters</td><td>Bottleneck MLP adds expressive capacity that low-rank can't match</td></tr>
+<tr><td>Need to combine multiple frozen models</td><td>Head-only / stacking</td><td>Cache each model's outputs; train a meta-model on combined features</td></tr>
+<tr><td>Maximum performance, ample compute</td><td>Full fine-tuning or last-$n$</td><td>Upper bound on adaptation quality</td></tr>
+</table>
+
+<div class="warn">
+<strong>A common pitfall:</strong> Soft prompting's performance <em>scales with model size</em>. Lester et al. (2021) showed that for T5-Small, prompt tuning underperforms full fine-tuning significantly. But at T5-XXL (11B parameters), prompt tuning nearly matches full fine-tuning. For small models like HyenaDNA-tiny (700K params), don't expect prompts to close the gap — the model doesn't have enough capacity for the prompts to steer meaningfully. Treat the notebook as a pedagogical exercise, not a benchmark.
+</div>
+
+<!-- ============================================================ -->
+<h2 id="refs">12. References</h2>
+
+<table>
+<tr><th>Paper</th><th>Key Contribution</th></tr>
+<tr><td>Lester et al. (2021). "The Power of Scale for Parameter-Efficient Prompt Tuning."</td><td>Original soft prompting for LLMs; shows scaling behaviour</td></tr>
+<tr><td>Li &amp; Liang (2021). "Prefix-Tuning: Optimizing Continuous Prompts for Generation."</td><td>Deep variant: learnable prefixes at every layer, reparameterisation MLP</td></tr>
+<tr><td>Jia et al. (2022). "Visual Prompt Tuning (VPT)."</td><td>Soft prompting applied to Vision Transformers</td></tr>
+<tr><td>Hu et al. (2021). "LoRA: Low-Rank Adaptation of Large Language Models."</td><td>Low-rank weight perturbation; mergeable at inference</td></tr>
+<tr><td>Houlsby et al. (2019). "Parameter-Efficient Transfer Learning for NLP."</td><td>Adapter layers: bottleneck MLPs inside transformer blocks</td></tr>
+<tr><td>Nguyen et al. (2023). "HyenaDNA: Long-Range Genomic Sequence Modeling."</td><td>Foundation model for DNA; Hyena backbone (conv-based, not attention)</td></tr>
+<tr><td>Darcet et al. (2023). "Vision Transformers Need Registers."</td><td>Register tokens: prepended learnable vectors that prevent attention artifacts</td></tr>
+<tr><td>Dosovitskiy et al. (2020). "An Image Is Worth 16x16 Words."</td><td>Original ViT: CLS token + patch tokenisation</td></tr>
+</table>
+
+</body>
+</html>
