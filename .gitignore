@@ -126,4 +126,5 @@ runpods/**/*
 Thumbs.db
 .cursor/
 .windsurf/
+.obsidian/
 tasks/
