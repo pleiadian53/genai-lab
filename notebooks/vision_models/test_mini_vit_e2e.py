@@ -256,10 +256,13 @@ try:
     test_dataset = torchvision.datasets.CIFAR10(
         root="./data", train=False, download=True, transform=transform_test
     )
+    # num_workers=0 required in a plain .py script on macOS (spawn start method).
+    # num_workers>0 works fine in Jupyter because the notebook is already in a
+    # proper main process context.
     train_loader = DataLoader(train_dataset, batch_size=128, shuffle=True,
-                              num_workers=2, pin_memory=pin)
+                              num_workers=0, pin_memory=pin)
     test_loader  = DataLoader(test_dataset,  batch_size=256, shuffle=False,
-                              num_workers=2, pin_memory=pin)
+                              num_workers=0, pin_memory=pin)
     log_ok(f"CIFAR-10 loaded: train={len(train_dataset):,}  test={len(test_dataset):,}")
     log_ok(f"pin_memory={pin}  (correct for {device.type})")
 except Exception as e:
@@ -330,6 +333,7 @@ try:
     )
     lrs = []
     for _ in range(5):
+        optimizer.step()   # must precede scheduler.step() (PyTorch >= 1.1)
         scheduler.step()
         lrs.append(optimizer.param_groups[0]["lr"])
     log_ok(f"LR over 5 steps: {[f'{lr:.2e}' for lr in lrs]}  ✓")
