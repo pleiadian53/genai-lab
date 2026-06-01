@@ -60,6 +60,17 @@ This documentation series covers JEPA from first principles through computationa
 
 ---
 
+## Subtopics
+
+### Generative JEPA
+**[generative_jepa/](generative_jepa/)** — Extending JEPA from a representation
+learner into a generative model. Covers the two gaps that block generation
+(stochastic prediction + decoding to data space), the 2025–2026 literature
+(Var-JEPA, Cell-JEPA, D-JEPA, V-JEPA 2 world models), and a concrete staged
+architecture for generative perturbation prediction.
+
+---
+
 ## Supplementary Documents
 
 ### Open Research
