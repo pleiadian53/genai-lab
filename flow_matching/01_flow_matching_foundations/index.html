@@ -1,0 +1,4497 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Generative AI for computational biology - diffusion models, VAEs, and foundation models for gene expression">
+      
+      
+        <meta name="author" content="GenAI Lab Research Team">
+      
+      
+        <link rel="canonical" href="https://pleiadian53.github.io/genai-lab/flow_matching/01_flow_matching_foundations/">
+      
+      
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
+    
+    
+      
+        <title>Flow Matching Foundations - GenAI Lab</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.484c7ddc.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../../stylesheets/extra.css">
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="deep-purple" data-md-color-accent="deep-purple">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#flow-matching-foundations" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+      <div data-md-color-scheme="default" data-md-component="outdated" hidden>
+        
+      </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow md-header--lifted" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="GenAI Lab" class="md-header__button md-logo" aria-label="GenAI Lab" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            GenAI Lab
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Flow Matching Foundations
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="deep-purple" data-md-color-accent="deep-purple"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="deep-purple" data-md-color-accent="deep-purple"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/pleiadian53/genai-lab" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+  </div>
+  <div class="md-source__repository">
+    pleiadian53/genai-lab
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+    
+      
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../.." class="md-tabs__link">
+        
+  
+  
+    
+  
+  Home
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../ROADMAP/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Roadmap
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../foundation_models/" class="md-tabs__link">
+          
+  
+  
+  Foundation Models
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../DiT/" class="md-tabs__link">
+          
+  
+  
+  Diffusion Transformers (DiT)
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../JEPA/" class="md-tabs__link">
+          
+  
+  
+  JEPA (Joint Embedding)
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../latent_diffusion/" class="md-tabs__link">
+          
+  
+  
+  Latent Diffusion
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../DDPM/" class="md-tabs__link">
+          
+  
+  
+  DDPM (Denoising Diffusion)
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../VAE/VAE-01-overview/" class="md-tabs__link">
+          
+  
+  
+  VAE (Variational Autoencoders)
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../score_matching/" class="md-tabs__link">
+          
+  
+  
+  Score Matching & EBM
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../" class="md-tabs__link">
+          
+  
+  
+  Flow Matching
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../SDE/" class="md-tabs__link">
+          
+  
+  
+  SDE (Stochastic Differential Equations)
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../datasets/" class="md-tabs__link">
+          
+  
+  
+  Datasets
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../diffusion/01_ddpm/01_ddpm_basics/" class="md-tabs__link">
+          
+  
+  
+  Diffusion (Technical Deep Dives)
+
+        </a>
+      </li>
+    
+  
+
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../notebooks/" class="md-tabs__link">
+          
+  
+  
+  Notebooks
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../SETUP/" class="md-tabs__link">
+          
+  
+  
+  About
+
+        </a>
+      </li>
+    
+  
+
+      
+    </ul>
+  </div>
+</nav>
+    
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="GenAI Lab" class="md-nav__button md-logo" aria-label="GenAI Lab" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    GenAI Lab
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/pleiadian53/genai-lab" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+  </div>
+  <div class="md-source__repository">
+    pleiadian53/genai-lab
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../ROADMAP/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Roadmap
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Foundation Models
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Foundation Models
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../foundation_models/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../foundation_models/leveraging_foundation_models_v2/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Leveraging Foundation Models
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../foundation_models/data_shape_v2/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Data Shape & Tensors
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../foundation_models/IMPLEMENTATION_GUIDE/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Implementation Guide
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Diffusion Transformers (DiT)
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Diffusion Transformers (DiT)
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../DiT/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Series Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../DiT/00_dit_overview/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    00: DiT Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../DiT/01_dit_foundations/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    01: Foundations
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../DiT/02_dit_training/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    02: Training
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../DiT/03_dit_sampling/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    03: Sampling
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../DiT/open_research_tokenization/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Research: Tokenization
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    JEPA (Joint Embedding)
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    JEPA (Joint Embedding)
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../JEPA/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Series Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../JEPA/00_jepa_overview/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    00: JEPA Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../JEPA/01_jepa_foundations/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    01: Foundations
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../JEPA/02_jepa_training/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    02: Training
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../JEPA/03_jepa_applications/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    03: Applications
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../JEPA/04_jepa_perturbseq/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    04: Perturb-seq
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../JEPA/open_research_joint_latent/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Research: Joint Latent
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_6" >
+        
+          
+          <label class="md-nav__link" for="__nav_6" id="__nav_6_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Latent Diffusion
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Latent Diffusion
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../latent_diffusion/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Series Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../latent_diffusion/00_latent_diffusion_overview/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    00: Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../latent_diffusion/01_latent_diffusion_foundations/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    01: Foundations
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../latent_diffusion/02_latent_diffusion_training/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    02: Training
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../latent_diffusion/03_latent_diffusion_applications/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    03: Applications
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../latent_diffusion/04_latent_diffusion_combio/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    04: ComBio Implementation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_7" >
+        
+          
+          <label class="md-nav__link" for="__nav_7" id="__nav_7_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    DDPM (Denoising Diffusion)
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_7_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_7">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    DDPM (Denoising Diffusion)
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../DDPM/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../DDPM/02a_diffusion_arch_gene_expression/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Architectures for Gene Expression
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../DDPM/02b_diffusion_arch_qa/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Architecture Q&A
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_8" >
+        
+          
+          <label class="md-nav__link" for="__nav_8" id="__nav_8_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    VAE (Variational Autoencoders)
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_8_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_8">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    VAE (Variational Autoencoders)
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../VAE/VAE-01-overview/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    01: Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../VAE/VAE-02-elbo/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    02: ELBO
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../VAE/VAE-03-inference/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    03: Inference
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../VAE/VAE-for-prediction/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    VAE for Prediction
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../VAE/VAE-model-training/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Model Training
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../beta-VAE/beta_vae/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Beta-VAE
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_9" >
+        
+          
+          <label class="md-nav__link" for="__nav_9" id="__nav_9_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Score Matching & EBM
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_9_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_9">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Score Matching & EBM
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../score_matching/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Score Matching
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../EBM/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Energy-Based Models
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../EBM/EBM-stein-vs-fisher-score/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Stein vs Fisher Score
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_10" >
+        
+          
+          <label class="md-nav__link" for="__nav_10" id="__nav_10_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Flow Matching
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_10_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_10">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Flow Matching
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_11" >
+        
+          
+          <label class="md-nav__link" for="__nav_11" id="__nav_11_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    SDE (Stochastic Differential Equations)
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_11_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_11">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    SDE (Stochastic Differential Equations)
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../SDE/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_12" >
+        
+          
+          <label class="md-nav__link" for="__nav_12" id="__nav_12_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Datasets
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_12_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_12">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Datasets
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../datasets/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_13" >
+        
+          
+          <label class="md-nav__link" for="__nav_13" id="__nav_13_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Diffusion (Technical Deep Dives)
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_13_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_13">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Diffusion (Technical Deep Dives)
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_13_1" >
+        
+          
+          <label class="md-nav__link" for="__nav_13_1" id="__nav_13_1_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    DDPM Basics
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_13_1_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_13_1">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    DDPM Basics
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../diffusion/01_ddpm/01_ddpm_basics/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Notebook
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_13_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_13_2" id="__nav_13_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    SDE Formulation
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_13_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_13_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    SDE Formulation
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../diffusion/02_sde_formulation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../diffusion/02_sde_formulation/02_sde_formulation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Notebook
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_13_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_13_3" id="__nav_13_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Medical Imaging Diffusion
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_13_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_13_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Medical Imaging Diffusion
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../diffusion/03_medical_imaging_diffusion/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../diffusion/03_medical_imaging_diffusion/03_medical_imaging_diffusion/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Notebook
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_13_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_13_4" id="__nav_13_4_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Gene Expression Diffusion
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_13_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_13_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Gene Expression Diffusion
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../diffusion/04_gene_expression_diffusion/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../diffusion/04_gene_expression_diffusion/04_gene_expression_diffusion/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Notebook
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_14" >
+        
+          
+          <label class="md-nav__link" for="__nav_14" id="__nav_14_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Notebooks
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_14_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_14">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Notebooks
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../notebooks/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_15" >
+        
+          
+          <label class="md-nav__link" for="__nav_15" id="__nav_15_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    About
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_15_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_15">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    About
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../SETUP/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Setup & Installation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../INDUSTRY_LANDSCAPE/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Industry Landscape
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#overview" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Overview
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Overview">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#the-core-idea" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The Core Idea
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#why-flow-matching" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Why Flow Matching?
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#mathematical-framework" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Mathematical Framework
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Mathematical Framework">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#probability-flows" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Probability Flows
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#the-forward-process" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The Forward Process
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#the-marginal-flow" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The Marginal Flow
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#flow-matching-objective" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Flow Matching Objective
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Flow Matching Objective">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#the-training-loss" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The Training Loss
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#comparison-with-score-matching" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Comparison with Score Matching
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#the-backward-process-sampling" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The Backward Process (Sampling)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="The Backward Process (Sampling)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#ode-integration" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ODE Integration
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#ode-solvers" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ODE Solvers
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#rectified-flow-the-simplest-instance" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Rectified Flow: The Simplest Instance
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Rectified Flow: The Simplest Instance">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#definition" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Definition
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#why-rectified" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Why "Rectified"?
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#reflow-iterative-straightening" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Reflow: Iterative Straightening
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#theoretical-properties" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Theoretical Properties
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Theoretical Properties">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#optimality" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Optimality
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#connection-to-optimal-transport" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Connection to Optimal Transport
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#probability-flow-ode" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Probability Flow ODE
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#variance-preserving-vs-non-variance-preserving" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Variance-Preserving vs. Non-Variance-Preserving
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Variance-Preserving vs. Non-Variance-Preserving">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#variance-preserving-vp-flows" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Variance-Preserving (VP) Flows
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#non-variance-preserving-nvp-flows" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Non-Variance-Preserving (NVP) Flows
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#which-to-use" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Which to Use?
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#conditional-generation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Conditional Generation
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Conditional Generation">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#conditioning-mechanisms" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Conditioning Mechanisms
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#classifier-free-guidance" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Classifier-Free Guidance
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#comparison-with-diffusion-models" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Comparison with Diffusion Models
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Comparison with Diffusion Models">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#conceptual-differences" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Conceptual Differences
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#when-to-use-each" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        When to Use Each
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#practical-considerations" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Practical Considerations
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Practical Considerations">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#network-architecture" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Network Architecture
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#time-embedding" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Time Embedding
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#training-tips" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Training Tips
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#summary" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Summary
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Summary">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#key-concepts" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Key Concepts
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#key-equations" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Key Equations
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#related-documents" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Related Documents
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#references" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        References
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="References">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#foundational-papers" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Foundational Papers
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#optimal-transport" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Optimal Transport
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#applications" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Applications
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+    <a href="https://github.com/pleiadian53/genai-lab/edit/main/docs/flow_matching/01_flow_matching_foundations.md" title="Edit this page" class="md-content__button md-icon" rel="edit">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20.71 7.04c.39-.39.39-1.04 0-1.41l-2.34-2.34c-.37-.39-1.02-.39-1.41 0l-1.84 1.83 3.75 3.75M3 17.25V21h3.75L17.81 9.93l-3.75-3.75z"/></svg>
+    </a>
+  
+  
+
+
+<h1 id="flow-matching-foundations">Flow Matching Foundations<a class="headerlink" href="#flow-matching-foundations" title="Permanent link">&para;</a></h1>
+<p>How do you turn Gaussian noise into a photorealistic face, a protein sequence, or a musical phrase? The answer requires learning a transformation that moves probability mass from one distribution to another. Flow matching is a principled, elegant framework for doing exactly that.</p>
+<p>At its core, flow matching treats the transformation as a continuous-time <em>flow</em>: every point in the noise distribution traces a smooth trajectory to a corresponding point in the data distribution. The model's job is to learn the <em>velocity field</em> that drives these trajectories — and, crucially, this can be done with a simple regression loss, without the complex score-matching objectives or carefully tuned noise schedules that diffusion models require.</p>
+<p>This document builds the mathematical foundations of flow matching from the ground up: the continuity equation that governs how distributions evolve, the conditional flow matching objective that makes training tractable, the ODE-based sampling procedure, and the connection to optimal transport that explains why straight paths are so attractive in practice.</p>
+<hr />
+<h2 id="overview">Overview<a class="headerlink" href="#overview" title="Permanent link">&para;</a></h2>
+<h3 id="the-core-idea">The Core Idea<a class="headerlink" href="#the-core-idea" title="Permanent link">&para;</a></h3>
+<p>The generative modeling problem can be framed as a <em>transport</em> problem: we have a simple source distribution <span class="arithmatex">\(p_0\)</span> (easy to sample from, e.g. Gaussian noise) and a complex target distribution <span class="arithmatex">\(p_1\)</span> (the data distribution we care about). We want to find a continuous map that moves samples from one to the other.</p>
+<p>Flow matching parameterizes this map as the solution to an ordinary differential equation (ODE):</p>
+<p><strong>Goal</strong>: Transform samples from a simple distribution <span class="arithmatex">\(p_0\)</span> (noise) into samples from a complex distribution <span class="arithmatex">\(p_1\)</span> (data).</p>
+<p><strong>Approach</strong>: Learn a time-dependent velocity field <span class="arithmatex">\(v_\theta(x, t)\)</span> that defines a continuous transformation:</p>
+<div class="arithmatex">\[
+\frac{dx}{dt} = v_\theta(x, t), \quad t \in [0, 1]
+\]</div>
+<p>Starting from a noise sample <span class="arithmatex">\(x(0) \sim p_0\)</span>, integrating this ODE to <span class="arithmatex">\(t = 1\)</span> produces a data sample <span class="arithmatex">\(x(1) \sim p_1\)</span>.</p>
+<p><strong>Key insight</strong>: Instead of learning probability gradients (scores), we directly learn how points should move through space. This shift — from asking "how likely is this point?" to asking "which direction should this point move?" — is what makes flow matching both mathematically clean and practically efficient.</p>
+<h3 id="why-flow-matching">Why Flow Matching?<a class="headerlink" href="#why-flow-matching" title="Permanent link">&para;</a></h3>
+<p><strong>Advantages over diffusion models</strong>:</p>
+<ul>
+<li><strong>Simpler training</strong>: Direct regression instead of score matching</li>
+<li><strong>Faster sampling</strong>: Deterministic ODE, fewer steps needed (10-50 vs 100-1000)</li>
+<li><strong>Flexible paths</strong>: Not restricted to Gaussian noise schedules</li>
+<li><strong>Theoretical clarity</strong>: Optimal transport interpretation</li>
+<li><strong>Better for non-Euclidean data</strong>: Natural extension to manifolds</li>
+</ul>
+<p><strong>Trade-offs</strong>:</p>
+<ul>
+<li>Less mature than diffusion (fewer architectural tricks)</li>
+<li>Requires careful ODE solver selection</li>
+<li>May need more training data for complex distributions</li>
+</ul>
+<hr />
+<h2 id="mathematical-framework">Mathematical Framework<a class="headerlink" href="#mathematical-framework" title="Permanent link">&para;</a></h2>
+<p>To understand how flow matching works, we need to formalize what it means to "move a distribution" via a vector field. This section builds the mathematical language: probability flows, the continuity equation that links velocity fields to distribution evolution, and the forward process that defines <em>which</em> trajectories we want the model to learn.</p>
+<h3 id="probability-flows">Probability Flows<a class="headerlink" href="#probability-flows" title="Permanent link">&para;</a></h3>
+<p>A <strong>probability flow</strong> is a time-dependent vector field that transports probability mass smoothly from one distribution to another. The key insight is that specifying a velocity field <span class="arithmatex">\(v(x, t)\)</span> is equivalent to specifying a family of distributions <span class="arithmatex">\(\{p_t\}_{t \in [0,1]}\)</span> — the flow <em>induces</em> the distributions.</p>
+<p><strong>Setup</strong>:</p>
+<ul>
+<li>Start distribution: <span class="arithmatex">\(p_0(x)\)</span> (e.g., Gaussian noise)</li>
+<li>End distribution: <span class="arithmatex">\(p_1(x)\)</span> (data distribution)</li>
+<li>Time: <span class="arithmatex">\(t \in [0, 1]\)</span></li>
+</ul>
+<p><strong>Flow equation</strong>:</p>
+<div class="arithmatex">\[
+\frac{dx}{dt} = v(x, t)
+\]</div>
+<p>This defines a trajectory <span class="arithmatex">\(x(t)\)</span> for each starting point <span class="arithmatex">\(x(0)\)</span>.</p>
+<p><strong>Probability evolution</strong>: The distribution at time <span class="arithmatex">\(t\)</span>, denoted <span class="arithmatex">\(p_t(x)\)</span>, evolves according to the <strong>continuity equation</strong>:</p>
+<div class="arithmatex">\[
+\frac{\partial p_t}{\partial t} + \nabla \cdot (p_t v) = 0
+\]</div>
+<p>The continuity equation is the PDE counterpart of the particle ODE <span class="arithmatex">\(\frac{dx}{dt} = v(x, t)\)</span>. While the ODE tracks individual particles, the continuity equation describes how the <em>entire distribution</em> evolves in time. Understanding this connection is central to flow matching.</p>
+<h4 id="physical-intuition-probability-as-a-fluid">Physical Intuition: Probability as a Fluid<a class="headerlink" href="#physical-intuition-probability-as-a-fluid" title="Permanent link">&para;</a></h4>
+<p>Think of <span class="arithmatex">\(p_t(x)\)</span> as the density of an incompressible fluid at position <span class="arithmatex">\(x\)</span> and time <span class="arithmatex">\(t\)</span>, and <span class="arithmatex">\(v(x, t)\)</span> as the local fluid velocity. The product <span class="arithmatex">\(p_t(x)\, v(x, t)\)</span> is then the <em>probability flux</em> — a vector field describing how much probability mass flows through a surface element per unit time. The divergence <span class="arithmatex">\(\nabla \cdot (p_t v)\)</span> measures how much of that flux is <em>leaving</em> a small region per unit volume.</p>
+<p><strong>Dimensional analysis</strong> (working in <span class="arithmatex">\(\mathbb{R}^d\)</span>, using <span class="arithmatex">\(L\)</span> for length):</p>
+<table>
+<thead>
+<tr>
+<th>Quantity</th>
+<th>Units</th>
+<th>Reasoning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><span class="arithmatex">\(p_t(x)\)</span></td>
+<td><span class="arithmatex">\(\text{prob} \cdot L^{-d}\)</span></td>
+<td>Probability per unit <span class="arithmatex">\(d\)</span>-volume (integrates to 1 over <span class="arithmatex">\(\mathbb{R}^d\)</span>)</td>
+</tr>
+<tr>
+<td><span class="arithmatex">\(v(x, t)\)</span></td>
+<td><span class="arithmatex">\(L \cdot T^{-1}\)</span></td>
+<td>Velocity</td>
+</tr>
+<tr>
+<td><span class="arithmatex">\(p_t v\)</span> (flux)</td>
+<td><span class="arithmatex">\(\text{prob} \cdot L^{-(d-1)} \cdot T^{-1}\)</span></td>
+<td>Density × velocity; reduces the spatial dimension by one</td>
+</tr>
+<tr>
+<td><span class="arithmatex">\(\nabla \cdot (p_t v)\)</span></td>
+<td><span class="arithmatex">\(\text{prob} \cdot L^{-d} \cdot T^{-1}\)</span></td>
+<td>Divergence applies <span class="arithmatex">\(\partial/\partial x_i\)</span>, adding one inverse length</td>
+</tr>
+<tr>
+<td><span class="arithmatex">\(\partial p_t / \partial t\)</span></td>
+<td><span class="arithmatex">\(\text{prob} \cdot L^{-d} \cdot T^{-1}\)</span></td>
+<td>Time derivative of density; units match ✓</td>
+</tr>
+</tbody>
+</table>
+<p>The flux <span class="arithmatex">\(p_t v\)</span> carries units of probability per <span class="arithmatex">\((d-1)\)</span>-dimensional surface element per unit time. When integrated over the boundary <span class="arithmatex">\(\partial\Omega\)</span> — a <span class="arithmatex">\((d-1)\)</span>-dimensional hypersurface — the result has units of probability per unit time: the rate at which probability mass crosses that boundary. In three dimensions this boundary is literally an <em>area</em> (<span class="arithmatex">\(L^2\)</span>), which is where the "per unit area" phrasing originates; in general it is a <span class="arithmatex">\((d-1)\)</span>-dimensional hypersurface element.</p>
+<blockquote>
+<p><strong>Rate of local density change = −(net outflow of probability flux)</strong></p>
+</blockquote>
+<p>If more probability is flowing out of a region than flowing in, the local density decreases — exactly the physics of a conserved fluid. No probability mass is ever created or destroyed; it merely moves.</p>
+<h4 id="term-by-term-breakdown">Term-by-Term Breakdown<a class="headerlink" href="#term-by-term-breakdown" title="Permanent link">&para;</a></h4>
+<table>
+<thead>
+<tr>
+<th>Term</th>
+<th>Interpretation</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><span class="arithmatex">\(\frac{\partial p_t}{\partial t}\)</span></td>
+<td>Local rate of change of probability density at position <span class="arithmatex">\(x\)</span> and time <span class="arithmatex">\(t\)</span></td>
+</tr>
+<tr>
+<td><span class="arithmatex">\(p_t(x)\, v(x, t)\)</span></td>
+<td>Probability flux: the "current" of probability mass flowing at <span class="arithmatex">\((x, t)\)</span></td>
+</tr>
+<tr>
+<td><span class="arithmatex">\(\nabla \cdot (p_t v)\)</span></td>
+<td>Divergence of that flux — net outflow of probability per unit volume</td>
+</tr>
+<tr>
+<td><span class="arithmatex">\(= 0\)</span></td>
+<td>Conservation: total probability is preserved (the distribution integrates to 1 for all <span class="arithmatex">\(t\)</span>)</td>
+</tr>
+</tbody>
+</table>
+<h4 id="derivation-sketch">Derivation Sketch<a class="headerlink" href="#derivation-sketch" title="Permanent link">&para;</a></h4>
+<p>For any test region <span class="arithmatex">\(\Omega \subset \mathbb{R}^d\)</span>, the total probability mass inside <span class="arithmatex">\(\Omega\)</span> at time <span class="arithmatex">\(t\)</span> is <span class="arithmatex">\(\int_\Omega p_t(x)\, dx\)</span>. Since particles move deterministically under <span class="arithmatex">\(\frac{dx}{dt} = v(x, t)\)</span>, mass can only enter or leave <span class="arithmatex">\(\Omega\)</span> by crossing its boundary <span class="arithmatex">\(\partial \Omega\)</span>:</p>
+<div class="arithmatex">\[
+\frac{d}{dt} \int_\Omega p_t(x)\, dx = -\oint_{\partial \Omega} p_t(x)\, v(x, t) \cdot \hat{n}\, dS
+\]</div>
+<p>Applying the divergence theorem to the right-hand side converts the surface integral into a volume integral over <span class="arithmatex">\(\nabla \cdot (p_t v)\)</span>. Because <span class="arithmatex">\(\Omega\)</span> is arbitrary, the integrands must match pointwise, giving the continuity equation.</p>
+<h4 id="connection-to-the-ode-and-the-pushforward">Connection to the ODE and the Pushforward<a class="headerlink" href="#connection-to-the-ode-and-the-pushforward" title="Permanent link">&para;</a></h4>
+<p>The continuity equation reveals the deep link between particle trajectories and distribution evolution. If every particle starting at <span class="arithmatex">\(x_0\)</span> follows the ODE <span class="arithmatex">\(\frac{dx}{dt} = v(x, t)\)</span>, it traces a path <span class="arithmatex">\(x(t) = \phi_t(x_0)\)</span>, where <span class="arithmatex">\(\phi_t : \mathbb{R}^d \to \mathbb{R}^d\)</span> is called the <strong>flow map</strong>. The distribution at time <span class="arithmatex">\(t\)</span> is simply the distribution you get by applying <span class="arithmatex">\(\phi_t\)</span> to every sample from <span class="arithmatex">\(p_0\)</span>, called the <em>pushforward</em> of <span class="arithmatex">\(p_0\)</span> under <span class="arithmatex">\(\phi_t\)</span>:</p>
+<div class="arithmatex">\[
+p_t = {\phi_t}_{\,\#}\, p_0
+\quad \Longleftrightarrow \quad
+\text{if } X_0 \sim p_0 \text{, then } \phi_t(X_0) \sim p_t
+\]</div>
+<p>The <span class="arithmatex">\(\#\)</span> subscript is notation for "push forward through": <span class="arithmatex">\({\phi_t}_{\,\#}\, p_0\)</span> means "apply <span class="arithmatex">\(\phi_t\)</span> to samples drawn from <span class="arithmatex">\(p_0\)</span>." The continuity equation is the differential form of this statement — instead of asking where particles end up after a finite time <span class="arithmatex">\(t\)</span>, it tracks how density changes over an infinitesimal step <span class="arithmatex">\(dt\)</span>. The goal of flow matching is to learn a velocity field <span class="arithmatex">\(v_\theta\)</span> whose induced flow map <span class="arithmatex">\(\phi_1\)</span> transports <span class="arithmatex">\(p_{\text{noise}}\)</span> to <span class="arithmatex">\(p_{\text{data}}\)</span>.</p>
+<h3 id="the-forward-process">The Forward Process<a class="headerlink" href="#the-forward-process" title="Permanent link">&para;</a></h3>
+<p>Unlike diffusion models, which define the forward process by <em>adding noise</em> stochastically (making it harder to reason about the exact trajectory), flow matching uses <strong>deterministic interpolation</strong>. We simply connect each data point <span class="arithmatex">\(x_0\)</span> to a noise point <span class="arithmatex">\(x_1\)</span> with a smooth path, then train the model to follow that path.</p>
+<p>This design choice is deliberate: by decoupling path construction from learning, we can analyze trajectories analytically and choose path families that are convenient for training (e.g., straight lines) or that satisfy constraints (e.g., variance preservation). The model does not need to know which pair <span class="arithmatex">\((x_0, x_1)\)</span> generated a given <span class="arithmatex">\(x_t\)</span> — it only needs to know the <em>velocity</em> at that <span class="arithmatex">\(x_t\)</span>.</p>
+<p><strong>Conditional flow</strong>: Given a data-noise pair <span class="arithmatex">\((x_0, x_1)\)</span> where <span class="arithmatex">\(x_0 \sim p_{\text{data}}\)</span> and <span class="arithmatex">\(x_1 \sim p_{\text{noise}}\)</span>, define a smooth path connecting them:</p>
+<div class="arithmatex">\[
+x_t = \psi_t(x_0, x_1), \qquad t \in [0, 1]
+\]</div>
+<p>Here <span class="arithmatex">\(\psi_t : \mathbb{R}^d \times \mathbb{R}^d \to \mathbb{R}^d\)</span> is the <strong>interpolant</strong> — a family of functions indexed by time <span class="arithmatex">\(t\)</span> that smoothly interpolates between the endpoints. It must satisfy the boundary conditions:</p>
+<div class="arithmatex">\[
+\psi_0(x_0, x_1) = x_0 \quad \text{(starts at data)} \qquad \psi_1(x_0, x_1) = x_1 \quad \text{(ends at noise)}
+\]</div>
+<p>Beyond these endpoints, the shape of the path is a design choice. The conditional velocity along any such path is the time derivative of <span class="arithmatex">\(\psi_t\)</span>:</p>
+<div class="arithmatex">\[
+u_t(x_0, x_1) = \frac{d}{dt}\,\psi_t(x_0, x_1)
+\]</div>
+<p>This is the quantity the model is trained to predict. Different choices of <span class="arithmatex">\(\psi_t\)</span> lead to different velocity targets and different training dynamics.</p>
+<p><strong>Common choices</strong>:</p>
+<p><strong>1. Linear interpolation (Rectified Flow)</strong>:</p>
+<div class="arithmatex">\[
+\psi_t(x_0, x_1) = (1-t)\, x_0 + t\, x_1
+\]</div>
+<p>The path is a straight line from <span class="arithmatex">\(x_0\)</span> to <span class="arithmatex">\(x_1\)</span>, giving a constant conditional velocity <span class="arithmatex">\(u_t = x_1 - x_0\)</span> that does not depend on <span class="arithmatex">\(t\)</span>. This is the simplest and most widely used choice.</p>
+<p><strong>2. Geodesic interpolation</strong>:</p>
+<div class="arithmatex">\[
+\psi_t(x_0, x_1) = \exp_{x_0}\!\left(t \log_{x_0}(x_1)\right)
+\]</div>
+<p>The path follows the shortest curve on a Riemannian manifold between <span class="arithmatex">\(x_0\)</span> and <span class="arithmatex">\(x_1\)</span>. Reduces to linear interpolation in Euclidean space; useful for manifold-valued data such as rotations, shapes, or hyperbolic embeddings.</p>
+<p><strong>3. Variance-preserving interpolation</strong>:</p>
+<div class="arithmatex">\[
+\psi_t(x_0, x_1) = \sqrt{1-t}\, x_0 + \sqrt{t}\, x_1
+\]</div>
+<p>The coefficients are chosen so that <span class="arithmatex">\(\mathbb{E}[\|\psi_t\|^2] \approx \text{const}\)</span> when <span class="arithmatex">\(x_0\)</span> and <span class="arithmatex">\(x_1\)</span> have unit variance. This mimics the signal-to-noise schedule of diffusion models and is useful when comparing against DDPM-style baselines.</p>
+<h3 id="the-marginal-flow">The Marginal Flow<a class="headerlink" href="#the-marginal-flow" title="Permanent link">&para;</a></h3>
+<p>There is a subtlety in moving from conditional paths to a trainable model. At any given position <span class="arithmatex">\(x\)</span> and time <span class="arithmatex">\(t\)</span>, many different data-noise pairs <span class="arithmatex">\((x_0, x_1)\)</span> may have generated a trajectory passing through that point. Each pair implies a different conditional velocity <span class="arithmatex">\(u_t(x_0, x_1)\)</span>. The <strong>marginal velocity field</strong> resolves this ambiguity by averaging:</p>
+<div class="arithmatex">\[
+v_t(x) = \mathbb{E}_{x_0, x_1 \mid x_t = x} [u_t(x_0, x_1)]
+\]</div>
+<p>This is the expected velocity at position <span class="arithmatex">\(x\)</span> and time <span class="arithmatex">\(t\)</span>, averaged over <em>all</em> data-noise pairs whose trajectories pass through <span class="arithmatex">\(x\)</span> at time <span class="arithmatex">\(t\)</span>. It is the unique velocity field that generates the correct marginal distribution <span class="arithmatex">\(p_t\)</span> at every time step.</p>
+<p><strong>Key property</strong>: If we know <span class="arithmatex">\(v_t(x)\)</span> exactly, solving the ODE:</p>
+<div class="arithmatex">\[
+\frac{dx}{dt} = v_t(x), \quad x(0) = x_0 \sim p_{\text{noise}}
+\]</div>
+<p>will transport <span class="arithmatex">\(x(0)\)</span> to <span class="arithmatex">\(x(1) \sim p_{\text{data}}\)</span>.</p>
+<hr />
+<h2 id="flow-matching-objective">Flow Matching Objective<a class="headerlink" href="#flow-matching-objective" title="Permanent link">&para;</a></h2>
+<p>The marginal velocity field <span class="arithmatex">\(v_t(x)\)</span> is the ideal target, but it requires integrating over all data-noise pairs that pass through a given <span class="arithmatex">\(x\)</span> at time <span class="arithmatex">\(t\)</span> — an intractable computation. The central insight of flow matching is that we do not need to compute this integral explicitly. Instead, we can regress directly on the <em>conditional</em> velocities from individual pairs, and the objective still converges to the correct marginal field.</p>
+<h3 id="the-training-loss">The Training Loss<a class="headerlink" href="#the-training-loss" title="Permanent link">&para;</a></h3>
+<p>Flow matching trains a neural network <span class="arithmatex">\(v_\theta(x, t)\)</span> to approximate the marginal velocity field <span class="arithmatex">\(v_t(x)\)</span> by supervising on conditional velocities along sampled trajectories.</p>
+<p><strong>Conditional Flow Matching (CFM) loss</strong>:</p>
+<div class="arithmatex">\[
+\mathcal{L}_{\text{CFM}}(\theta) = \mathbb{E}_{t, x_0, x_1, x_t} \left[ \left\| v_\theta(x_t, t) - u_t(x_0, x_1) \right\|^2 \right]
+\]</div>
+<p>where:</p>
+<ul>
+<li><span class="arithmatex">\(t \sim \text{Uniform}[0, 1]\)</span></li>
+<li><span class="arithmatex">\(x_0 \sim p_{\text{data}}\)</span></li>
+<li><span class="arithmatex">\(x_1 \sim p_{\text{noise}}\)</span></li>
+<li><span class="arithmatex">\(x_t = \psi_t(x_0, x_1)\)</span></li>
+</ul>
+<h4 id="what-a-training-example-looks-like">What a Training Example Looks Like<a class="headerlink" href="#what-a-training-example-looks-like" title="Permanent link">&para;</a></h4>
+<p>Each gradient step consumes a batch of independently sampled tuples. One tuple is constructed as follows (using linear interpolation throughout):</p>
+<p><strong>Step 1 — Sample a data point and a noise point</strong>:</p>
+<div class="arithmatex">\[
+x_0 \sim p_{\text{data}}, \qquad x_1 \sim \mathcal{N}(0, I)
+\]</div>
+<p>For example, <span class="arithmatex">\(x_0\)</span> might be a flattened image vector and <span class="arithmatex">\(x_1\)</span> a random Gaussian sample of the same dimension.</p>
+<p><strong>Step 2 — Sample a time</strong>:</p>
+<div class="arithmatex">\[
+t \sim \text{Uniform}[0, 1], \quad \text{e.g. } t = 0.3
+\]</div>
+<p><strong>Step 3 — Interpolate to get the noisy input</strong>:</p>
+<div class="arithmatex">\[
+x_t = (1 - t)\,x_0 + t\,x_1 = 0.7\,x_0 + 0.3\,x_1
+\]</div>
+<p>This is a point 30% of the way along the straight-line path from data to noise. It is what the network <em>sees</em> as input, together with <span class="arithmatex">\(t\)</span>.</p>
+<p><strong>Step 4 — Compute the velocity target</strong>:</p>
+<div class="arithmatex">\[
+u_t = x_1 - x_0
+\]</div>
+<p>This is the direction and magnitude of the straight-line step from <span class="arithmatex">\(x_0\)</span> to <span class="arithmatex">\(x_1\)</span>. It is the same for all <span class="arithmatex">\(t\)</span> along this path (constant velocity), so no additional computation is needed.</p>
+<p><strong>Step 5 — Evaluate the loss for this example</strong>:</p>
+<div class="arithmatex">\[
+\ell = \left\| v_\theta(x_t,\, t) - u_t \right\|^2 = \left\| v_\theta(x_t,\, t) - (x_1 - x_0) \right\|^2
+\]</div>
+<p>The network takes <span class="arithmatex">\((x_t, t)\)</span> as input and should predict the direction from the original data point to the noise point. The loss penalizes any deviation from that direction.</p>
+<p><strong>Summary — the five objects in one training example</strong>:</p>
+<table>
+<thead>
+<tr>
+<th>Object</th>
+<th>What it is</th>
+<th>Role</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><span class="arithmatex">\(x_0\)</span></td>
+<td>A real data sample</td>
+<td>Anchor: the path starts here</td>
+</tr>
+<tr>
+<td><span class="arithmatex">\(x_1\)</span></td>
+<td>A Gaussian noise sample</td>
+<td>Anchor: the path ends here</td>
+</tr>
+<tr>
+<td><span class="arithmatex">\(t\)</span></td>
+<td>A uniform random time in <span class="arithmatex">\([0,1]\)</span></td>
+<td>Where along the path to evaluate</td>
+</tr>
+<tr>
+<td><span class="arithmatex">\(x_t = (1-t)x_0 + tx_1\)</span></td>
+<td>The interpolated point</td>
+<td>Network input</td>
+</tr>
+<tr>
+<td><span class="arithmatex">\(u_t = x_1 - x_0\)</span></td>
+<td>The conditional velocity</td>
+<td>Regression target</td>
+</tr>
+</tbody>
+</table>
+<p>A minibatch is formed by independently drawing <span class="arithmatex">\(B\)</span> such tuples and averaging the per-example losses. In pseudocode:</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="c1"># One training step (linear / rectified flow)</span>
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="n">x0</span> <span class="o">=</span> <span class="n">sample_data</span><span class="p">(</span><span class="n">batch_size</span><span class="p">)</span>           <span class="c1"># (B, d) — real data</span>
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="n">x1</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">randn_like</span><span class="p">(</span><span class="n">x0</span><span class="p">)</span>             <span class="c1"># (B, d) — Gaussian noise</span>
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="n">t</span>  <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="n">batch_size</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>        <span class="c1"># (B, 1) — uniform time</span>
+</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>
+</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="n">x_t</span>    <span class="o">=</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">t</span><span class="p">)</span> <span class="o">*</span> <span class="n">x0</span> <span class="o">+</span> <span class="n">t</span> <span class="o">*</span> <span class="n">x1</span>       <span class="c1"># (B, d) — interpolated input</span>
+</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a><span class="n">target</span> <span class="o">=</span> <span class="n">x1</span> <span class="o">-</span> <span class="n">x0</span>                      <span class="c1"># (B, d) — constant velocity target</span>
+</span><span id="__span-0-8"><a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a>
+</span><span id="__span-0-9"><a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a><span class="n">pred</span> <span class="o">=</span> <span class="n">model</span><span class="p">(</span><span class="n">x_t</span><span class="p">,</span> <span class="n">t</span><span class="p">)</span>                  <span class="c1"># (B, d) — network prediction</span>
+</span><span id="__span-0-10"><a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a><span class="n">loss</span> <span class="o">=</span> <span class="p">((</span><span class="n">pred</span> <span class="o">-</span> <span class="n">target</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
+</span><span id="__span-0-11"><a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a>
+</span><span id="__span-0-12"><a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a><span class="n">loss</span><span class="o">.</span><span class="n">backward</span><span class="p">()</span>
+</span><span id="__span-0-13"><a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a><span class="n">optimizer</span><span class="o">.</span><span class="n">step</span><span class="p">()</span>
+</span></code></pre></div>
+<p>Note how little machinery is required: no score functions, no importance weights, no carefully calibrated noise schedules. The entire forward pass is three lines.</p>
+<p><strong>Why this works</strong>: Although we train on conditional velocities <span class="arithmatex">\(u_t(x_0, x_1)\)</span> for specific pairs, the loss is equivalent to matching the marginal field. This follows from a key identity called the <strong>conditional expectation property</strong>:</p>
+<div class="arithmatex">\[
+\mathbb{E}_{x_0, x_1 \mid x_t = x} \bigl[u_t(x_0, x_1)\bigr] = v_t(x)
+\]</div>
+<h4 id="reading-the-notation">Reading the Notation<a class="headerlink" href="#reading-the-notation" title="Permanent link">&para;</a></h4>
+<p>The left-hand side is a <strong>conditional expectation</strong>. Written in full as an integral:</p>
+<div class="arithmatex">\[
+\mathbb{E}_{x_0, x_1 \mid x_t = x} \bigl[u_t(x_0, x_1)\bigr]
+= \int u_t(x_0, x_1)\; p(x_0, x_1 \mid x_t = x)\; dx_0\, dx_1
+\]</div>
+<p>The subscript <span class="arithmatex">\(x_0, x_1 \mid x_t = x\)</span> specifies the distribution being averaged over: not all pairs <span class="arithmatex">\((x_0, x_1)\)</span>, but only those <em>consistent with the observed interpolated point <span class="arithmatex">\(x_t = x\)</span></em>. In other words, we weight each pair by the posterior probability <span class="arithmatex">\(p(x_0, x_1 \mid x_t = x)\)</span> — how likely is it that this particular pair generated the point we are currently standing at?</p>
+<h4 id="why-the-equality-holds">Why the Equality Holds<a class="headerlink" href="#why-the-equality-holds" title="Permanent link">&para;</a></h4>
+<p>The derivation follows from combining two ingredients: the conditional continuity equation and Bayes' theorem.</p>
+<p><strong>Step 1 — Each conditional path satisfies its own continuity equation.</strong></p>
+<p>For a fixed pair <span class="arithmatex">\((x_0, x_1)\)</span>, the path <span class="arithmatex">\(x_t = \psi_t(x_0, x_1)\)</span> is a moving delta mass. Its "conditional distribution" <span class="arithmatex">\(p_t(x \mid x_0, x_1) = \delta(x - \psi_t(x_0, x_1))\)</span> satisfies a conditional continuity equation driven by the conditional velocity <span class="arithmatex">\(u_t(x_0, x_1)\)</span>:</p>
+<div class="arithmatex">\[
+\frac{\partial\, p_t(x \mid x_0, x_1)}{\partial t} + \nabla \cdot \bigl(p_t(x \mid x_0, x_1)\; u_t(x_0, x_1)\bigr) = 0
+\]</div>
+<p><strong>Step 2 — The marginal distribution is a mixture of conditional distributions.</strong></p>
+<p>Averaging over all pairs (weighted by <span class="arithmatex">\(p(x_0)\,p(x_1)\)</span>):</p>
+<div class="arithmatex">\[
+p_t(x) = \int p_t(x \mid x_0, x_1)\; p(x_0)\, p(x_1)\; dx_0\, dx_1
+\]</div>
+<p><strong>Step 3 — Integrate Step 1 over all pairs to get the marginal continuity equation.</strong></p>
+<p>Applying the same average to the conditional continuity equation:</p>
+<div class="arithmatex">\[
+\frac{\partial p_t(x)}{\partial t} + \nabla \cdot \underbrace{\int p_t(x \mid x_0, x_1)\; u_t(x_0, x_1)\; p(x_0)\, p(x_1)\; dx_0\, dx_1}_{\text{probability-flux term}} = 0
+\]</div>
+<p>But the marginal distribution must itself satisfy <em>its own</em> continuity equation with some velocity <span class="arithmatex">\(v_t(x)\)</span>:</p>
+<div class="arithmatex">\[
+\frac{\partial p_t(x)}{\partial t} + \nabla \cdot \bigl(p_t(x)\; v_t(x)\bigr) = 0
+\]</div>
+<p>Matching the two expressions for the flux term:</p>
+<div class="arithmatex">\[
+p_t(x)\; v_t(x) = \int p_t(x \mid x_0, x_1)\; u_t(x_0, x_1)\; p(x_0)\, p(x_1)\; dx_0\, dx_1
+\]</div>
+<p><strong>Step 4 — Divide both sides by <span class="arithmatex">\(p_t(x)\)</span> and apply Bayes' theorem.</strong></p>
+<div class="arithmatex">\[
+v_t(x) = \int u_t(x_0, x_1)\; \underbrace{\frac{p_t(x \mid x_0, x_1)\; p(x_0)\, p(x_1)}{p_t(x)}}_{=\; p(x_0, x_1 \mid x_t = x)}\; dx_0\, dx_1
+= \mathbb{E}_{x_0, x_1 \mid x_t = x}\bigl[u_t(x_0, x_1)\bigr]
+\]</div>
+<p>The Bayes inversion in the last step is the key move: the weighting <span class="arithmatex">\(p_t(x \mid x_0, x_1) \cdot p(x_0)\,p(x_1)\,/\,p_t(x)\)</span> is exactly the posterior over which pairs could have produced the point <span class="arithmatex">\(x\)</span> at time <span class="arithmatex">\(t\)</span>.</p>
+<h4 id="what-this-means-for-training">What This Means for Training<a class="headerlink" href="#what-this-means-for-training" title="Permanent link">&para;</a></h4>
+<p>The equality says that <span class="arithmatex">\(u_t(x_0, x_1)\)</span> — computed from a single sampled pair — is an <em>unbiased estimator</em> of the target <span class="arithmatex">\(v_t(x_t)\)</span>. Minimizing the MSE loss over many randomly drawn pairs therefore drives the network toward the true marginal field, without ever computing the intractable integral explicitly. This is directly analogous to how stochastic gradient descent minimizes a population loss using single-sample gradients: noise in each estimate cancels out in expectation, and the average over training converges to the correct target. The tractability of flow matching hinges entirely on this property.</p>
+<h3 id="comparison-with-score-matching">Comparison with Score Matching<a class="headerlink" href="#comparison-with-score-matching" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Aspect</th>
+<th>Score Matching (Diffusion)</th>
+<th>Flow Matching</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Target</strong></td>
+<td>Score: <span class="arithmatex">\(\nabla_x \log p_t(x)\)</span></td>
+<td>Velocity: <span class="arithmatex">\(v_t(x)\)</span></td>
+</tr>
+<tr>
+<td><strong>Loss</strong></td>
+<td>Score matching loss (complex)</td>
+<td>Simple MSE regression</td>
+</tr>
+<tr>
+<td><strong>Forward process</strong></td>
+<td>Stochastic (add noise)</td>
+<td>Deterministic (interpolate)</td>
+</tr>
+<tr>
+<td><strong>Training complexity</strong></td>
+<td>Requires careful noise schedule</td>
+<td>Direct regression</td>
+</tr>
+<tr>
+<td><strong>Interpretation</strong></td>
+<td>Probability gradient</td>
+<td>Motion direction</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="the-backward-process-sampling">The Backward Process (Sampling)<a class="headerlink" href="#the-backward-process-sampling" title="Permanent link">&para;</a></h2>
+<p>Training gives us a neural network <span class="arithmatex">\(v_\theta(x, t)\)</span> that approximates the true velocity field. At inference time, we exploit the fact that the flow is deterministic: to draw a sample from <span class="arithmatex">\(p_1\)</span> (the data distribution), we simply <em>run the flow forward</em> from a noise sample. There is no stochastic component — the same noise input always produces the same output.</p>
+<h3 id="ode-integration">ODE Integration<a class="headerlink" href="#ode-integration" title="Permanent link">&para;</a></h3>
+<p>After training, we generate samples by solving the <strong>flow ODE</strong> forward in time (from <span class="arithmatex">\(t=0\)</span>, noise, to <span class="arithmatex">\(t=1\)</span>, data). In practice, "backward" refers to the generative direction in the diffusion literature, where time runs from noise to data.</p>
+<p><strong>Sampling procedure</strong>:</p>
+<ol>
+<li>
+<p><strong>Initialize</strong>: Sample <span class="arithmatex">\(x(1) \sim p_{\text{noise}}\)</span> (e.g., <span class="arithmatex">\(\mathcal{N}(0, I)\)</span>)</p>
+</li>
+<li>
+<p><strong>Integrate backward</strong>: Solve the ODE from <span class="arithmatex">\(t=1\)</span> to <span class="arithmatex">\(t=0\)</span>:</p>
+</li>
+</ol>
+<div class="arithmatex">\[
+\frac{dx}{dt} = v_\theta(x(t), t)
+\]</div>
+<ol>
+<li><strong>Output</strong>: <span class="arithmatex">\(x(0) \approx x_{\text{data}}\)</span></li>
+</ol>
+<h4 id="why-backward-and-what-does-that-mean">Why Backward, and What Does That Mean?<a class="headerlink" href="#why-backward-and-what-does-that-mean" title="Permanent link">&para;</a></h4>
+<p>During training, every interpolation path was defined to run from data at <span class="arithmatex">\(t=0\)</span> to noise at <span class="arithmatex">\(t=1\)</span>. The learned velocity field <span class="arithmatex">\(v_\theta(x, t)\)</span> therefore points in the <em>data-to-noise</em> direction at every point in space. To generate a sample, we want to travel the opposite way — from noise back to data — which means traversing time in the decreasing direction: <span class="arithmatex">\(t: 1 \to 0\)</span>.</p>
+<p>The ODE itself does not change. We run the same equation <span class="arithmatex">\(\frac{dx}{dt} = v_\theta(x(t), t)\)</span>, but we integrate it with <em>negative</em> time steps. Concretely, if we divide the interval <span class="arithmatex">\([0, 1]\)</span> into <span class="arithmatex">\(N\)</span> steps of size <span class="arithmatex">\(\Delta t = 1/N\)</span>, each Euler update subtracts <span class="arithmatex">\(\Delta t\)</span> from the current time:</p>
+<div class="arithmatex">\[
+x_{t - \Delta t} = x_t - \Delta t \cdot v_\theta(x_t,\; t), \qquad t = 1,\; 1-\Delta t,\; \ldots,\; \Delta t
+\]</div>
+<p>Because <span class="arithmatex">\(v_\theta\)</span> points from data toward noise, multiplying it by <span class="arithmatex">\(-\Delta t\)</span> reverses the direction: each step nudges <span class="arithmatex">\(x\)</span> back toward the data distribution.</p>
+<h4 id="a-concrete-walkthrough-n-4-steps">A Concrete Walkthrough (<span class="arithmatex">\(N = 4\)</span> steps)<a class="headerlink" href="#a-concrete-walkthrough-n-4-steps" title="Permanent link">&para;</a></h4>
+<p>Start with a Gaussian noise sample <span class="arithmatex">\(x_1 \sim \mathcal{N}(0, I)\)</span> and take four equal steps of <span class="arithmatex">\(\Delta t = 0.25\)</span>:</p>
+<table>
+<thead>
+<tr>
+<th>Step</th>
+<th>Current time <span class="arithmatex">\(t\)</span></th>
+<th>Update</th>
+<th>Next time</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td><span class="arithmatex">\(t = 1.00\)</span></td>
+<td><span class="arithmatex">\(x_{0.75} = x_{1.00} - 0.25 \cdot v_\theta(x_{1.00},\; 1.00)\)</span></td>
+<td><span class="arithmatex">\(t = 0.75\)</span></td>
+</tr>
+<tr>
+<td>2</td>
+<td><span class="arithmatex">\(t = 0.75\)</span></td>
+<td><span class="arithmatex">\(x_{0.50} = x_{0.75} - 0.25 \cdot v_\theta(x_{0.75},\; 0.75)\)</span></td>
+<td><span class="arithmatex">\(t = 0.50\)</span></td>
+</tr>
+<tr>
+<td>3</td>
+<td><span class="arithmatex">\(t = 0.50\)</span></td>
+<td><span class="arithmatex">\(x_{0.25} = x_{0.50} - 0.25 \cdot v_\theta(x_{0.50},\; 0.50)\)</span></td>
+<td><span class="arithmatex">\(t = 0.25\)</span></td>
+</tr>
+<tr>
+<td>4</td>
+<td><span class="arithmatex">\(t = 0.25\)</span></td>
+<td><span class="arithmatex">\(x_{0.00} = x_{0.25} - 0.25 \cdot v_\theta(x_{0.25},\; 0.25)\)</span></td>
+<td><span class="arithmatex">\(t = 0.00\)</span></td>
+</tr>
+</tbody>
+</table>
+<p>At each step, the network is queried at the <em>current</em> position and time. The time argument <span class="arithmatex">\(t\)</span> tells the network where along the trajectory it is being evaluated — the velocity field is different at <span class="arithmatex">\(t=1.0\)</span> (near noise) than at <span class="arithmatex">\(t=0.25\)</span> (near data), so conditioning on <span class="arithmatex">\(t\)</span> is essential.</p>
+<p>After four steps, <span class="arithmatex">\(x_0\)</span> is the generated sample. In pseudocode:</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="n">x</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="n">batch_size</span><span class="p">,</span> <span class="n">d</span><span class="p">)</span>   <span class="c1"># x_1 ~ N(0, I)</span>
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="n">N</span> <span class="o">=</span> <span class="mi">50</span>                            <span class="c1"># number of integration steps</span>
+</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="n">dt</span> <span class="o">=</span> <span class="mf">1.0</span> <span class="o">/</span> <span class="n">N</span>
+</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a>
+</span><span id="__span-1-5"><a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="k">for</span> <span class="n">step</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">N</span><span class="p">):</span>
+</span><span id="__span-1-6"><a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a>    <span class="n">t</span> <span class="o">=</span> <span class="mf">1.0</span> <span class="o">-</span> <span class="n">step</span> <span class="o">*</span> <span class="n">dt</span>           <span class="c1"># t decreases: 1.0, 1-dt, 1-2dt, ...</span>
+</span><span id="__span-1-7"><a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a>    <span class="n">t_tensor</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">full</span><span class="p">((</span><span class="n">batch_size</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="n">t</span><span class="p">)</span>
+</span><span id="__span-1-8"><a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a>    <span class="n">x</span> <span class="o">=</span> <span class="n">x</span> <span class="o">-</span> <span class="n">dt</span> <span class="o">*</span> <span class="n">model</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">t_tensor</span><span class="p">)</span>   <span class="c1"># Euler step backward</span>
+</span><span id="__span-1-9"><a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a>
+</span><span id="__span-1-10"><a id="__codelineno-1-10" name="__codelineno-1-10" href="#__codelineno-1-10"></a><span class="c1"># x is now x_0 ≈ data sample</span>
+</span></code></pre></div>
+<p><strong>Key properties</strong>:</p>
+<ul>
+<li><strong>Deterministic</strong>: The same noise input <span class="arithmatex">\(x_1\)</span> always produces the same output <span class="arithmatex">\(x_0\)</span>, since the ODE has a unique solution</li>
+<li><strong>Reversible</strong>: The forward pass (data → noise) and backward pass (noise → data) use the same network and ODE; only the direction of integration changes</li>
+<li><strong>Step-count tradeoff</strong>: More steps give a more accurate trajectory but cost more network evaluations; with straight paths (rectified flow), even <span class="arithmatex">\(N = 10\)</span>–<span class="arithmatex">\(20\)</span> steps often suffices</li>
+</ul>
+<h3 id="ode-solvers">ODE Solvers<a class="headerlink" href="#ode-solvers" title="Permanent link">&para;</a></h3>
+<p>Flow matching uses standard numerical ODE solvers:</p>
+<p><strong>1. Euler method</strong> (simplest):</p>
+<div class="arithmatex">\[
+x_{t-\Delta t} = x_t - \Delta t \cdot v_\theta(x_t, t)
+\]</div>
+<p><strong>2. Runge-Kutta 4 (RK4)</strong> (more accurate):</p>
+<div class="arithmatex">\[
+\begin{align}
+k_1 &amp;= v_\theta(x_t, t) \\
+k_2 &amp;= v_\theta(x_t - \frac{\Delta t}{2} k_1, t - \frac{\Delta t}{2}) \\
+k_3 &amp;= v_\theta(x_t - \frac{\Delta t}{2} k_2, t - \frac{\Delta t}{2}) \\
+k_4 &amp;= v_\theta(x_t - \Delta t \cdot k_3, t - \Delta t) \\
+x_{t-\Delta t} &amp;= x_t - \frac{\Delta t}{6}(k_1 + 2k_2 + 2k_3 + k_4)
+\end{align}
+\]</div>
+<p><strong>3. Adaptive solvers</strong> (e.g., Dormand-Prince):
+- Automatically adjust step size
+- Balance accuracy and computation
+- Useful for complex trajectories</p>
+<p><strong>Typical performance</strong>:</p>
+<ul>
+<li><strong>Euler</strong>: 50-100 steps for good quality</li>
+<li><strong>RK4</strong>: 10-20 steps for good quality</li>
+<li><strong>Adaptive</strong>: 5-15 steps with error control</li>
+</ul>
+<hr />
+<h2 id="rectified-flow-the-simplest-instance">Rectified Flow: The Simplest Instance<a class="headerlink" href="#rectified-flow-the-simplest-instance" title="Permanent link">&para;</a></h2>
+<p>Flow matching is a general framework that admits many choices of interpolation path. Rectified flow makes the most aggressive simplification possible: connect every data-noise pair with a <em>straight line</em>. This turns out to be not just mathematically convenient but practically powerful — straight paths are easy for the ODE solver to follow, require fewer integration steps, and connect naturally to optimal transport theory.</p>
+<h3 id="definition">Definition<a class="headerlink" href="#definition" title="Permanent link">&para;</a></h3>
+<p><strong>Rectified flow</strong> uses the simplest possible choices:</p>
+<p><strong>Path</strong>: Linear interpolation</p>
+<div class="arithmatex">\[
+x_t = (1-t) x_0 + t x_1
+\]</div>
+<p><strong>Velocity</strong>: Constant</p>
+<div class="arithmatex">\[
+u_t(x_0, x_1) = x_1 - x_0
+\]</div>
+<p><strong>Loss</strong>: Direct MSE</p>
+<div class="arithmatex">\[
+\mathcal{L}_{\text{RF}} = \mathbb{E}_{t, x_0, x_1} \left[ \left\| v_\theta(x_t, t) - (x_1 - x_0) \right\|^2 \right]
+\]</div>
+<h3 id="why-rectified">Why "Rectified"?<a class="headerlink" href="#why-rectified" title="Permanent link">&para;</a></h3>
+<p>The term comes from geometry: <strong>rectification</strong> means straightening.</p>
+<p><strong>Intuition</strong>: The ideal transport between two distributions generally follows curved trajectories through probability space (Wasserstein geodesics). Rectified flow <em>straightens</em> these into straight lines. The neural network then learns to follow straight-line trajectories — a much simpler task than navigating curved paths.</p>
+<p>Straight paths have a critical practical advantage: an ODE solver integrating along a straight line can take large steps without accumulating error. Curved paths, by contrast, require many small steps to track accurately. This is why rectified flow can generate high-quality samples with 10–20 function evaluations, whereas score-based diffusion models may require hundreds.</p>
+<p>A key subtlety is that while individual <span class="arithmatex">\((x_0, x_1)\)</span> paths are straight, the <em>marginal</em> velocity field <span class="arithmatex">\(v_t(x)\)</span> is not constant in <span class="arithmatex">\(x\)</span> — it must reconcile the fact that different trajectories pass through the same <span class="arithmatex">\(x_t\)</span> from different directions. The network learns this aggregated field, which is smooth but not trivially linear.</p>
+<p><strong>Advantage</strong>: Straight paths are:
+- Simple to define and compute targets for
+- Easy to integrate (fewer ODE steps, larger step sizes)
+- Numerically stable
+- Amenable to analysis via optimal transport theory</p>
+<h3 id="reflow-iterative-straightening">Reflow: Iterative Straightening<a class="headerlink" href="#reflow-iterative-straightening" title="Permanent link">&para;</a></h3>
+<p>Rectified flow can be <strong>iteratively refined</strong> through a process called <strong>reflow</strong>:</p>
+<p><strong>Algorithm</strong>:
+1. Train initial model <span class="arithmatex">\(v_\theta^{(1)}\)</span>
+2. Generate samples using <span class="arithmatex">\(v_\theta^{(1)}\)</span>
+3. Use these samples as new training data
+4. Train refined model <span class="arithmatex">\(v_\theta^{(2)}\)</span>
+5. Repeat</p>
+<p><strong>Effect</strong>: Each iteration makes paths straighter, requiring fewer sampling steps.</p>
+<p><strong>Typical results</strong>:</p>
+<ul>
+<li>Iteration 1: 50 steps needed</li>
+<li>Iteration 2: 20 steps needed</li>
+<li>Iteration 3: 10 steps needed</li>
+</ul>
+<hr />
+<h2 id="theoretical-properties">Theoretical Properties<a class="headerlink" href="#theoretical-properties" title="Permanent link">&para;</a></h2>
+<p>The design choices in flow matching — the conditional flow objective, the connection to marginal flows via the conditional expectation property, the relation to optimal transport — are not arbitrary. This section makes those connections precise and shows why the framework has strong theoretical guarantees.</p>
+<h3 id="optimality">Optimality<a class="headerlink" href="#optimality" title="Permanent link">&para;</a></h3>
+<p><strong>Theorem</strong> (Lipman et al., 2023): The flow matching objective is equivalent to minimizing:</p>
+<div class="arithmatex">\[
+\mathbb{E}_t \left[ \mathbb{E}_{x \sim p_t} \left[ \|v_\theta(x, t) - v_t(x)\|^2 \right] \right]
+\]</div>
+<p>This is the <span class="arithmatex">\(L^2\)</span> distance between the learned and true velocity fields.</p>
+<p><strong>Consequence</strong>: Flow matching directly optimizes the sampling quality.</p>
+<h3 id="connection-to-optimal-transport">Connection to Optimal Transport<a class="headerlink" href="#connection-to-optimal-transport" title="Permanent link">&para;</a></h3>
+<p>Flow matching has a deep connection to <strong>optimal transport</strong> (OT) theory, which provides a normative framework for asking: among all possible ways to move probability mass from <span class="arithmatex">\(p_0\)</span> to <span class="arithmatex">\(p_1\)</span>, which one is most "efficient"?</p>
+<p><strong>Optimal transport problem</strong>: Find the transport map <span class="arithmatex">\(T: p_0 \to p_1\)</span> that minimizes the expected cost of moving each particle:</p>
+<div class="arithmatex">\[
+\min_T \, \mathbb{E}_{x_0 \sim p_0} \left[ c(x_0, T(x_0)) \right]
+\]</div>
+<p>where <span class="arithmatex">\(c(x, y)\)</span> is a cost function (typically <span class="arithmatex">\(\|x - y\|^2\)</span>, the squared Euclidean distance).</p>
+<p><strong>Connection</strong>:</p>
+<ul>
+<li>Rectified flow with linear interpolation approximates the OT map under the <span class="arithmatex">\(L^2\)</span> cost: straight-line paths are the shortest possible paths, so they minimize total transport cost</li>
+<li>The learned velocity field <span class="arithmatex">\(v_\theta\)</span> implicitly defines a transport map <span class="arithmatex">\(\phi_1: x_0 \mapsto x_1\)</span></li>
+<li>Reflow iterations progressively straighten trajectories toward the true OT map — each round of reflow further reduces crossing paths, which are suboptimal under any cost that penalizes movement</li>
+</ul>
+<p>The OT perspective explains why reflow is so effective at reducing the number of sampling steps: the OT map produces the <em>straightest possible</em> trajectories, which are trivial for any ODE solver to integrate accurately.</p>
+<h3 id="probability-flow-ode">Probability Flow ODE<a class="headerlink" href="#probability-flow-ode" title="Permanent link">&para;</a></h3>
+<p>Flow matching defines a <strong>probability flow ODE</strong> that transports distributions:</p>
+<div class="arithmatex">\[
+\frac{d p_t}{dt} + \nabla \cdot (p_t v_t) = 0
+\]</div>
+<p><strong>Key property</strong>: If <span class="arithmatex">\(x(0) \sim p_0\)</span>, then <span class="arithmatex">\(x(t) \sim p_t\)</span> when following the flow.</p>
+<p><strong>Comparison with diffusion</strong>:</p>
+<ul>
+<li>Diffusion: Stochastic SDE with deterministic probability flow ODE</li>
+<li>Flow matching: Directly learns the probability flow ODE</li>
+</ul>
+<hr />
+<h2 id="variance-preserving-vs-non-variance-preserving">Variance-Preserving vs. Non-Variance-Preserving<a class="headerlink" href="#variance-preserving-vs-non-variance-preserving" title="Permanent link">&para;</a></h2>
+<p>The choice of interpolation path affects more than geometry — it determines the <em>statistics</em> of the intermediate distributions <span class="arithmatex">\(\{p_t\}\)</span>. Two families are common in practice: variance-preserving (VP) flows, which maintain a roughly constant signal-to-noise ratio throughout the trajectory, and non-variance-preserving (NVP) flows, which allow variance to vary freely. Understanding this tradeoff matters when adapting flow matching to different data modalities or when comparing against diffusion baselines that use VP-type noise schedules.</p>
+<h3 id="variance-preserving-vp-flows">Variance-Preserving (VP) Flows<a class="headerlink" href="#variance-preserving-vp-flows" title="Permanent link">&para;</a></h3>
+<p><strong>Interpolation</strong>:</p>
+<div class="arithmatex">\[
+x_t = \sqrt{1-\sigma_t^2} \, x_0 + \sigma_t \, x_1
+\]</div>
+<p>where <span class="arithmatex">\(\sigma_t\)</span> is a noise schedule (e.g., <span class="arithmatex">\(\sigma_t = t\)</span>).</p>
+<p><strong>Properties</strong>:</p>
+<ul>
+<li>Maintains <span class="arithmatex">\(\mathbb{E}[\|x_t\|^2] \approx \text{const}\)</span> (if <span class="arithmatex">\(x_0, x_1\)</span> have similar norms)</li>
+<li>Similar to diffusion models</li>
+<li>Useful when data has specific scale</li>
+</ul>
+<p><strong>Velocity</strong>:</p>
+<div class="arithmatex">\[
+u_t = \frac{d}{dt}\left(\sqrt{1-\sigma_t^2} \, x_0 + \sigma_t \, x_1\right)
+\]</div>
+<h3 id="non-variance-preserving-nvp-flows">Non-Variance-Preserving (NVP) Flows<a class="headerlink" href="#non-variance-preserving-nvp-flows" title="Permanent link">&para;</a></h3>
+<p><strong>Interpolation</strong> (Rectified Flow):</p>
+<div class="arithmatex">\[
+x_t = (1-t) x_0 + t x_1
+\]</div>
+<p><strong>Properties</strong>:</p>
+<ul>
+<li>Does not preserve variance</li>
+<li>Simpler mathematics</li>
+<li>Often works better in practice</li>
+</ul>
+<p><strong>Velocity</strong>:</p>
+<div class="arithmatex">\[
+u_t = x_1 - x_0
+\]</div>
+<h3 id="which-to-use">Which to Use?<a class="headerlink" href="#which-to-use" title="Permanent link">&para;</a></h3>
+<p><strong>Use VP flows when</strong>:</p>
+<ul>
+<li>Data has specific scale requirements</li>
+<li>Comparing with diffusion baselines</li>
+<li>Working with normalized data (e.g., images in <span class="arithmatex">\([-1, 1]\)</span>)</li>
+</ul>
+<p><strong>Use NVP flows when</strong>:</p>
+<ul>
+<li>Simplicity is preferred</li>
+<li>Data scale is flexible</li>
+<li>Focusing on rectified flow</li>
+</ul>
+<hr />
+<h2 id="conditional-generation">Conditional Generation<a class="headerlink" href="#conditional-generation" title="Permanent link">&para;</a></h2>
+<p>So far we have described unconditional generation: sampling from <span class="arithmatex">\(p_1\)</span> without any control over which sample is produced. In practice, most applications require <em>conditional</em> generation — images matching a text prompt, protein sequences satisfying a functional constraint, or molecules with a desired property. Flow matching extends to conditioning in a straightforward way, and the same guidance techniques developed for diffusion models apply directly.</p>
+<h3 id="conditioning-mechanisms">Conditioning Mechanisms<a class="headerlink" href="#conditioning-mechanisms" title="Permanent link">&para;</a></h3>
+<p>Flow matching naturally supports conditional generation by augmenting the velocity field with a conditioning signal.</p>
+<p><strong>Conditional velocity field</strong>:</p>
+<div class="arithmatex">\[
+v_\theta(x, t, c)
+\]</div>
+<p>where <span class="arithmatex">\(c\)</span> is a conditioning variable (e.g., class label, text embedding).</p>
+<p><strong>Training</strong>: Sample <span class="arithmatex">\((x_0, c)\)</span> pairs from data, then:</p>
+<div class="arithmatex">\[
+\mathcal{L} = \mathbb{E}_{t, x_0, x_1, c} \left[ \left\| v_\theta(x_t, t, c) - (x_1 - x_0) \right\|^2 \right]
+\]</div>
+<p><strong>Sampling</strong>: Integrate ODE conditioned on <span class="arithmatex">\(c\)</span>:</p>
+<div class="arithmatex">\[
+\frac{dx}{dt} = v_\theta(x(t), t, c)
+\]</div>
+<h3 id="classifier-free-guidance">Classifier-Free Guidance<a class="headerlink" href="#classifier-free-guidance" title="Permanent link">&para;</a></h3>
+<p>Adapt classifier-free guidance from diffusion to flow matching:</p>
+<p><strong>Training</strong>: Randomly drop conditioning (set <span class="arithmatex">\(c = \emptyset\)</span> with probability <span class="arithmatex">\(p_{\text{uncond}}\)</span>)</p>
+<p><strong>Sampling</strong>: Use guided velocity:</p>
+<div class="arithmatex">\[
+\tilde{v}_\theta(x, t, c) = v_\theta(x, t, \emptyset) + w \cdot (v_\theta(x, t, c) - v_\theta(x, t, \emptyset))
+\]</div>
+<p>where <span class="arithmatex">\(w\)</span> is the guidance weight.</p>
+<p><strong>Effect</strong>: Stronger conditioning, sharper samples (at cost of diversity).</p>
+<hr />
+<h2 id="comparison-with-diffusion-models">Comparison with Diffusion Models<a class="headerlink" href="#comparison-with-diffusion-models" title="Permanent link">&para;</a></h2>
+<h3 id="conceptual-differences">Conceptual Differences<a class="headerlink" href="#conceptual-differences" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Aspect</th>
+<th>Diffusion Models</th>
+<th>Flow Matching</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Forward process</strong></td>
+<td>Stochastic noise addition</td>
+<td>Deterministic interpolation</td>
+</tr>
+<tr>
+<td><strong>What's learned</strong></td>
+<td>Score: <span class="arithmatex">\(\nabla_x \log p_t(x)\)</span></td>
+<td>Velocity: <span class="arithmatex">\(v_t(x)\)</span></td>
+</tr>
+<tr>
+<td><strong>Training objective</strong></td>
+<td>Score matching (complex)</td>
+<td>Simple regression</td>
+</tr>
+<tr>
+<td><strong>Reverse process</strong></td>
+<td>Stochastic SDE or ODE</td>
+<td>Deterministic ODE</td>
+</tr>
+<tr>
+<td><strong>Sampling</strong></td>
+<td>100-1000 steps (SDE), 50-100 (ODE)</td>
+<td>10-50 steps (ODE)</td>
+</tr>
+<tr>
+<td><strong>Noise schedule</strong></td>
+<td>Critical design choice</td>
+<td>Less critical</td>
+</tr>
+<tr>
+<td><strong>Theoretical foundation</strong></td>
+<td>Score-based models, SDEs</td>
+<td>Optimal transport, ODEs</td>
+</tr>
+</tbody>
+</table>
+<h3 id="when-to-use-each">When to Use Each<a class="headerlink" href="#when-to-use-each" title="Permanent link">&para;</a></h3>
+<p><strong>Use diffusion when</strong>:</p>
+<ul>
+<li>Mature architectures and tricks are important</li>
+<li>Stochastic sampling is desired</li>
+<li>Extensive baselines exist for comparison</li>
+<li>Working with images (well-established)</li>
+</ul>
+<p><strong>Use flow matching when</strong>:</p>
+<ul>
+<li>Faster sampling is critical</li>
+<li>Simpler training is preferred</li>
+<li>Working with non-Euclidean data</li>
+<li>Exploring new domains (e.g., biology, molecules)</li>
+</ul>
+<hr />
+<h2 id="practical-considerations">Practical Considerations<a class="headerlink" href="#practical-considerations" title="Permanent link">&para;</a></h2>
+<p>The mathematical framework places few constraints on how the velocity network <span class="arithmatex">\(v_\theta\)</span> is implemented — any architecture that can take <span class="arithmatex">\((x, t)\)</span> as input and produce a vector field output is in principle valid. In practice, the architecture choice is guided by the data modality and the importance of incorporating time information effectively.</p>
+<h3 id="network-architecture">Network Architecture<a class="headerlink" href="#network-architecture" title="Permanent link">&para;</a></h3>
+<p>Flow matching networks <span class="arithmatex">\(v_\theta(x, t)\)</span> typically use:</p>
+<p><strong>For images</strong>:</p>
+<ul>
+<li><strong>U-Net</strong>: Convolutional architecture with skip connections</li>
+<li><strong>DiT (Diffusion Transformer)</strong>: Transformer with patch embeddings</li>
+<li><strong>Time conditioning</strong>: Via sinusoidal embeddings + FiLM layers</li>
+</ul>
+<p><strong>For sequences</strong> (text, DNA, proteins):
+- <strong>Transformers</strong>: Self-attention over sequence
+- <strong>Time conditioning</strong>: Added to token embeddings</p>
+<p><strong>For graphs</strong> (molecules):
+- <strong>GNNs</strong>: Message passing with time conditioning
+- <strong>Equivariance</strong>: Preserve symmetries</p>
+<h3 id="time-embedding">Time Embedding<a class="headerlink" href="#time-embedding" title="Permanent link">&para;</a></h3>
+<p>Time <span class="arithmatex">\(t \in [0, 1]\)</span> is typically embedded via:</p>
+<p><strong>Sinusoidal embedding</strong>:</p>
+<div class="arithmatex">\[
+\text{emb}(t) = [\sin(2\pi k t), \cos(2\pi k t)]_{k=1}^K
+\]</div>
+<p><strong>Learned embedding</strong>:</p>
+<div class="arithmatex">\[
+\text{emb}(t) = \text{MLP}(t)
+\]</div>
+<p><strong>Conditioning</strong>: Via FiLM (Feature-wise Linear Modulation):</p>
+<div class="arithmatex">\[
+\text{FiLM}(h, t) = \gamma(t) \cdot h + \beta(t)
+\]</div>
+<p>where <span class="arithmatex">\(h\)</span> is a hidden representation.</p>
+<h3 id="training-tips">Training Tips<a class="headerlink" href="#training-tips" title="Permanent link">&para;</a></h3>
+<p><strong>1. Noise distribution</strong>: Match data characteristics
+- Images: Standard Gaussian
+- Gene expression: Consider sparsity structure
+- Molecules: Respect physical constraints</p>
+<p><strong>2. Time sampling</strong>: Uniform <span class="arithmatex">\(t \sim U[0, 1]\)</span> works well, but can weight:
+- More weight near <span class="arithmatex">\(t=0\)</span> (data) for quality
+- More weight near <span class="arithmatex">\(t=1\)</span> (noise) for coverage</p>
+<p><strong>3. Batch size</strong>: Larger is better (more diverse pairs)</p>
+<p><strong>4. Learning rate</strong>: Standard schedules work (cosine, constant)</p>
+<hr />
+<h2 id="summary">Summary<a class="headerlink" href="#summary" title="Permanent link">&para;</a></h2>
+<h3 id="key-concepts">Key Concepts<a class="headerlink" href="#key-concepts" title="Permanent link">&para;</a></h3>
+<ol>
+<li><strong>Flow matching learns velocity fields</strong> that transport noise to data</li>
+<li><strong>Training is simple regression</strong> on conditional velocities</li>
+<li><strong>Sampling is deterministic ODE integration</strong> (fast, few steps)</li>
+<li><strong>Rectified flow uses straight paths</strong> (simplest, most practical)</li>
+<li><strong>Reflow iteratively straightens paths</strong> (fewer steps needed)</li>
+</ol>
+<h3 id="key-equations">Key Equations<a class="headerlink" href="#key-equations" title="Permanent link">&para;</a></h3>
+<p><strong>Path</strong> (rectified flow):</p>
+<div class="arithmatex">\[
+x_t = (1-t) x_0 + t x_1
+\]</div>
+<p><strong>Velocity</strong>:</p>
+<div class="arithmatex">\[
+u_t = x_1 - x_0
+\]</div>
+<p><strong>Loss</strong>:</p>
+<div class="arithmatex">\[
+\mathcal{L} = \mathbb{E}_{t, x_0, x_1} \left[ \left\| v_\theta(x_t, t) - (x_1 - x_0) \right\|^2 \right]
+\]</div>
+<p><strong>Sampling ODE</strong>:</p>
+<div class="arithmatex">\[
+\frac{dx}{dt} = v_\theta(x(t), t), \quad x(1) \sim p_{\text{noise}}
+\]</div>
+<hr />
+<h2 id="related-documents">Related Documents<a class="headerlink" href="#related-documents" title="Permanent link">&para;</a></h2>
+<ul>
+<li><a href="../01b_flowmap/">Flow Map and Pushforward</a> — Deep dive on the flow map <span class="arithmatex">\(\phi_t\)</span>, pushforward notation, and the ODE → distribution chain</li>
+<li><a href="../01c_bayes_three_variables/">Bayes' Theorem with Three Variables</a> — How Bayes is applied to <span class="arithmatex">\((x_0, x_1, x_t)\)</span> in the conditional expectation derivation</li>
+<li><a href="../02_flow_matching_training/">Flow Matching Training</a> — Training strategies and implementation</li>
+<li><a href="../03_flow_matching_sampling/">Flow Matching Sampling</a> — ODE solvers and sampling efficiency</li>
+<li><a href="../rectifying_flow/">Rectifying Flow Tutorial</a> — Detailed walkthrough</li>
+<li><a href="../../DDPM/01_ddpm_foundations/">DDPM Foundations</a> — Comparison with diffusion</li>
+<li><a href="../../diffusion/DiT/diffusion_transformer/">Diffusion Transformers</a> — Architecture for flow matching</li>
+</ul>
+<hr />
+<h2 id="references">References<a class="headerlink" href="#references" title="Permanent link">&para;</a></h2>
+<h3 id="foundational-papers">Foundational Papers<a class="headerlink" href="#foundational-papers" title="Permanent link">&para;</a></h3>
+<ol>
+<li>
+<p><strong>Lipman, Y., et al. (2023)</strong>. Flow Matching for Generative Modeling. <em>ICLR</em>. <a href="https://arxiv.org/abs/2210.02747">arXiv:2210.02747</a></p>
+</li>
+<li>
+<p><strong>Liu, X., et al. (2023)</strong>. Flow Straight and Fast: Learning to Generate and Transfer Data with Rectified Flow. <em>ICLR</em>. <a href="https://arxiv.org/abs/2209.03003">arXiv:2209.03003</a></p>
+</li>
+<li>
+<p><strong>Albergo, M. S., &amp; Vanden-Eijnden, E. (2023)</strong>. Building Normalizing Flows with Stochastic Interpolants. <em>ICLR</em>. <a href="https://arxiv.org/abs/2209.15571">arXiv:2209.15571</a></p>
+</li>
+</ol>
+<h3 id="optimal-transport">Optimal Transport<a class="headerlink" href="#optimal-transport" title="Permanent link">&para;</a></h3>
+<ol>
+<li>
+<p><strong>Pooladian, A., et al. (2023)</strong>. Multisample Flow Matching: Straightening Flows with Minibatch Couplings. <em>ICML</em>.</p>
+</li>
+<li>
+<p><strong>Tong, A., et al. (2024)</strong>. Improving and Generalizing Flow-Based Generative Models with Minibatch Optimal Transport. <em>TMLR</em>.</p>
+</li>
+</ol>
+<h3 id="applications">Applications<a class="headerlink" href="#applications" title="Permanent link">&para;</a></h3>
+<ol>
+<li>
+<p><strong>Esser, P., et al. (2024)</strong>. Scaling Rectified Flow Transformers for High-Resolution Image Synthesis. <em>ICML</em>.</p>
+</li>
+<li>
+<p><strong>Pooladian, A., et al. (2024)</strong>. Flow Matching on General Geometries. <em>ICLR</em>.</p>
+</li>
+</ol>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">
+      Copyright &copy; 2026 GenAI Lab Research Team
+    </div>
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+        
+<div class="md-social">
+  
+    
+    
+    
+    
+      
+      
+    
+    <a href="https://github.com/pleiadian53/genai-lab" target="_blank" rel="noopener" title="github.com" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.tracking", "navigation.tabs", "navigation.tabs.sticky", "navigation.sections", "navigation.expand", "navigation.top", "search.suggest", "search.highlight", "content.code.copy", "content.action.edit"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"provider": "mike"}}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+        <script src="../../javascripts/mathjax.js"></script>
+      
+        <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+      
+        <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+      
+    
+  </body>
+</html>

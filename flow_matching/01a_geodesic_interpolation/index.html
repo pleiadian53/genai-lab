@@ -1,0 +1,4549 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Generative AI for computational biology - diffusion models, VAEs, and foundation models for gene expression">
+      
+      
+        <meta name="author" content="GenAI Lab Research Team">
+      
+      
+        <link rel="canonical" href="https://pleiadian53.github.io/genai-lab/flow_matching/01a_geodesic_interpolation/">
+      
+      
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
+    
+    
+      
+        <title>Geodesic Interpolation in Flow Matching - GenAI Lab</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.484c7ddc.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../../stylesheets/extra.css">
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="deep-purple" data-md-color-accent="deep-purple">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#geodesic-interpolation-in-flow-matching" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+      <div data-md-color-scheme="default" data-md-component="outdated" hidden>
+        
+      </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow md-header--lifted" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="GenAI Lab" class="md-header__button md-logo" aria-label="GenAI Lab" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            GenAI Lab
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Geodesic Interpolation in Flow Matching
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="deep-purple" data-md-color-accent="deep-purple"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="deep-purple" data-md-color-accent="deep-purple"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/pleiadian53/genai-lab" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+  </div>
+  <div class="md-source__repository">
+    pleiadian53/genai-lab
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+    
+      
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../.." class="md-tabs__link">
+        
+  
+  
+    
+  
+  Home
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../ROADMAP/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Roadmap
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../foundation_models/" class="md-tabs__link">
+          
+  
+  
+  Foundation Models
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../DiT/" class="md-tabs__link">
+          
+  
+  
+  Diffusion Transformers (DiT)
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../JEPA/" class="md-tabs__link">
+          
+  
+  
+  JEPA (Joint Embedding)
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../latent_diffusion/" class="md-tabs__link">
+          
+  
+  
+  Latent Diffusion
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../DDPM/" class="md-tabs__link">
+          
+  
+  
+  DDPM (Denoising Diffusion)
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../VAE/VAE-01-overview/" class="md-tabs__link">
+          
+  
+  
+  VAE (Variational Autoencoders)
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../score_matching/" class="md-tabs__link">
+          
+  
+  
+  Score Matching & EBM
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../" class="md-tabs__link">
+          
+  
+  
+  Flow Matching
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../SDE/" class="md-tabs__link">
+          
+  
+  
+  SDE (Stochastic Differential Equations)
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../datasets/" class="md-tabs__link">
+          
+  
+  
+  Datasets
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../diffusion/01_ddpm/01_ddpm_basics/" class="md-tabs__link">
+          
+  
+  
+  Diffusion (Technical Deep Dives)
+
+        </a>
+      </li>
+    
+  
+
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../notebooks/" class="md-tabs__link">
+          
+  
+  
+  Notebooks
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../SETUP/" class="md-tabs__link">
+          
+  
+  
+  About
+
+        </a>
+      </li>
+    
+  
+
+      
+    </ul>
+  </div>
+</nav>
+    
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="GenAI Lab" class="md-nav__button md-logo" aria-label="GenAI Lab" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    GenAI Lab
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/pleiadian53/genai-lab" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+  </div>
+  <div class="md-source__repository">
+    pleiadian53/genai-lab
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../ROADMAP/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Roadmap
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Foundation Models
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Foundation Models
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../foundation_models/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../foundation_models/leveraging_foundation_models_v2/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Leveraging Foundation Models
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../foundation_models/data_shape_v2/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Data Shape & Tensors
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../foundation_models/IMPLEMENTATION_GUIDE/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Implementation Guide
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Diffusion Transformers (DiT)
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Diffusion Transformers (DiT)
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../DiT/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Series Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../DiT/00_dit_overview/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    00: DiT Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../DiT/01_dit_foundations/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    01: Foundations
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../DiT/02_dit_training/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    02: Training
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../DiT/03_dit_sampling/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    03: Sampling
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../DiT/open_research_tokenization/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Research: Tokenization
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    JEPA (Joint Embedding)
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    JEPA (Joint Embedding)
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../JEPA/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Series Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../JEPA/00_jepa_overview/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    00: JEPA Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../JEPA/01_jepa_foundations/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    01: Foundations
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../JEPA/02_jepa_training/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    02: Training
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../JEPA/03_jepa_applications/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    03: Applications
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../JEPA/04_jepa_perturbseq/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    04: Perturb-seq
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../JEPA/open_research_joint_latent/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Research: Joint Latent
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_6" >
+        
+          
+          <label class="md-nav__link" for="__nav_6" id="__nav_6_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Latent Diffusion
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Latent Diffusion
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../latent_diffusion/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Series Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../latent_diffusion/00_latent_diffusion_overview/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    00: Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../latent_diffusion/01_latent_diffusion_foundations/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    01: Foundations
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../latent_diffusion/02_latent_diffusion_training/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    02: Training
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../latent_diffusion/03_latent_diffusion_applications/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    03: Applications
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../latent_diffusion/04_latent_diffusion_combio/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    04: ComBio Implementation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_7" >
+        
+          
+          <label class="md-nav__link" for="__nav_7" id="__nav_7_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    DDPM (Denoising Diffusion)
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_7_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_7">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    DDPM (Denoising Diffusion)
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../DDPM/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../DDPM/02a_diffusion_arch_gene_expression/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Architectures for Gene Expression
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../DDPM/02b_diffusion_arch_qa/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Architecture Q&A
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_8" >
+        
+          
+          <label class="md-nav__link" for="__nav_8" id="__nav_8_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    VAE (Variational Autoencoders)
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_8_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_8">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    VAE (Variational Autoencoders)
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../VAE/VAE-01-overview/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    01: Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../VAE/VAE-02-elbo/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    02: ELBO
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../VAE/VAE-03-inference/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    03: Inference
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../VAE/VAE-for-prediction/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    VAE for Prediction
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../VAE/VAE-model-training/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Model Training
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../beta-VAE/beta_vae/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Beta-VAE
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_9" >
+        
+          
+          <label class="md-nav__link" for="__nav_9" id="__nav_9_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Score Matching & EBM
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_9_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_9">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Score Matching & EBM
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../score_matching/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Score Matching
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../EBM/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Energy-Based Models
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../EBM/EBM-stein-vs-fisher-score/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Stein vs Fisher Score
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_10" >
+        
+          
+          <label class="md-nav__link" for="__nav_10" id="__nav_10_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Flow Matching
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_10_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_10">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Flow Matching
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_11" >
+        
+          
+          <label class="md-nav__link" for="__nav_11" id="__nav_11_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    SDE (Stochastic Differential Equations)
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_11_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_11">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    SDE (Stochastic Differential Equations)
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../SDE/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_12" >
+        
+          
+          <label class="md-nav__link" for="__nav_12" id="__nav_12_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Datasets
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_12_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_12">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Datasets
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../datasets/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_13" >
+        
+          
+          <label class="md-nav__link" for="__nav_13" id="__nav_13_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Diffusion (Technical Deep Dives)
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_13_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_13">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Diffusion (Technical Deep Dives)
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_13_1" >
+        
+          
+          <label class="md-nav__link" for="__nav_13_1" id="__nav_13_1_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    DDPM Basics
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_13_1_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_13_1">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    DDPM Basics
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../diffusion/01_ddpm/01_ddpm_basics/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Notebook
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_13_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_13_2" id="__nav_13_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    SDE Formulation
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_13_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_13_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    SDE Formulation
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../diffusion/02_sde_formulation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../diffusion/02_sde_formulation/02_sde_formulation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Notebook
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_13_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_13_3" id="__nav_13_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Medical Imaging Diffusion
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_13_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_13_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Medical Imaging Diffusion
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../diffusion/03_medical_imaging_diffusion/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../diffusion/03_medical_imaging_diffusion/03_medical_imaging_diffusion/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Notebook
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_13_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_13_4" id="__nav_13_4_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Gene Expression Diffusion
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_13_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_13_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Gene Expression Diffusion
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../diffusion/04_gene_expression_diffusion/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../diffusion/04_gene_expression_diffusion/04_gene_expression_diffusion/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Notebook
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_14" >
+        
+          
+          <label class="md-nav__link" for="__nav_14" id="__nav_14_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Notebooks
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_14_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_14">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Notebooks
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../notebooks/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_15" >
+        
+          
+          <label class="md-nav__link" for="__nav_15" id="__nav_15_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    About
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_15_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_15">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    About
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../SETUP/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Setup & Installation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../INDUSTRY_LANDSCAPE/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Industry Landscape
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#table-of-contents" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Table of Contents
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#from-stochastic-diffusion-to-deterministic-flows" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        From Stochastic Diffusion to Deterministic Flows
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="From Stochastic Diffusion to Deterministic Flows">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#the-diffusion-paradigm" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The Diffusion Paradigm
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#the-flow-matching-paradigm" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The Flow Matching Paradigm
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#the-central-question" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The Central Question
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#what-is-a-geodesic" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What is a Geodesic?
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="What is a Geodesic?">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#geometric-definition" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Geometric Definition
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#mathematical-formulation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Mathematical Formulation
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#geodesics-in-flow-matching-context" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Geodesics in Flow Matching Context
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#linear-interpolation-the-euclidean-geodesic" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Linear Interpolation: The Euclidean Geodesic
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Linear Interpolation: The Euclidean Geodesic">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#the-standard-choice" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The Standard Choice
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#why-is-this-a-geodesic" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Why is This a Geodesic?
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#visual-example-image-interpolation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Visual Example: Image Interpolation
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#the-flow-matching-loss" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The Flow Matching Loss
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#when-is-linear-interpolation-appropriate" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        When is Linear Interpolation Appropriate?
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#beyond-flat-spaces-true-geodesics-on-manifolds" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Beyond Flat Spaces: True Geodesics on Manifolds
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Beyond Flat Spaces: True Geodesics on Manifolds">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#the-manifold-challenge" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The Manifold Challenge
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#why-linear-interpolation-fails-on-manifolds" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Why Linear Interpolation Fails on Manifolds
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#spherical-linear-interpolation-slerp" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Spherical Linear Interpolation (SLERP)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#general-manifold-geodesics-exponential-map" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        General Manifold Geodesics: Exponential Map
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#practical-example-spherical-data" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Practical Example: Spherical Data
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#geodesics-in-probability-space" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Geodesics in Probability Space
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Geodesics in Probability Space">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#wasserstein-geodesics-optimal-transport" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Wasserstein Geodesics: Optimal Transport
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#the-wasserstein-distance" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The Wasserstein Distance
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#displacement-interpolation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Displacement Interpolation
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#connection-to-flow-matching" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Connection to Flow Matching
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#practical-implementations" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Practical Implementations
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Practical Implementations">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#implementation-1-linear-interpolation-standard" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Implementation 1: Linear Interpolation (Standard)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#implementation-2-spherical-interpolation-slerp" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Implementation 2: Spherical Interpolation (SLERP)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#implementation-3-learned-manifold-encoder-decoder" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Implementation 3: Learned Manifold (Encoder-Decoder)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#implementation-4-variance-preserving-interpolation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Implementation 4: Variance-Preserving Interpolation
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#why-geodesics-matter-for-biological-data" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Why Geodesics Matter for Biological Data
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Why Geodesics Matter for Biological Data">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#biological-data-often-lives-on-manifolds" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Biological Data Often Lives on Manifolds
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#consequences-of-ignoring-manifold-structure" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Consequences of Ignoring Manifold Structure
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#benefits-of-geodesic-aware-interpolation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Benefits of Geodesic-Aware Interpolation
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#example-scppdm-application" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Example: scPPDM Application
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#the-unspoken-dream-learned-geometry" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The Unspoken Dream: Learned Geometry
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="The Unspoken Dream: Learned Geometry">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#the-bold-idea" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The Bold Idea
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#how-it-works" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        How It Works
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#connection-to-energy-based-models" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Connection to Energy-Based Models
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#practical-realization" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Practical Realization
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#future-directions" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Future Directions
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#summary-and-key-takeaways" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Summary and Key Takeaways
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Summary and Key Takeaways">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#core-concepts" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Core Concepts
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#practical-guidance" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Practical Guidance
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#theoretical-insights" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Theoretical Insights
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#connection-to-your-research" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Connection to Your Research
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#key-equations-reference" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Key Equations Reference
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#references" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        References
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="References">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#foundational-papers" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Foundational Papers
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#manifold-geometry" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Manifold Geometry
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#optimal-transport" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Optimal Transport
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#manifold-learning-for-biology" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Manifold Learning for Biology
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#slerp-and-interpolation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        SLERP and Interpolation
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#related-documents" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Related Documents
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+    <a href="https://github.com/pleiadian53/genai-lab/edit/main/docs/flow_matching/01a_geodesic_interpolation.md" title="Edit this page" class="md-content__button md-icon" rel="edit">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20.71 7.04c.39-.39.39-1.04 0-1.41l-2.34-2.34c-.37-.39-1.02-.39-1.41 0l-1.84 1.83 3.75 3.75M3 17.25V21h3.75L17.81 9.93l-3.75-3.75z"/></svg>
+    </a>
+  
+  
+
+
+<h1 id="geodesic-interpolation-in-flow-matching">Geodesic Interpolation in Flow Matching<a class="headerlink" href="#geodesic-interpolation-in-flow-matching" title="Permanent link">&para;</a></h1>
+<p>Flow matching transforms the generative modeling paradigm from "adding noise and learning to denoise" to "walking deterministic paths through probability space." At the heart of this shift lies a fundamental question: <strong>what kind of path should connect our noise distribution to our data distribution?</strong></p>
+<p>This document explores the concept of <strong>geodesic interpolation</strong> — a geometric perspective on choosing paths that respect the structure of your data. We'll build intuition from the ground up, connect to practical implementations, and explore why this matters for biological and manifold-valued data.</p>
+<hr />
+<h2 id="table-of-contents">Table of Contents<a class="headerlink" href="#table-of-contents" title="Permanent link">&para;</a></h2>
+<ol>
+<li><a href="#from-stochastic-diffusion-to-deterministic-flows">From Stochastic Diffusion to Deterministic Flows</a></li>
+<li><a href="#what-is-a-geodesic">What is a Geodesic?</a></li>
+<li><a href="#linear-interpolation-the-euclidean-geodesic">Linear Interpolation: The Euclidean Geodesic</a></li>
+<li><a href="#beyond-flat-spaces-true-geodesics-on-manifolds">Beyond Flat Spaces: True Geodesics on Manifolds</a></li>
+<li><a href="#geodesics-in-probability-space">Geodesics in Probability Space</a></li>
+<li><a href="#practical-implementations">Practical Implementations</a></li>
+<li><a href="#why-geodesics-matter-for-biological-data">Why Geodesics Matter for Biological Data</a></li>
+<li><a href="#the-unspoken-dream-learned-geometry">The Unspoken Dream: Learned Geometry</a></li>
+<li><a href="#summary-and-key-takeaways">Summary and Key Takeaways</a></li>
+</ol>
+<hr />
+<h2 id="from-stochastic-diffusion-to-deterministic-flows">From Stochastic Diffusion to Deterministic Flows<a class="headerlink" href="#from-stochastic-diffusion-to-deterministic-flows" title="Permanent link">&para;</a></h2>
+<h3 id="the-diffusion-paradigm">The Diffusion Paradigm<a class="headerlink" href="#the-diffusion-paradigm" title="Permanent link">&para;</a></h3>
+<p>In diffusion models, the forward process is inherently stochastic. Given a data point <span class="arithmatex">\(x_0\)</span>, we gradually corrupt it with Gaussian noise:</p>
+<div class="arithmatex">\[
+x_t = \sqrt{\alpha_t} \, x_0 + \sqrt{1-\alpha_t} \, \varepsilon, \quad \varepsilon \sim \mathcal{N}(0, I)
+\]</div>
+<p>Each data point "fans out" into a probabilistic cloud. The reverse model must learn to navigate backward through this noisy landscape, swimming upstream against entropy.</p>
+<p><strong>Characteristics of diffusion</strong>:
+- Stochastic forward process (every trajectory is different)
+- Score-based reverse process (learning gradients of log-probabilities)
+- Thermodynamic interpretation (gradual equilibration)
+- Requires many steps (100-1000) for high-quality sampling</p>
+<h3 id="the-flow-matching-paradigm">The Flow Matching Paradigm<a class="headerlink" href="#the-flow-matching-paradigm" title="Permanent link">&para;</a></h3>
+<p>Flow matching takes a fundamentally different approach. The forward process is <strong>deterministic</strong>:</p>
+<div class="arithmatex">\[
+x_t = \psi_t(x_0, x_1)
+\]</div>
+<p>where:
+- <span class="arithmatex">\(x_0 \sim p_{\text{data}}\)</span> (data distribution)
+- <span class="arithmatex">\(x_1 \sim p_{\text{noise}}\)</span> (base distribution, e.g., Gaussian)
+- <span class="arithmatex">\(t \in [0, 1]\)</span> (time parameter)
+- <span class="arithmatex">\(\psi_t\)</span> is an <strong>interpolation rule</strong></p>
+<p><strong>Key insight</strong>: No noise, no branching, no stochasticity. Just a deterministic path connecting two points.</p>
+<p><strong>Characteristics of flow matching</strong>:
+- Deterministic forward process (repeatable trajectories)
+- Velocity-based reverse process (learning direction of motion)
+- Geometric interpretation (paths through space)
+- Requires fewer steps (10-50) for high-quality sampling</p>
+<h3 id="the-central-question">The Central Question<a class="headerlink" href="#the-central-question" title="Permanent link">&para;</a></h3>
+<p>Once we commit to deterministic paths, we face an immediate design choice:</p>
+<blockquote>
+<p><strong>What kind of path should connect two probability distributions?</strong></p>
+</blockquote>
+<p>This is where <strong>geodesics</strong> enter the picture — not necessarily as strict geometric objects, but as a guiding principle for choosing "natural" paths.</p>
+<hr />
+<h2 id="what-is-a-geodesic">What is a Geodesic?<a class="headerlink" href="#what-is-a-geodesic" title="Permanent link">&para;</a></h2>
+<h3 id="geometric-definition">Geometric Definition<a class="headerlink" href="#geometric-definition" title="Permanent link">&para;</a></h3>
+<p>In differential geometry, a <strong>geodesic</strong> is the shortest (or extremal) path between two points given a notion of distance.</p>
+<p><strong>Familiar examples</strong>:</p>
+<table>
+<thead>
+<tr>
+<th>Space</th>
+<th>Geodesic</th>
+<th>Visualization</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Flat plane</strong> (<span class="arithmatex">\(\mathbb{R}^2\)</span>)</td>
+<td>Straight lines</td>
+<td>The shortest distance between two points</td>
+</tr>
+<tr>
+<td><strong>Sphere</strong> (<span class="arithmatex">\(S^2\)</span>)</td>
+<td>Great circles</td>
+<td>Flight paths on Earth</td>
+</tr>
+<tr>
+<td><strong>Curved surface</strong></td>
+<td>Paths that "feel straight" locally</td>
+<td>Walking on a saddle</td>
+</tr>
+</tbody>
+</table>
+<h3 id="mathematical-formulation">Mathematical Formulation<a class="headerlink" href="#mathematical-formulation" title="Permanent link">&para;</a></h3>
+<p>For a space equipped with a metric <span class="arithmatex">\(g\)</span> (which defines distances and angles), a geodesic <span class="arithmatex">\(\gamma(t)\)</span> satisfies:</p>
+<p><strong>Variational principle</strong>: Minimizes arc length</p>
+<div class="arithmatex">\[
+\text{minimize} \quad \int_0^1 \sqrt{\dot{\gamma}(t)^\top g(\gamma(t)) \dot{\gamma}(t)} \, dt
+\]</div>
+<p><strong>Differential equation</strong>: Parallel transport of velocity</p>
+<div class="arithmatex">\[
+\nabla_{\dot{\gamma}} \dot{\gamma} = 0
+\]</div>
+<p>This is the <strong>geodesic equation</strong> — a second-order ODE that says "don't turn unless the space curves."</p>
+<p><strong>Intuition</strong>: A geodesic is a path where your velocity vector doesn't change direction unless forced by the geometry of the space itself.</p>
+<h3 id="geodesics-in-flow-matching-context">Geodesics in Flow Matching Context<a class="headerlink" href="#geodesics-in-flow-matching-context" title="Permanent link">&para;</a></h3>
+<p>Here's the crucial distinction: <strong>Flow matching typically does not solve true geodesic equations</strong>.</p>
+<p>Instead, it chooses <strong>proxy paths</strong> that behave "as if" they were geodesics under some implicit geometry.</p>
+<p>When we say "geodesic interpolation" in flow matching, we really mean:</p>
+<blockquote>
+<p>"A natural, structure-respecting interpolation that captures the essence of shortest paths"</p>
+</blockquote>
+<p>The question is: shortest with respect to <strong>what metric</strong>?</p>
+<hr />
+<h2 id="linear-interpolation-the-euclidean-geodesic">Linear Interpolation: The Euclidean Geodesic<a class="headerlink" href="#linear-interpolation-the-euclidean-geodesic" title="Permanent link">&para;</a></h2>
+<h3 id="the-standard-choice">The Standard Choice<a class="headerlink" href="#the-standard-choice" title="Permanent link">&para;</a></h3>
+<p>The most common interpolation in flow matching is <strong>linear interpolation</strong>:</p>
+<div class="arithmatex">\[
+x_t = (1 - t) x_0 + t x_1
+\]</div>
+<p>This interpolates linearly between data <span class="arithmatex">\(x_0\)</span> and noise <span class="arithmatex">\(x_1\)</span>.</p>
+<p><strong>Velocity field</strong>: Taking the derivative with respect to <span class="arithmatex">\(t\)</span>:</p>
+<div class="arithmatex">\[
+\frac{dx_t}{dt} = x_1 - x_0
+\]</div>
+<p>Notice that the velocity is <strong>constant</strong> — it doesn't depend on time or position. This is the hallmark of straight-line motion.</p>
+<h3 id="why-is-this-a-geodesic">Why is This a Geodesic?<a class="headerlink" href="#why-is-this-a-geodesic" title="Permanent link">&para;</a></h3>
+<p>Linear interpolation is a <strong>true geodesic</strong> when:
+1. The space is <span class="arithmatex">\(\mathbb{R}^d\)</span> (Euclidean space)
+2. The metric is the standard Euclidean metric <span class="arithmatex">\(g = I\)</span>
+3. The data "lives" in flat space (or we pretend it does)</p>
+<p><strong>Geometric interpretation</strong>:
+- In flat Euclidean space, straight lines are the shortest paths
+- The geodesic equation <span class="arithmatex">\(\nabla_{\dot{x}} \dot{x} = 0\)</span> is automatically satisfied
+- No "turning" occurs because space has no curvature</p>
+<h3 id="visual-example-image-interpolation">Visual Example: Image Interpolation<a class="headerlink" href="#visual-example-image-interpolation" title="Permanent link">&para;</a></h3>
+<p>Consider interpolating between two images in pixel space:</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>Image 0: Cat photo        Image 1: Random noise
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>   ↓                            ↓
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>   x_0 ∈ ℝ^(3×256×256)         x_1 ∈ ℝ^(3×256×256)
+</span></code></pre></div>
+<p>Linear path at <span class="arithmatex">\(t = 0.5\)</span>:</p>
+<div class="arithmatex">\[
+x_{0.5} = 0.5 \cdot x_{\text{cat}} + 0.5 \cdot x_{\text{noise}}
+\]</div>
+<p><strong>Result</strong>: A "ghost cat" — 50% cat structure, 50% noise. The path walks straight through pixel space.</p>
+<p><strong>Assumption</strong>: We're treating pixel space as flat Euclidean space, which may or may not be appropriate.</p>
+<h3 id="the-flow-matching-loss">The Flow Matching Loss<a class="headerlink" href="#the-flow-matching-loss" title="Permanent link">&para;</a></h3>
+<p>Flow matching trains a neural network <span class="arithmatex">\(v_\theta(x, t)\)</span> to match this constant velocity:</p>
+<div class="arithmatex">\[
+\mathcal{L} = \mathbb{E}_{t, x_0, x_1} \left[ \left\| v_\theta(x_t, t) - (x_1 - x_0) \right\|^2 \right]
+\]</div>
+<p><strong>Training procedure</strong>:
+1. Sample data point <span class="arithmatex">\(x_0\)</span> and noise point <span class="arithmatex">\(x_1\)</span>
+2. Sample random time <span class="arithmatex">\(t \sim \text{Uniform}[0, 1]\)</span>
+3. Compute interpolated point <span class="arithmatex">\(x_t = (1-t) x_0 + t x_1\)</span>
+4. Compute target velocity <span class="arithmatex">\(u = x_1 - x_0\)</span>
+5. Train network to predict this velocity: <span class="arithmatex">\(v_\theta(x_t, t) \approx u\)</span></p>
+<p>This is beautifully simple — just regression toward a target velocity.</p>
+<h3 id="when-is-linear-interpolation-appropriate">When is Linear Interpolation Appropriate?<a class="headerlink" href="#when-is-linear-interpolation-appropriate" title="Permanent link">&para;</a></h3>
+<p><strong>Linear interpolation works well when</strong>:
+- Data lives in latent spaces (e.g., VAE latents, embeddings)
+- Scale is normalized (e.g., images in <span class="arithmatex">\([-1, 1]\)</span>)
+- Euclidean distances are meaningful
+- Simplicity and speed are priorities</p>
+<p><strong>Linear interpolation may struggle when</strong>:
+- Data lives on manifolds (e.g., spheres, rotations)
+- Euclidean distance distorts structure
+- Interpolated points leave the valid data space</p>
+<hr />
+<h2 id="beyond-flat-spaces-true-geodesics-on-manifolds">Beyond Flat Spaces: True Geodesics on Manifolds<a class="headerlink" href="#beyond-flat-spaces-true-geodesics-on-manifolds" title="Permanent link">&para;</a></h2>
+<h3 id="the-manifold-challenge">The Manifold Challenge<a class="headerlink" href="#the-manifold-challenge" title="Permanent link">&para;</a></h3>
+<p>Many real-world data types naturally live on <strong>manifolds</strong> — geometric spaces that are locally Euclidean but globally curved.</p>
+<p><strong>Examples in science</strong>:</p>
+<table>
+<thead>
+<tr>
+<th>Domain</th>
+<th>Manifold</th>
+<th>Why?</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Directional data</strong></td>
+<td>Sphere <span class="arithmatex">\(S^{n-1}\)</span></td>
+<td>Unit vectors (e.g., gene expression directions)</td>
+</tr>
+<tr>
+<td><strong>Rotations</strong></td>
+<td><span class="arithmatex">\(SO(3)\)</span></td>
+<td>3D molecular orientations</td>
+</tr>
+<tr>
+<td><strong>Positive matrices</strong></td>
+<td><span class="arithmatex">\(SPD(n)\)</span></td>
+<td>Covariance matrices, diffusion tensors</td>
+</tr>
+<tr>
+<td><strong>Probability simplices</strong></td>
+<td><span class="arithmatex">\(\Delta^{n-1}\)</span></td>
+<td>Compositional data (e.g., cell type proportions)</td>
+</tr>
+<tr>
+<td><strong>Latent spaces</strong></td>
+<td>Implicit manifold</td>
+<td>Learned data structure</td>
+</tr>
+</tbody>
+</table>
+<h3 id="why-linear-interpolation-fails-on-manifolds">Why Linear Interpolation Fails on Manifolds<a class="headerlink" href="#why-linear-interpolation-fails-on-manifolds" title="Permanent link">&para;</a></h3>
+<p><strong>Problem</strong>: Linear interpolation can leave the manifold!</p>
+<p><strong>Example: Unit sphere</strong></p>
+<p>Consider two points on the unit sphere: <span class="arithmatex">\(x_0, x_1 \in S^2\)</span> with <span class="arithmatex">\(\|x_0\| = \|x_1\| = 1\)</span>.</p>
+<p>Linear interpolation:</p>
+<div class="arithmatex">\[
+x_t = (1-t) x_0 + t x_1
+\]</div>
+<p><strong>Issue</strong>: Generally, <span class="arithmatex">\(\|x_t\| \neq 1\)</span>. The interpolated point "cuts through" the sphere rather than walking along its surface.</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>      x₁
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>      /|\
+</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>     / | \
+</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a>    /  |  \     Linear path cuts
+</span><span id="__span-1-5"><a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a>   /   |   \    through interior!
+</span><span id="__span-1-6"><a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a>  /    |    \
+</span><span id="__span-1-7"><a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a> /     ●     \   ← x_t (inside sphere)
+</span><span id="__span-1-8"><a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a>x₀-----------x₁
+</span><span id="__span-1-9"><a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a>
+</span><span id="__span-1-10"><a id="__codelineno-1-10" name="__codelineno-1-10" href="#__codelineno-1-10"></a>Geodesic path
+</span><span id="__span-1-11"><a id="__codelineno-1-11" name="__codelineno-1-11" href="#__codelineno-1-11"></a>curves along surface
+</span></code></pre></div>
+<p><strong>Consequence</strong>: 
+- Interpolated points may be invalid (e.g., not unit norm)
+- Structure is not preserved during interpolation
+- Learned velocity fields may struggle to stay on manifold</p>
+<h3 id="spherical-linear-interpolation-slerp">Spherical Linear Interpolation (SLERP)<a class="headerlink" href="#spherical-linear-interpolation-slerp" title="Permanent link">&para;</a></h3>
+<p>For points on a sphere, the true geodesic is a <strong>great circle arc</strong>. This is computed via <strong>SLERP</strong>:</p>
+<div class="arithmatex">\[
+x_t = \frac{\sin((1-t)\theta)}{\sin(\theta)} x_0 + \frac{\sin(t\theta)}{\sin(\theta)} x_1
+\]</div>
+<p>where <span class="arithmatex">\(\theta = \arccos(x_0^\top x_1)\)</span> is the angle between the points.</p>
+<p><strong>Properties</strong>:
+- <span class="arithmatex">\(\|x_t\| = 1\)</span> for all <span class="arithmatex">\(t\)</span> (stays on sphere)
+- Constant angular velocity
+- Shortest path on the sphere</p>
+<p><strong>Velocity field</strong>: More complex than linear case:</p>
+<div class="arithmatex">\[
+\frac{dx_t}{dt} = \frac{\theta}{\sin(\theta)} \left[ \cos(t\theta) x_1 - \cos((1-t)\theta) x_0 \right]
+\]</div>
+<h3 id="general-manifold-geodesics-exponential-map">General Manifold Geodesics: Exponential Map<a class="headerlink" href="#general-manifold-geodesics-exponential-map" title="Permanent link">&para;</a></h3>
+<p>For arbitrary manifolds, geodesics are computed using the <strong>exponential map</strong> and <strong>logarithmic map</strong>.</p>
+<p><strong>Exponential map</strong> <span class="arithmatex">\(\exp_x: T_x\mathcal{M} \to \mathcal{M}\)</span>:
+- Starts at point <span class="arithmatex">\(x\)</span> on the manifold
+- Takes a tangent vector <span class="arithmatex">\(v\)</span> (direction and magnitude)
+- Shoots a geodesic in that direction for "time" 1
+- Returns the endpoint on the manifold</p>
+<p><strong>Logarithmic map</strong> <span class="arithmatex">\(\log_x: \mathcal{M} \to T_x\mathcal{M}\)</span>:
+- Inverse of exponential map
+- Finds the tangent vector that would geodesically connect <span class="arithmatex">\(x\)</span> to another point <span class="arithmatex">\(y\)</span></p>
+<p><strong>Geodesic interpolation</strong>:</p>
+<div class="arithmatex">\[
+x_t = \exp_{x_0}(t \cdot \log_{x_0}(x_1))
+\]</div>
+<p><strong>Interpretation</strong>:
+1. Compute tangent vector from <span class="arithmatex">\(x_0\)</span> pointing toward <span class="arithmatex">\(x_1\)</span>: <span class="arithmatex">\(v = \log_{x_0}(x_1)\)</span>
+2. Scale by <span class="arithmatex">\(t\)</span> to get partial vector: <span class="arithmatex">\(t \cdot v\)</span>
+3. Shoot geodesic from <span class="arithmatex">\(x_0\)</span> along <span class="arithmatex">\(t \cdot v\)</span>: <span class="arithmatex">\(x_t = \exp_{x_0}(t \cdot v)\)</span></p>
+<p><strong>Properties</strong>:
+- <span class="arithmatex">\(x_t\)</span> stays on the manifold for all <span class="arithmatex">\(t\)</span>
+- Shortest path with respect to manifold metric
+- Respects geometric structure</p>
+<p><strong>Velocity field</strong>: Via pushforward of exponential map (requires manifold-specific computation).</p>
+<h3 id="practical-example-spherical-data">Practical Example: Spherical Data<a class="headerlink" href="#practical-example-spherical-data" title="Permanent link">&para;</a></h3>
+<p><strong>Setup</strong>: Gene expression directions normalized to unit sphere.</p>
+<p><strong>Linear interpolation</strong> (WRONG):
+<div class="language-python highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="k">def</span><span class="w"> </span><span class="nf">linear_interp</span><span class="p">(</span><span class="n">x0</span><span class="p">,</span> <span class="n">x1</span><span class="p">,</span> <span class="n">t</span><span class="p">):</span>
+</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>    <span class="n">xt</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">t</span><span class="p">)</span> <span class="o">*</span> <span class="n">x0</span> <span class="o">+</span> <span class="n">t</span> <span class="o">*</span> <span class="n">x1</span>
+</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a>    <span class="c1"># Issue: ||xt|| ≠ 1</span>
+</span><span id="__span-2-4"><a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a>    <span class="k">return</span> <span class="n">xt</span>
+</span></code></pre></div></p>
+<p><strong>SLERP</strong> (CORRECT):
+<div class="language-python highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="k">def</span><span class="w"> </span><span class="nf">slerp</span><span class="p">(</span><span class="n">x0</span><span class="p">,</span> <span class="n">x1</span><span class="p">,</span> <span class="n">t</span><span class="p">):</span>
+</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>    <span class="n">theta</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">acos</span><span class="p">((</span><span class="n">x0</span> <span class="o">*</span> <span class="n">x1</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">))</span>
+</span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a>    <span class="n">xt</span> <span class="o">=</span> <span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">sin</span><span class="p">((</span><span class="mi">1</span><span class="o">-</span><span class="n">t</span><span class="p">)</span><span class="o">*</span><span class="n">theta</span><span class="p">)</span><span class="o">/</span><span class="n">torch</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">theta</span><span class="p">))[:,</span> <span class="kc">None</span><span class="p">]</span> <span class="o">*</span> <span class="n">x0</span> \
+</span><span id="__span-3-4"><a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a>       <span class="o">+</span> <span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">t</span><span class="o">*</span><span class="n">theta</span><span class="p">)</span><span class="o">/</span><span class="n">torch</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">theta</span><span class="p">))[:,</span> <span class="kc">None</span><span class="p">]</span> <span class="o">*</span> <span class="n">x1</span>
+</span><span id="__span-3-5"><a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a>    <span class="c1"># Guarantee: ||xt|| = 1</span>
+</span><span id="__span-3-6"><a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a>    <span class="k">return</span> <span class="n">xt</span>
+</span></code></pre></div></p>
+<p><strong>Result</strong>: Interpolation respects the spherical structure of the data.</p>
+<hr />
+<h2 id="geodesics-in-probability-space">Geodesics in Probability Space<a class="headerlink" href="#geodesics-in-probability-space" title="Permanent link">&para;</a></h2>
+<h3 id="wasserstein-geodesics-optimal-transport">Wasserstein Geodesics: Optimal Transport<a class="headerlink" href="#wasserstein-geodesics-optimal-transport" title="Permanent link">&para;</a></h3>
+<p>There's another sense in which "geodesic" appears in flow matching: <strong>geodesics in the space of probability distributions</strong>.</p>
+<h3 id="the-wasserstein-distance">The Wasserstein Distance<a class="headerlink" href="#the-wasserstein-distance" title="Permanent link">&para;</a></h3>
+<p>The <strong>Wasserstein-2 distance</strong> between distributions <span class="arithmatex">\(p_0\)</span> and <span class="arithmatex">\(p_1\)</span> is:</p>
+<div class="arithmatex">\[
+W_2(p_0, p_1) = \inf_{T: T_\# p_0 = p_1} \mathbb{E}_{x \sim p_0}[\|x - T(x)\|^2]^{1/2}
+\]</div>
+<p>where <span class="arithmatex">\(T\)</span> is a transport map pushing <span class="arithmatex">\(p_0\)</span> to <span class="arithmatex">\(p_1\)</span>.</p>
+<p><strong>Interpretation</strong>: The minimum cost of transporting probability mass from <span class="arithmatex">\(p_0\)</span> to <span class="arithmatex">\(p_1\)</span>, where cost is quadratic distance.</p>
+<h3 id="displacement-interpolation">Displacement Interpolation<a class="headerlink" href="#displacement-interpolation" title="Permanent link">&para;</a></h3>
+<p>Given the <strong>optimal transport map</strong> <span class="arithmatex">\(T^*: p_0 \to p_1\)</span>, the <strong>displacement interpolation</strong> is:</p>
+<div class="arithmatex">\[
+x_t = (1-t) x_0 + t \cdot T^*(x_0)
+\]</div>
+<p>This defines a path in <strong>Wasserstein space</strong> — the space of probability distributions equipped with the Wasserstein metric.</p>
+<p><strong>Key property</strong>: This path is a <strong>geodesic in Wasserstein space</strong>, even though individual points follow straight lines in <span class="arithmatex">\(\mathbb{R}^d\)</span>.</p>
+<p><strong>Geometric hierarchy</strong>:
+- <strong>Pointwise</strong>: Linear paths in <span class="arithmatex">\(\mathbb{R}^d\)</span>
+- <strong>Distribution-level</strong>: Geodesic in Wasserstein space</p>
+<h3 id="connection-to-flow-matching">Connection to Flow Matching<a class="headerlink" href="#connection-to-flow-matching" title="Permanent link">&para;</a></h3>
+<p>Standard flow matching with linear interpolation <strong>approximates</strong> but doesn't exactly match optimal transport paths:</p>
+<div class="arithmatex">\[
+x_t = (1-t) x_0 + t x_1, \quad x_0 \sim p_{\text{data}}, \, x_1 \sim p_{\text{noise}}
+\]</div>
+<p><strong>Issue</strong>: Pairing <span class="arithmatex">\((x_0, x_1)\)</span> is typically random (independent sampling), not optimal.</p>
+<p><strong>Recent advances</strong>: Methods like <strong>Multisample Flow Matching</strong> and <strong>OT-CFM</strong> use minibatch optimal transport to find better pairings, improving the OT approximation.</p>
+<p><strong>Result</strong>: The learned flow becomes closer to a true Wasserstein geodesic.</p>
+<hr />
+<h2 id="practical-implementations">Practical Implementations<a class="headerlink" href="#practical-implementations" title="Permanent link">&para;</a></h2>
+<h3 id="implementation-1-linear-interpolation-standard">Implementation 1: Linear Interpolation (Standard)<a class="headerlink" href="#implementation-1-linear-interpolation-standard" title="Permanent link">&para;</a></h3>
+<p><strong>Path</strong>:</p>
+<div class="arithmatex">\[
+x_t = (1-t) x_0 + t x_1
+\]</div>
+<p><strong>Velocity</strong>:</p>
+<div class="arithmatex">\[
+u_t = x_1 - x_0
+\]</div>
+<p><strong>Code</strong>:
+<div class="language-python highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="k">def</span><span class="w"> </span><span class="nf">linear_interpolation</span><span class="p">(</span><span class="n">x0</span><span class="p">,</span> <span class="n">x1</span><span class="p">,</span> <span class="n">t</span><span class="p">):</span>
+</span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Linear geodesic (Euclidean).&quot;&quot;&quot;</span>
+</span><span id="__span-4-3"><a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a>    <span class="k">return</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">t</span><span class="p">)</span> <span class="o">*</span> <span class="n">x0</span> <span class="o">+</span> <span class="n">t</span> <span class="o">*</span> <span class="n">x1</span>
+</span><span id="__span-4-4"><a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a>
+</span><span id="__span-4-5"><a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a><span class="k">def</span><span class="w"> </span><span class="nf">linear_velocity</span><span class="p">(</span><span class="n">x0</span><span class="p">,</span> <span class="n">x1</span><span class="p">,</span> <span class="n">t</span><span class="p">):</span>
+</span><span id="__span-4-6"><a id="__codelineno-4-6" name="__codelineno-4-6" href="#__codelineno-4-6"></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Constant velocity.&quot;&quot;&quot;</span>
+</span><span id="__span-4-7"><a id="__codelineno-4-7" name="__codelineno-4-7" href="#__codelineno-4-7"></a>    <span class="k">return</span> <span class="n">x1</span> <span class="o">-</span> <span class="n">x0</span>
+</span></code></pre></div></p>
+<p><strong>Use when</strong>: Data in Euclidean space, latent spaces, embeddings.</p>
+<h3 id="implementation-2-spherical-interpolation-slerp">Implementation 2: Spherical Interpolation (SLERP)<a class="headerlink" href="#implementation-2-spherical-interpolation-slerp" title="Permanent link">&para;</a></h3>
+<p><strong>Path</strong>:</p>
+<div class="arithmatex">\[
+x_t = \frac{\sin((1-t)\theta)}{\sin(\theta)} x_0 + \frac{\sin(t\theta)}{\sin(\theta)} x_1
+\]</div>
+<p>where <span class="arithmatex">\(\theta = \arccos(x_0^\top x_1)\)</span>.</p>
+<p><strong>Code</strong>:
+<div class="language-python highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="k">def</span><span class="w"> </span><span class="nf">slerp</span><span class="p">(</span><span class="n">x0</span><span class="p">,</span> <span class="n">x1</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">eps</span><span class="o">=</span><span class="mf">1e-7</span><span class="p">):</span>
+</span><span id="__span-5-2"><a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Spherical linear interpolation (geodesic on sphere).&quot;&quot;&quot;</span>
+</span><span id="__span-5-3"><a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a>    <span class="c1"># Normalize to ensure unit norm</span>
+</span><span id="__span-5-4"><a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a>    <span class="n">x0</span> <span class="o">=</span> <span class="n">F</span><span class="o">.</span><span class="n">normalize</span><span class="p">(</span><span class="n">x0</span><span class="p">,</span> <span class="n">dim</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
+</span><span id="__span-5-5"><a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a>    <span class="n">x1</span> <span class="o">=</span> <span class="n">F</span><span class="o">.</span><span class="n">normalize</span><span class="p">(</span><span class="n">x1</span><span class="p">,</span> <span class="n">dim</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
+</span><span id="__span-5-6"><a id="__codelineno-5-6" name="__codelineno-5-6" href="#__codelineno-5-6"></a>
+</span><span id="__span-5-7"><a id="__codelineno-5-7" name="__codelineno-5-7" href="#__codelineno-5-7"></a>    <span class="c1"># Compute angle</span>
+</span><span id="__span-5-8"><a id="__codelineno-5-8" name="__codelineno-5-8" href="#__codelineno-5-8"></a>    <span class="n">dot</span> <span class="o">=</span> <span class="p">(</span><span class="n">x0</span> <span class="o">*</span> <span class="n">x1</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">keepdim</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</span><span id="__span-5-9"><a id="__codelineno-5-9" name="__codelineno-5-9" href="#__codelineno-5-9"></a>    <span class="n">theta</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">acos</span><span class="p">(</span><span class="n">dot</span><span class="o">.</span><span class="n">clamp</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+</span><span id="__span-5-10"><a id="__codelineno-5-10" name="__codelineno-5-10" href="#__codelineno-5-10"></a>
+</span><span id="__span-5-11"><a id="__codelineno-5-11" name="__codelineno-5-11" href="#__codelineno-5-11"></a>    <span class="c1"># Handle near-parallel vectors</span>
+</span><span id="__span-5-12"><a id="__codelineno-5-12" name="__codelineno-5-12" href="#__codelineno-5-12"></a>    <span class="n">sin_theta</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">theta</span><span class="p">)</span>
+</span><span id="__span-5-13"><a id="__codelineno-5-13" name="__codelineno-5-13" href="#__codelineno-5-13"></a>    <span class="n">mask</span> <span class="o">=</span> <span class="n">sin_theta</span><span class="o">.</span><span class="n">abs</span><span class="p">()</span> <span class="o">&lt;</span> <span class="n">eps</span>
+</span><span id="__span-5-14"><a id="__codelineno-5-14" name="__codelineno-5-14" href="#__codelineno-5-14"></a>
+</span><span id="__span-5-15"><a id="__codelineno-5-15" name="__codelineno-5-15" href="#__codelineno-5-15"></a>    <span class="c1"># SLERP formula</span>
+</span><span id="__span-5-16"><a id="__codelineno-5-16" name="__codelineno-5-16" href="#__codelineno-5-16"></a>    <span class="n">w0</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">sin</span><span class="p">((</span><span class="mi">1</span> <span class="o">-</span> <span class="n">t</span><span class="p">)</span> <span class="o">*</span> <span class="n">theta</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">sin_theta</span> <span class="o">+</span> <span class="n">eps</span><span class="p">)</span>
+</span><span id="__span-5-17"><a id="__codelineno-5-17" name="__codelineno-5-17" href="#__codelineno-5-17"></a>    <span class="n">w1</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">t</span> <span class="o">*</span> <span class="n">theta</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">sin_theta</span> <span class="o">+</span> <span class="n">eps</span><span class="p">)</span>
+</span><span id="__span-5-18"><a id="__codelineno-5-18" name="__codelineno-5-18" href="#__codelineno-5-18"></a>
+</span><span id="__span-5-19"><a id="__codelineno-5-19" name="__codelineno-5-19" href="#__codelineno-5-19"></a>    <span class="c1"># Fall back to linear for near-parallel</span>
+</span><span id="__span-5-20"><a id="__codelineno-5-20" name="__codelineno-5-20" href="#__codelineno-5-20"></a>    <span class="n">w0</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">mask</span><span class="p">,</span> <span class="mi">1</span> <span class="o">-</span> <span class="n">t</span><span class="p">,</span> <span class="n">w0</span><span class="p">)</span>
+</span><span id="__span-5-21"><a id="__codelineno-5-21" name="__codelineno-5-21" href="#__codelineno-5-21"></a>    <span class="n">w1</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">mask</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">w1</span><span class="p">)</span>
+</span><span id="__span-5-22"><a id="__codelineno-5-22" name="__codelineno-5-22" href="#__codelineno-5-22"></a>
+</span><span id="__span-5-23"><a id="__codelineno-5-23" name="__codelineno-5-23" href="#__codelineno-5-23"></a>    <span class="k">return</span> <span class="n">w0</span> <span class="o">*</span> <span class="n">x0</span> <span class="o">+</span> <span class="n">w1</span> <span class="o">*</span> <span class="n">x1</span>
+</span><span id="__span-5-24"><a id="__codelineno-5-24" name="__codelineno-5-24" href="#__codelineno-5-24"></a>
+</span><span id="__span-5-25"><a id="__codelineno-5-25" name="__codelineno-5-25" href="#__codelineno-5-25"></a><span class="k">def</span><span class="w"> </span><span class="nf">slerp_velocity</span><span class="p">(</span><span class="n">x0</span><span class="p">,</span> <span class="n">x1</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">eps</span><span class="o">=</span><span class="mf">1e-7</span><span class="p">):</span>
+</span><span id="__span-5-26"><a id="__codelineno-5-26" name="__codelineno-5-26" href="#__codelineno-5-26"></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Velocity field for SLERP.&quot;&quot;&quot;</span>
+</span><span id="__span-5-27"><a id="__codelineno-5-27" name="__codelineno-5-27" href="#__codelineno-5-27"></a>    <span class="n">x0</span> <span class="o">=</span> <span class="n">F</span><span class="o">.</span><span class="n">normalize</span><span class="p">(</span><span class="n">x0</span><span class="p">,</span> <span class="n">dim</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
+</span><span id="__span-5-28"><a id="__codelineno-5-28" name="__codelineno-5-28" href="#__codelineno-5-28"></a>    <span class="n">x1</span> <span class="o">=</span> <span class="n">F</span><span class="o">.</span><span class="n">normalize</span><span class="p">(</span><span class="n">x1</span><span class="p">,</span> <span class="n">dim</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
+</span><span id="__span-5-29"><a id="__codelineno-5-29" name="__codelineno-5-29" href="#__codelineno-5-29"></a>
+</span><span id="__span-5-30"><a id="__codelineno-5-30" name="__codelineno-5-30" href="#__codelineno-5-30"></a>    <span class="n">dot</span> <span class="o">=</span> <span class="p">(</span><span class="n">x0</span> <span class="o">*</span> <span class="n">x1</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">keepdim</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</span><span id="__span-5-31"><a id="__codelineno-5-31" name="__codelineno-5-31" href="#__codelineno-5-31"></a>    <span class="n">theta</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">acos</span><span class="p">(</span><span class="n">dot</span><span class="o">.</span><span class="n">clamp</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+</span><span id="__span-5-32"><a id="__codelineno-5-32" name="__codelineno-5-32" href="#__codelineno-5-32"></a>    <span class="n">sin_theta</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">theta</span><span class="p">)</span>
+</span><span id="__span-5-33"><a id="__codelineno-5-33" name="__codelineno-5-33" href="#__codelineno-5-33"></a>
+</span><span id="__span-5-34"><a id="__codelineno-5-34" name="__codelineno-5-34" href="#__codelineno-5-34"></a>    <span class="c1"># d/dt [sin((1-t)θ)/sin(θ) x₀ + sin(tθ)/sin(θ) x₁]</span>
+</span><span id="__span-5-35"><a id="__codelineno-5-35" name="__codelineno-5-35" href="#__codelineno-5-35"></a>    <span class="n">coeff0</span> <span class="o">=</span> <span class="o">-</span><span class="n">theta</span> <span class="o">*</span> <span class="n">torch</span><span class="o">.</span><span class="n">cos</span><span class="p">((</span><span class="mi">1</span><span class="o">-</span><span class="n">t</span><span class="p">)</span> <span class="o">*</span> <span class="n">theta</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">sin_theta</span> <span class="o">+</span> <span class="n">eps</span><span class="p">)</span>
+</span><span id="__span-5-36"><a id="__codelineno-5-36" name="__codelineno-5-36" href="#__codelineno-5-36"></a>    <span class="n">coeff1</span> <span class="o">=</span> <span class="n">theta</span> <span class="o">*</span> <span class="n">torch</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">t</span> <span class="o">*</span> <span class="n">theta</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">sin_theta</span> <span class="o">+</span> <span class="n">eps</span><span class="p">)</span>
+</span><span id="__span-5-37"><a id="__codelineno-5-37" name="__codelineno-5-37" href="#__codelineno-5-37"></a>
+</span><span id="__span-5-38"><a id="__codelineno-5-38" name="__codelineno-5-38" href="#__codelineno-5-38"></a>    <span class="k">return</span> <span class="n">coeff0</span> <span class="o">*</span> <span class="n">x0</span> <span class="o">+</span> <span class="n">coeff1</span> <span class="o">*</span> <span class="n">x1</span>
+</span></code></pre></div></p>
+<p><strong>Use when</strong>: Directional data, normalized embeddings, angular spaces.</p>
+<h3 id="implementation-3-learned-manifold-encoder-decoder">Implementation 3: Learned Manifold (Encoder-Decoder)<a class="headerlink" href="#implementation-3-learned-manifold-encoder-decoder" title="Permanent link">&para;</a></h3>
+<p><strong>Strategy</strong>: Use a learned latent space where linear interpolation is appropriate.</p>
+<p><strong>Architecture</strong>:
+<div class="language-python highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="k">class</span><span class="w"> </span><span class="nc">ManifoldFlowMatching</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+</span><span id="__span-6-2"><a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span id="__span-6-3"><a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">encoder</span> <span class="o">=</span> <span class="n">Encoder</span><span class="p">()</span>  <span class="c1"># x → z (to latent manifold)</span>
+</span><span id="__span-6-4"><a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">decoder</span> <span class="o">=</span> <span class="n">Decoder</span><span class="p">()</span>  <span class="c1"># z → x (from latent)</span>
+</span><span id="__span-6-5"><a id="__codelineno-6-5" name="__codelineno-6-5" href="#__codelineno-6-5"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">velocity_net</span> <span class="o">=</span> <span class="n">VelocityField</span><span class="p">()</span>  <span class="c1"># v(z, t)</span>
+</span><span id="__span-6-6"><a id="__codelineno-6-6" name="__codelineno-6-6" href="#__codelineno-6-6"></a>
+</span><span id="__span-6-7"><a id="__codelineno-6-7" name="__codelineno-6-7" href="#__codelineno-6-7"></a>    <span class="k">def</span><span class="w"> </span><span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x0</span><span class="p">,</span> <span class="n">x1</span><span class="p">,</span> <span class="n">t</span><span class="p">):</span>
+</span><span id="__span-6-8"><a id="__codelineno-6-8" name="__codelineno-6-8" href="#__codelineno-6-8"></a>        <span class="c1"># Encode to latent space</span>
+</span><span id="__span-6-9"><a id="__codelineno-6-9" name="__codelineno-6-9" href="#__codelineno-6-9"></a>        <span class="n">z0</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">encoder</span><span class="p">(</span><span class="n">x0</span><span class="p">)</span>
+</span><span id="__span-6-10"><a id="__codelineno-6-10" name="__codelineno-6-10" href="#__codelineno-6-10"></a>        <span class="n">z1</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">encoder</span><span class="p">(</span><span class="n">x1</span><span class="p">)</span>
+</span><span id="__span-6-11"><a id="__codelineno-6-11" name="__codelineno-6-11" href="#__codelineno-6-11"></a>
+</span><span id="__span-6-12"><a id="__codelineno-6-12" name="__codelineno-6-12" href="#__codelineno-6-12"></a>        <span class="c1"># Linear interpolation in latent space</span>
+</span><span id="__span-6-13"><a id="__codelineno-6-13" name="__codelineno-6-13" href="#__codelineno-6-13"></a>        <span class="n">zt</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">t</span><span class="p">)</span> <span class="o">*</span> <span class="n">z0</span> <span class="o">+</span> <span class="n">t</span> <span class="o">*</span> <span class="n">z1</span>
+</span><span id="__span-6-14"><a id="__codelineno-6-14" name="__codelineno-6-14" href="#__codelineno-6-14"></a>
+</span><span id="__span-6-15"><a id="__codelineno-6-15" name="__codelineno-6-15" href="#__codelineno-6-15"></a>        <span class="c1"># Predict velocity in latent space</span>
+</span><span id="__span-6-16"><a id="__codelineno-6-16" name="__codelineno-6-16" href="#__codelineno-6-16"></a>        <span class="n">vt</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">velocity_net</span><span class="p">(</span><span class="n">zt</span><span class="p">,</span> <span class="n">t</span><span class="p">)</span>
+</span><span id="__span-6-17"><a id="__codelineno-6-17" name="__codelineno-6-17" href="#__codelineno-6-17"></a>        <span class="k">return</span> <span class="n">vt</span>
+</span></code></pre></div></p>
+<p><strong>Rationale</strong>: If the encoder learns to map data onto a region where Euclidean geometry is appropriate, linear interpolation becomes a good geodesic approximation.</p>
+<p><strong>Use when</strong>: Complex manifold structure, no closed-form geodesics available.</p>
+<h3 id="implementation-4-variance-preserving-interpolation">Implementation 4: Variance-Preserving Interpolation<a class="headerlink" href="#implementation-4-variance-preserving-interpolation" title="Permanent link">&para;</a></h3>
+<p><strong>Path</strong> (maintains variance like diffusion):</p>
+<div class="arithmatex">\[
+x_t = \sqrt{1 - \sigma_t^2} \, x_0 + \sigma_t \, x_1, \quad \sigma_t = t
+\]</div>
+<p><strong>Velocity</strong>:</p>
+<div class="arithmatex">\[
+u_t = \frac{d}{dt}\left[\sqrt{1-t^2} \, x_0 + t \, x_1\right] = \frac{-t}{\sqrt{1-t^2}} x_0 + x_1
+\]</div>
+<p><strong>Code</strong>:
+<div class="language-python highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="k">def</span><span class="w"> </span><span class="nf">vp_interpolation</span><span class="p">(</span><span class="n">x0</span><span class="p">,</span> <span class="n">x1</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">eps</span><span class="o">=</span><span class="mf">1e-7</span><span class="p">):</span>
+</span><span id="__span-7-2"><a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Variance-preserving interpolation.&quot;&quot;&quot;</span>
+</span><span id="__span-7-3"><a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a>    <span class="n">sigma_t</span> <span class="o">=</span> <span class="n">t</span>
+</span><span id="__span-7-4"><a id="__codelineno-7-4" name="__codelineno-7-4" href="#__codelineno-7-4"></a>    <span class="n">alpha_t</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">sigma_t</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="n">eps</span><span class="p">)</span>
+</span><span id="__span-7-5"><a id="__codelineno-7-5" name="__codelineno-7-5" href="#__codelineno-7-5"></a>    <span class="k">return</span> <span class="n">alpha_t</span> <span class="o">*</span> <span class="n">x0</span> <span class="o">+</span> <span class="n">sigma_t</span> <span class="o">*</span> <span class="n">x1</span>
+</span><span id="__span-7-6"><a id="__codelineno-7-6" name="__codelineno-7-6" href="#__codelineno-7-6"></a>
+</span><span id="__span-7-7"><a id="__codelineno-7-7" name="__codelineno-7-7" href="#__codelineno-7-7"></a><span class="k">def</span><span class="w"> </span><span class="nf">vp_velocity</span><span class="p">(</span><span class="n">x0</span><span class="p">,</span> <span class="n">x1</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">eps</span><span class="o">=</span><span class="mf">1e-7</span><span class="p">):</span>
+</span><span id="__span-7-8"><a id="__codelineno-7-8" name="__codelineno-7-8" href="#__codelineno-7-8"></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;VP velocity field.&quot;&quot;&quot;</span>
+</span><span id="__span-7-9"><a id="__codelineno-7-9" name="__codelineno-7-9" href="#__codelineno-7-9"></a>    <span class="n">sigma_t</span> <span class="o">=</span> <span class="n">t</span>
+</span><span id="__span-7-10"><a id="__codelineno-7-10" name="__codelineno-7-10" href="#__codelineno-7-10"></a>    <span class="n">alpha_t</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">sigma_t</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="n">eps</span><span class="p">)</span>
+</span><span id="__span-7-11"><a id="__codelineno-7-11" name="__codelineno-7-11" href="#__codelineno-7-11"></a>    <span class="n">d_alpha</span> <span class="o">=</span> <span class="o">-</span><span class="n">sigma_t</span> <span class="o">/</span> <span class="p">(</span><span class="n">alpha_t</span> <span class="o">+</span> <span class="n">eps</span><span class="p">)</span>
+</span><span id="__span-7-12"><a id="__codelineno-7-12" name="__codelineno-7-12" href="#__codelineno-7-12"></a>    <span class="n">d_sigma</span> <span class="o">=</span> <span class="mf">1.0</span>
+</span><span id="__span-7-13"><a id="__codelineno-7-13" name="__codelineno-7-13" href="#__codelineno-7-13"></a>    <span class="k">return</span> <span class="n">d_alpha</span> <span class="o">*</span> <span class="n">x0</span> <span class="o">+</span> <span class="n">d_sigma</span> <span class="o">*</span> <span class="n">x1</span>
+</span></code></pre></div></p>
+<p><strong>Use when</strong>: Want to maintain variance structure similar to diffusion models.</p>
+<hr />
+<h2 id="why-geodesics-matter-for-biological-data">Why Geodesics Matter for Biological Data<a class="headerlink" href="#why-geodesics-matter-for-biological-data" title="Permanent link">&para;</a></h2>
+<h3 id="biological-data-often-lives-on-manifolds">Biological Data Often Lives on Manifolds<a class="headerlink" href="#biological-data-often-lives-on-manifolds" title="Permanent link">&para;</a></h3>
+<p><strong>Examples</strong>:</p>
+<ol>
+<li><strong>Gene expression manifolds</strong></li>
+<li>Cells don't randomly occupy gene expression space</li>
+<li>Valid states form lower-dimensional manifolds</li>
+<li>
+<p>Cell type trajectories follow manifold structure</p>
+</li>
+<li>
+<p><strong>Protein conformations</strong></p>
+</li>
+<li>3D rotations: <span class="arithmatex">\(SO(3)\)</span> manifold</li>
+<li>Torsion angles: Toroidal manifolds</li>
+<li>
+<p>Valid conformations: Complex manifolds</p>
+</li>
+<li>
+<p><strong>Single-cell trajectories</strong></p>
+</li>
+<li>Differentiation paths follow manifold geodesics</li>
+<li>Branching points are manifold features</li>
+<li>
+<p>Pseudotime corresponds to geodesic distance</p>
+</li>
+<li>
+<p><strong>Molecular latent spaces</strong></p>
+</li>
+<li>Drug-like molecules form manifolds</li>
+<li>Chemical validity imposes geometric constraints</li>
+<li>Property optimization follows manifold paths</li>
+</ol>
+<h3 id="consequences-of-ignoring-manifold-structure">Consequences of Ignoring Manifold Structure<a class="headerlink" href="#consequences-of-ignoring-manifold-structure" title="Permanent link">&para;</a></h3>
+<p><strong>Using linear interpolation when data lives on a manifold</strong>:</p>
+<ol>
+<li><strong>Invalid intermediate states</strong></li>
+<li>Interpolated points may violate biological constraints</li>
+<li>
+<p>Generated samples may be "off-manifold" (biologically impossible)</p>
+</li>
+<li>
+<p><strong>Distorted distances</strong></p>
+</li>
+<li>Euclidean distance ≠ manifold distance</li>
+<li>Nearby cells in Euclidean space may be far on manifold</li>
+<li>
+<p>Affects neighborhood structure, clustering</p>
+</li>
+<li>
+<p><strong>Suboptimal generation</strong></p>
+</li>
+<li>Model learns to "correct" for off-manifold paths</li>
+<li>More complex velocity fields needed</li>
+<li>Slower convergence, more training data required</li>
+</ol>
+<h3 id="benefits-of-geodesic-aware-interpolation">Benefits of Geodesic-Aware Interpolation<a class="headerlink" href="#benefits-of-geodesic-aware-interpolation" title="Permanent link">&para;</a></h3>
+<p><strong>Using manifold-aware interpolation</strong>:</p>
+<ol>
+<li><strong>Biologically valid paths</strong></li>
+<li>Interpolated points stay on valid cell states</li>
+<li>
+<p>Transitions respect biological plausibility</p>
+</li>
+<li>
+<p><strong>Improved sample quality</strong></p>
+</li>
+<li>Generated cells more realistic</li>
+<li>
+<p>Better preservation of biological correlations</p>
+</li>
+<li>
+<p><strong>Interpretable trajectories</strong></p>
+</li>
+<li>Learned paths correspond to real biological processes</li>
+<li>
+<p>Can study intermediate states along trajectories</p>
+</li>
+<li>
+<p><strong>Data efficiency</strong></p>
+</li>
+<li>Simpler velocity fields (follow natural structure)</li>
+<li>Less training data needed</li>
+</ol>
+<h3 id="example-scppdm-application">Example: scPPDM Application<a class="headerlink" href="#example-scppdm-application" title="Permanent link">&para;</a></h3>
+<p>For your <strong>scPPDM</strong> (single-cell Protein Perturbation Diffusion Model), consider:</p>
+<p><strong>Challenge</strong>: Single-cell data lives on a low-dimensional manifold in high-dimensional gene expression space.</p>
+<p><strong>Geodesic perspective</strong>:
+- Perturbation effects should follow manifold structure
+- Control → perturbed paths should be manifold geodesics
+- Linear interpolation in high-D space may cut through invalid states</p>
+<p><strong>Potential approach</strong>:
+1. Learn manifold via encoder (e.g., VAE, autoencoder)
+2. Perform flow matching in latent space
+3. Use linear geodesics where appropriate, learned geometry where complex
+4. Ensure interpolated states remain biologically plausible</p>
+<hr />
+<h2 id="the-unspoken-dream-learned-geometry">The Unspoken Dream: Learned Geometry<a class="headerlink" href="#the-unspoken-dream-learned-geometry" title="Permanent link">&para;</a></h2>
+<h3 id="the-bold-idea">The Bold Idea<a class="headerlink" href="#the-bold-idea" title="Permanent link">&para;</a></h3>
+<p>The most exciting possibility hidden in flow matching:</p>
+<blockquote>
+<p><strong>What if the model itself induces the geometry?</strong></p>
+</blockquote>
+<p>Rather than pre-specifying geodesics, let the learned velocity field <strong>define</strong> the geodesics.</p>
+<h3 id="how-it-works">How It Works<a class="headerlink" href="#how-it-works" title="Permanent link">&para;</a></h3>
+<p><strong>Standard view</strong>:
+1. Choose interpolation <span class="arithmatex">\(\psi_t\)</span> (defines geodesics)
+2. Train velocity field <span class="arithmatex">\(v_\theta\)</span> to match
+3. Velocity field is subordinate to choice</p>
+<p><strong>Learned geometry view</strong>:
+1. Train velocity field <span class="arithmatex">\(v_\theta\)</span> with weak inductive bias
+2. The flow lines <span class="arithmatex">\(\frac{dx}{dt} = v_\theta(x,t)\)</span> <strong>are</strong> the geodesics
+3. Geometry emerges from the learned field</p>
+<p><strong>Philosophical shift</strong>:
+- Geodesics are <strong>outputs</strong>, not inputs
+- The model discovers natural paths through data space
+- Geometry, dynamics, and generation become one</p>
+<h3 id="connection-to-energy-based-models">Connection to Energy-Based Models<a class="headerlink" href="#connection-to-energy-based-models" title="Permanent link">&para;</a></h3>
+<p>This connects to your <strong>EBM</strong> work:</p>
+<p><strong>Energy functional</strong>: Suppose the velocity field derives from an energy landscape:</p>
+<div class="arithmatex">\[
+v_\theta(x, t) = -\nabla_x E_\theta(x, t)
+\]</div>
+<p><strong>Geodesics</strong>: Flow lines follow gradient descent on <span class="arithmatex">\(E\)</span>.</p>
+<p><strong>Learned metric</strong>: The energy landscape induces a Riemannian metric:</p>
+<div class="arithmatex">\[
+g_{ij}(x) = \frac{\partial^2 E}{\partial x_i \partial x_j}
+\]</div>
+<p><strong>Result</strong>: The learned flow respects a <strong>learned geometry</strong> encoded in <span class="arithmatex">\(E\)</span>.</p>
+<h3 id="practical-realization">Practical Realization<a class="headerlink" href="#practical-realization" title="Permanent link">&para;</a></h3>
+<p><strong>Unrestricted flow matching</strong>:
+- Minimal assumptions on <span class="arithmatex">\(\psi_t\)</span>
+- Let network learn complex, data-adaptive paths
+- More expressive but requires more data</p>
+<p><strong>Architecture inductive biases</strong>:
+- Equivariant networks preserve symmetries
+- Attention mechanisms capture long-range structure
+- These biases shape the learned geometry</p>
+<h3 id="future-directions">Future Directions<a class="headerlink" href="#future-directions" title="Permanent link">&para;</a></h3>
+<p><strong>Open questions</strong>:
+1. Can we explicitly extract the learned metric from <span class="arithmatex">\(v_\theta\)</span>?
+2. How do architectural choices constrain the learnable geometries?
+3. Can we regularize toward known geometric structures (e.g., local isometry)?
+4. How does this connect to optimal transport and Wasserstein gradient flows?</p>
+<p>This is where flow matching, differential geometry, optimal transport, and deep learning converge — fertile ground for research.</p>
+<hr />
+<h2 id="summary-and-key-takeaways">Summary and Key Takeaways<a class="headerlink" href="#summary-and-key-takeaways" title="Permanent link">&para;</a></h2>
+<h3 id="core-concepts">Core Concepts<a class="headerlink" href="#core-concepts" title="Permanent link">&para;</a></h3>
+<ol>
+<li><strong>Geodesics are shortest paths</strong> with respect to a metric</li>
+<li><strong>Linear interpolation is the Euclidean geodesic</strong> (flat space)</li>
+<li><strong>Manifolds require manifold-aware geodesics</strong> (curved spaces)</li>
+<li><strong>Wasserstein geodesics</strong> operate in probability space</li>
+<li><strong>Learned geometry</strong> allows data-adaptive paths</li>
+</ol>
+<h3 id="practical-guidance">Practical Guidance<a class="headerlink" href="#practical-guidance" title="Permanent link">&para;</a></h3>
+<p><strong>Choose your interpolation based on your data</strong>:</p>
+<table>
+<thead>
+<tr>
+<th>Data Type</th>
+<th>Recommended Interpolation</th>
+<th>Why</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Images (pixels)</strong></td>
+<td>Linear</td>
+<td>Euclidean space, well-normalized</td>
+</tr>
+<tr>
+<td><strong>Embeddings (learned)</strong></td>
+<td>Linear</td>
+<td>Latent spaces often Euclidean-like</td>
+</tr>
+<tr>
+<td><strong>Directional data</strong></td>
+<td>SLERP</td>
+<td>Natural sphere structure</td>
+</tr>
+<tr>
+<td><strong>Rotations</strong></td>
+<td>Lie group geodesics</td>
+<td>SO(3) manifold structure</td>
+</tr>
+<tr>
+<td><strong>Biological states</strong></td>
+<td>Learned manifold + linear</td>
+<td>Complex, data-dependent</td>
+</tr>
+<tr>
+<td><strong>Molecules</strong></td>
+<td>Graph-aware + learned</td>
+<td>Discrete + continuous</td>
+</tr>
+</tbody>
+</table>
+<h3 id="theoretical-insights">Theoretical Insights<a class="headerlink" href="#theoretical-insights" title="Permanent link">&para;</a></h3>
+<ol>
+<li><strong>"Geodesic" in flow matching is aspirational</strong></li>
+<li>Not usually true Riemannian geodesics</li>
+<li>
+<p>Rather, "natural, structure-respecting paths"</p>
+</li>
+<li>
+<p><strong>Three levels of geometry</strong>:</p>
+</li>
+<li><strong>Data space</strong>: <span class="arithmatex">\(\mathbb{R}^d\)</span> or manifold <span class="arithmatex">\(\mathcal{M}\)</span></li>
+<li><strong>Probability space</strong>: Wasserstein geometry</li>
+<li>
+<p><strong>Learned space</strong>: Induced by velocity field</p>
+</li>
+<li>
+<p><strong>Trade-offs</strong>:</p>
+</li>
+<li><strong>Simple geodesics</strong> (linear): Fast, easy, may distort</li>
+<li><strong>True geodesics</strong> (manifold): Accurate, complex, expensive</li>
+<li><strong>Learned geodesics</strong>: Flexible, data-driven, requires more data</li>
+</ol>
+<h3 id="connection-to-your-research">Connection to Your Research<a class="headerlink" href="#connection-to-your-research" title="Permanent link">&para;</a></h3>
+<p><strong>For scPPDM and biological generative models</strong>:</p>
+<ol>
+<li>Single-cell data has <strong>intrinsic manifold structure</strong> — consider geodesic-aware methods</li>
+<li>Perturbation effects should follow <strong>biologically plausible paths</strong></li>
+<li>Linear interpolation in high-D may be suboptimal — explore <strong>latent manifold approaches</strong></li>
+<li>Flow matching provides a clean framework for <strong>geometry-aware generation</strong></li>
+</ol>
+<h3 id="key-equations-reference">Key Equations Reference<a class="headerlink" href="#key-equations-reference" title="Permanent link">&para;</a></h3>
+<p><strong>Linear interpolation (Rectified Flow)</strong>:</p>
+<div class="arithmatex">\[
+x_t = (1-t) x_0 + t x_1, \quad u_t = x_1 - x_0
+\]</div>
+<p><strong>Spherical interpolation (SLERP)</strong>:</p>
+<div class="arithmatex">\[
+x_t = \frac{\sin((1-t)\theta)}{\sin(\theta)} x_0 + \frac{\sin(t\theta)}{\sin(\theta)} x_1, \quad \theta = \arccos(x_0^\top x_1)
+\]</div>
+<p><strong>General manifold geodesic</strong>:</p>
+<div class="arithmatex">\[
+x_t = \exp_{x_0}(t \cdot \log_{x_0}(x_1))
+\]</div>
+<p><strong>Variance-preserving</strong>:</p>
+<div class="arithmatex">\[
+x_t = \sqrt{1-\sigma_t^2} \, x_0 + \sigma_t \, x_1
+\]</div>
+<hr />
+<h2 id="references">References<a class="headerlink" href="#references" title="Permanent link">&para;</a></h2>
+<h3 id="foundational-papers">Foundational Papers<a class="headerlink" href="#foundational-papers" title="Permanent link">&para;</a></h3>
+<ol>
+<li>
+<p><strong>Lipman, Y., et al. (2023)</strong>. Flow Matching for Generative Modeling. <em>ICLR</em>. <a href="https://arxiv.org/abs/2210.02747">arXiv:2210.02747</a></p>
+</li>
+<li>
+<p><strong>Liu, X., et al. (2023)</strong>. Flow Straight and Fast: Learning to Generate and Transfer Data with Rectified Flow. <em>ICLR</em>. <a href="https://arxiv.org/abs/2209.03003">arXiv:2209.03003</a></p>
+</li>
+</ol>
+<h3 id="manifold-geometry">Manifold Geometry<a class="headerlink" href="#manifold-geometry" title="Permanent link">&para;</a></h3>
+<ol>
+<li>
+<p><strong>Pennec, X. (2006)</strong>. Intrinsic Statistics on Riemannian Manifolds: Basic Tools for Geometric Measurements. <em>Journal of Mathematical Imaging and Vision</em>.</p>
+</li>
+<li>
+<p><strong>Fletcher, P. T., et al. (2004)</strong>. Principal Geodesic Analysis for the Study of Nonlinear Statistics of Shape. <em>IEEE TMI</em>.</p>
+</li>
+</ol>
+<h3 id="optimal-transport">Optimal Transport<a class="headerlink" href="#optimal-transport" title="Permanent link">&para;</a></h3>
+<ol>
+<li>
+<p><strong>Pooladian, A., et al. (2023)</strong>. Multisample Flow Matching: Straightening Flows with Minibatch Couplings. <em>ICML</em>.</p>
+</li>
+<li>
+<p><strong>Tong, A., et al. (2024)</strong>. Improving and Generalizing Flow-Based Generative Models with Minibatch Optimal Transport. <em>TMLR</em>. <a href="https://arxiv.org/abs/2302.00482">arXiv:2302.00482</a></p>
+</li>
+</ol>
+<h3 id="manifold-learning-for-biology">Manifold Learning for Biology<a class="headerlink" href="#manifold-learning-for-biology" title="Permanent link">&para;</a></h3>
+<ol>
+<li>
+<p><strong>Hashimoto, T., et al. (2016)</strong>. Learning Population-Level Diffusions with Generative RNNs. <em>ICML</em>.</p>
+</li>
+<li>
+<p><strong>Lopez, R., et al. (2018)</strong>. Deep Generative Modeling for Single-cell Transcriptomics. <em>Nature Methods</em>.</p>
+</li>
+</ol>
+<h3 id="slerp-and-interpolation">SLERP and Interpolation<a class="headerlink" href="#slerp-and-interpolation" title="Permanent link">&para;</a></h3>
+<ol>
+<li>
+<p><strong>Shoemake, K. (1985)</strong>. Animating Rotation with Quaternion Curves. <em>SIGGRAPH</em>.</p>
+</li>
+<li>
+<p><strong>White, T. (2016)</strong>. Sampling Generative Networks. <a href="https://arxiv.org/abs/1609.04468">arXiv:1609.04468</a></p>
+</li>
+</ol>
+<hr />
+<h2 id="related-documents">Related Documents<a class="headerlink" href="#related-documents" title="Permanent link">&para;</a></h2>
+<ul>
+<li><a href="../01_flow_matching_foundations/">Flow Matching Foundations</a> — Mathematical foundations of flow matching</li>
+<li><a href="../rectifying_flow/">Rectifying Flow Tutorial</a> — Practical tutorial on rectified flow</li>
+<li><a href="../">Flow Matching README</a> — Overview of flow matching documentation</li>
+</ul>
+<hr />
+<p><em>This document provides a comprehensive tutorial on geodesic interpolation in flow matching. For questions or clarifications, please refer to the related documents or open an issue in the repository.</em></p>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">
+      Copyright &copy; 2026 GenAI Lab Research Team
+    </div>
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+        
+<div class="md-social">
+  
+    
+    
+    
+    
+      
+      
+    
+    <a href="https://github.com/pleiadian53/genai-lab" target="_blank" rel="noopener" title="github.com" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.tracking", "navigation.tabs", "navigation.tabs.sticky", "navigation.sections", "navigation.expand", "navigation.top", "search.suggest", "search.highlight", "content.code.copy", "content.action.edit"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"provider": "mike"}}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+        <script src="../../javascripts/mathjax.js"></script>
+      
+        <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+      
+        <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+      
+    
+  </body>
+</html>
