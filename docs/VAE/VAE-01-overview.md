@@ -71,11 +71,15 @@ $$
 x \mapsto (\mu(x), \sigma(x)) \Rightarrow q_\phi(z \mid x)
 $$
 
-Usually:
+> The encoder does not compress $x$ to a single point in latent space. Instead it reads $x$ and outputs *two vectors* — a mean $\mu(x)$ and a spread $\sigma(x)$ — that together describe a **bell-shaped region** where the latent code for this input probably lives.
+
+Usually this region is modeled as an axis-aligned Gaussian:
 
 $$
 q_\phi(z \mid x) = \mathcal{N}(\mu(x), \text{diag}(\sigma^2(x)))
 $$
+
+> Each dimension of the latent space gets its own independent Gaussian, centred at $\mu_i(x)$ with standard deviation $\sigma_i(x)$. The `diag` just means the dimensions are treated as independent — no off-diagonal correlations. So the encoder's job is really: *"given this input, where in latent space should I look, and how uncertain am I about each direction?"*
 
 This matters because:
 
