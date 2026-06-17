@@ -21,13 +21,13 @@ three-stage architecture (deterministic → self-supervised → uncertainty).
 
 | # | Script | What it produces | Target week | Status |
 |---|--------|------------------|-------------|--------|
-| **P1** | `P1_download_and_qc.py` | Norman 2019 loaded, QC'd, train/val/holdout splits | Week 1 | 🎯 in progress |
-| **P2** | `P2_cvae_nb_baseline.py` | CVAE_NB with perturbation conditioning; Pearson ≈ 0.8 target (matches scGen) | Week 1-2 | 📝 planned |
+| **P1** | `P1_download_and_qc.py` | Norman 2019 loaded, QC'd, train/val/holdout splits | Week 1 | ✅ done ([findings](docs/P1_findings.md)) |
+| **P2** | `P2_cvae_nb_baseline.py` | CVAE_NB with perturbation conditioning; Pearson ≈ 0.8 target (matches scGen) | Week 1-2 | 🎯 next |
 | **P3** | `P3_jepa_predictor.py` | JEPA with VICReg; latent-space prediction of perturbed state | Week 3-4 | 📝 planned |
 | **P4** | `P4_latent_diffusion.py` | Latent diffusion wrapper on JEPA latent; uncertainty quantification | Week 5 | 🔮 planned |
 | **P5** | `P5_benchmark_suite.py` | Full benchmark: our stack vs scGen / CPA / scPPDM | Week 6 | 🔮 planned |
 
-Status legend: 🎯 active · 📝 prototype planned · 🔮 pending predecessor.
+Status legend: ✅ done · 🎯 active · 📝 prototype planned · 🔮 pending predecessor.
 
 ---
 

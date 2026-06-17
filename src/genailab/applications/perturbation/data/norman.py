@@ -33,10 +33,12 @@ logger = logging.getLogger(__name__)
 # ---------------------------------------------------------------------------
 
 #: scPerturb's canonical Norman 2019 release (hosted on Zenodo).
+#: Note the ``_filtered`` suffix — that is scPerturb's actual filename for the
+#: QC-passed release (~699 MB), verified live against record 13350497 (v1.4).
 #: If download fails with 404, scPerturb may have updated the deposit —
 #: check https://scperturb.org and pass ``url=`` explicitly to override.
 DEFAULT_NORMAN_URL = (
-    "https://zenodo.org/records/13350497/files/NormanWeissman2019.h5ad"
+    "https://zenodo.org/records/13350497/files/NormanWeissman2019_filtered.h5ad"
 )
 
 #: Cache location follows ``data/<modality>/<sub-topic>/<dataset>/``.

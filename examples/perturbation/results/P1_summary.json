@@ -1,0 +1,58 @@
+{
+  "thresholds": {
+    "min_genes": 200,
+    "pct_mt_max": 20.0,
+    "min_cells": 3,
+    "min_cells_per_perturbation": 30
+  },
+  "qc_report": {
+    "n_cells_initial": 111445,
+    "n_cells_final": 111391,
+    "n_genes_initial": 33694,
+    "n_genes_final": 22608,
+    "n_perturbations_initial": 237,
+    "n_perturbations_final": 237,
+    "dropped_cells_by_min_genes": 0,
+    "dropped_cells_by_pct_mt": 54,
+    "dropped_cells_by_low_count_perturbation": 0,
+    "dropped_genes_by_min_cells": 11086,
+    "perturbation_col": "perturbation",
+    "control_label": "control",
+    "n_control_cells": 11849,
+    "library_size_stats": {
+      "mean": 14679.0283203125,
+      "median": 13859.0,
+      "min": 3679.0,
+      "max": 64352.0,
+      "std": 6010.7890625
+    }
+  },
+  "split": {
+    "strategy": "cell",
+    "seed": 42,
+    "val_frac": 0.15,
+    "holdout_frac": 0.15,
+    "n_train": 77957,
+    "n_val": 16717,
+    "n_holdout": 16717
+  },
+  "top_perturbations_by_cell_count": {
+    "control": 11849,
+    "KLF1": 1959,
+    "BAK1": 1457,
+    "CEBPE": 1233,
+    "CEBPE_RUNX1T1": 1217,
+    "UBASH3B": 1202,
+    "ETS2": 1201,
+    "TBX3_TBX2": 1167,
+    "OSR2": 1003,
+    "SLC4A1": 999,
+    "SET": 986
+  },
+  "timings_seconds": {
+    "load": 9.14,
+    "qc": 1012.8,
+    "split": 0.04,
+    "total": 1022.0
+  }
+}

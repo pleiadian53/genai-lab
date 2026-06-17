@@ -371,22 +371,27 @@ look like in the scPerturb release.
 
 ---
 
-## 7. Expected Shapes at Each Stage
+## 7. Shapes at Each Stage
 
-Use these as landmarks when you run P1. If your numbers diverge by more
-than ~5% from these, check whether the scPerturb release has been
-updated or whether a QC threshold needs adjustment.
+Authoritative values from the first real P1 run (2026-06-01; scPerturb
+`NormanWeissman2019_filtered.h5ad`, Zenodo 13350497 v1.4). Use as landmarks
+when you re-run; if your numbers diverge materially, check whether the
+scPerturb release has been updated or a QC threshold changed.
 
 | Stage | Cells | Genes | Notes |
 |-------|------:|------:|-------|
-| Raw download | ~111,000 | ~22,000 | Pre-QC counts as distributed by scPerturb |
-| After cell-level QC | ~100,000 | ~22,000 | Drops damaged + empty cells |
-| After gene-level QC | ~100,000 | ~14,000 | Drops never-detected genes |
-| After perturbation-level QC | ~95,000 | ~14,000 | Drops low-cell-count perturbations (<30 cells) |
-| After HVG (model-side only) | ~95,000 | 2,000 | Done inside modeling scripts, not the loader |
+| Raw download | 111,445 | 33,694 | As distributed by scPerturb (`_filtered` release) |
+| After cell-level QC | 111,391 | 33,694 | Only 54 cells dropped (`pct_mt ≥ 20`); **0** on `min_genes` — scPerturb's `_filtered` release is already cell-QC'd |
+| After gene-level QC | 111,391 | 22,608 | Drops 11,086 genes seen in `<3` cells |
+| After perturbation-level QC | 111,391 | 22,608 | **No** perturbations dropped — all 237 clear the 30-cell minimum |
+| After HVG (model-side only) | 111,391 | (model's choice) | Done inside modeling scripts, not the loader |
 
-These numbers are approximate. The first real P1 run establishes the
-authoritative values.
+**Perturbations**: 237 labels (control + singletons + `_`-delimited pairs);
+none below threshold. **Control**: 11,849 cells. **Library size** (raw UMI):
+median 13,859, mean 14,679. See
+[`examples/perturbation/docs/P1_findings.md`](../../../examples/perturbation/docs/P1_findings.md)
+for the full report, including the combination-delimiter correction (`_`, not
+`+`) and storage/perf notes.
 
 ---
 
