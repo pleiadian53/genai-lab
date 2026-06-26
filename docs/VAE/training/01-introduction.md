@@ -1,50 +1,32 @@
 # Chapter 01 — Introduction: What It Means to Train a VAE
 
-Before we touch a single line of training code, let's get our bearings. This
-chapter builds the map that the rest of the series fills in. By the end you
-should be able to say, in plain language, what happens when someone says
-"I trained a VAE" — and you should know what each of the next five chapters is
-for.
+*The starting point. No background beyond basic ML assumed — if you know what a
+neural network, a loss function, and gradient descent are, you have enough.*
 
-We assume only that you know what a neural network is (a function with tunable
-weights), what a loss function is (a number that says how wrong the model is),
-and what gradient descent does (nudge the weights to make that number smaller).
-Everything else we build up gently.
+Before we touch a line of training code, let's get our bearings. This chapter
+builds the map that the rest of the series fills in. By the end you should be
+able to say, in plain language, what happens when someone says "I trained a VAE,"
+and you should know what each of the next chapters is for. Every symbol that
+appears here also lives in the [notation reference](notation.md), collected in
+one place — but you won't need to leave the page to follow along.
 
----
+## A two-minute recap: what a VAE is
 
-## 1. A two-minute recap: what a VAE *is*
+A **Variational Autoencoder (VAE)** learns to do two things at once: to *compress*
+each data point into a short, well-organized summary, and to *generate* new,
+realistic data points by sampling from the space of those summaries. It has two
+halves, and their names recur on every page from here on. The **encoder**,
+written $q_\phi(z \mid x)$, reads a data point $x$ and produces a distribution
+over a short summary vector $z$; the subscript $\phi$ ("phi") stands for the
+encoder's weights. The **decoder**, written $p_\theta(x \mid z)$, reads a summary
+$z$ and produces a distribution over reconstructed data $x$; the subscript
+$\theta$ ("theta") stands for the decoder's weights.
 
-A **Variational Autoencoder (VAE)** is a model that learns to do two things at
-once:
-
-1. **Compress** each data point into a small, well-organized summary.
-2. **Generate** new, realistic data points by sampling from that summary space.
-
-It has two halves, and they have names worth memorizing because we use them on
-every page from here on:
-
-- The **encoder**, written $q_\phi(z \mid x)$. It reads a data point $x$ and
-  produces a *distribution* over a short summary vector $z$. The symbol $\phi$
-  (phi) stands for the encoder's weights.
-- The **decoder**, written $p_\theta(x \mid z)$. It reads a summary $z$ and
-  produces a *distribution* over reconstructed data $x$. The symbol $\theta$
-  (theta) stands for the decoder's weights.
-
-Let's name every symbol so nothing is mysterious:
-
-- $x$ — one **data point** (in our running example, one cell's gene-expression
-  vector).
-- $z$ — the **latent code**: a short vector summarizing $x$. "Latent" just means
-  "hidden / not directly observed." If $x$ has 2000 numbers, $z$ might have 10.
-- $\phi$ — the **encoder weights** (what we learn for the encoder).
-- $\theta$ — the **decoder weights** (what we learn for the decoder).
-- $q_\phi(z \mid x)$ — read aloud as "q-phi of z given x": the distribution the
-  encoder assigns to $z$ after seeing $x$.
-- $p_\theta(x \mid z)$ — "p-theta of x given z": the distribution the decoder
-  assigns to $x$ after seeing $z$.
-
-Here is the whole object in one picture:
+It is worth naming each symbol as it stands, so nothing is mysterious. The data
+point $x$ is, in our running example, one cell's vector of gene-expression
+counts. The latent code $z$ is a short vector summarizing $x$ — "latent" just
+means "hidden, not directly observed," and if $x$ has 2000 numbers then $z$ might
+have 10. The whole object is just two networks chained together:
 
 ```mermaid
 flowchart LR
@@ -52,163 +34,121 @@ flowchart LR
     Z -->|decoder p_theta| Xhat["x-hat<br/>(reconstruction)"]
 ```
 
-A crucial detail that separates a VAE from an ordinary autoencoder: the encoder
-does **not** output a single $z$. It outputs the *parameters of a distribution*
-over $z$ — usually a mean vector $\mu$ (mu) and a spread vector $\sigma$ (sigma)
-— and then we *sample* $z$ from that distribution:
+The one detail that separates a VAE from an ordinary autoencoder is that the
+encoder does *not* output a single $z$. It outputs the parameters of a
+distribution over $z$ — a mean vector $\mu(x)$ and a spread vector $\sigma(x)$ —
+and then we *sample* $z$ from it: $q_\phi(z \mid x) = \mathcal{N}(\mu(x), \mathrm{diag}(\sigma^2(x)))$.
+Reading that aloud: the encoder turns $x$ into a mean $\mu(x)$ and a standard
+deviation $\sigma(x)$, and $z$ is drawn from a **Gaussian** (the classic bell
+curve, fully described by where it's centered, $\mu$, and how wide it is,
+$\sigma$) whose dimensions are treated as independent — that is all the
+$\mathrm{diag}$ means.
 
-$$
-q_\phi(z \mid x) = \mathcal{N}(\mu(x), \mathrm{diag}(\sigma^2(x)))
-$$
+Why a distribution and not a point? Because we want to *generate* later. If every
+$x$ maps to a fuzzy cloud in $z$-space rather than a single dot, those clouds
+overlap and fill the space smoothly, so when we sample a new $z$ and decode it we
+get something realistic instead of nonsense. The full argument is in
+[VAE-01](../VAE-01-overview.md); for now, just hold onto "the encoder outputs a
+cloud, not a dot."
 
-Reading this: the encoder turns $x$ into a mean $\mu(x)$ and a standard deviation
-$\sigma(x)$, and $z$ is drawn from a **normal (Gaussian) distribution**
-$\mathcal{N}$ with that mean and a diagonal covariance (the $\mathrm{diag}$ part
-just means the latent dimensions are treated as independent, each with its own
-variance $\sigma^2$). If the word "Gaussian" is hazy: it's the classic bell
-curve, fully described by where its center is ($\mu$) and how wide it is
-($\sigma$).
+## The objective: one equation the whole thing rests on
 
-> **Why a distribution and not a point?** Because we want to *generate* later. If
-> every $x$ maps to a fuzzy cloud in $z$-space rather than a single dot, those
-> clouds overlap and fill the space smoothly — so when we sample a new $z$ and
-> decode it, we get something realistic instead of nonsense. The full argument
-> is in [VAE-01](../VAE-01-overview.md); for now, just hold onto "the encoder
-> outputs a cloud, not a dot."
-
----
-
-## 2. The objective: one equation the whole training rests on
-
-Training means **adjusting $\phi$ and $\theta$ so the model gets good**. We need
-a way to quantify what "good" is, which has to be a number we can minimize. For a
-VAE that number comes from the **ELBO (Evidence Lower Bound)**. We will not re-derive it here — that's
-[VAE-02](../VAE-02-elbo.md)'s job — but we need to recognize its two pieces,
-because every training log you'll ever read reports them separately.
-
-The training loss is the **negative ELBO**:
+Training means adjusting $\phi$ and $\theta$ so the model gets better at explaining the observed data. We therefore need a numerical objective that tells us how "good" the model is, and that objective should be something we can minimize.
+For a VAE that number is the negative **ELBO (Evidence Lower Bound)**. We won't
+re-derive it here; that is [VAE-02](../VAE-02-elbo.md)'s job. But we need to
+recognize its two pieces, because every training log you'll ever read reports
+them separately:
 
 $$
 \mathcal{L} = \underbrace{-\mathbb{E}_{q_\phi(z \mid x)}[\log p_\theta(x \mid z)]}_{\text{reconstruction loss}} + \underbrace{\text{KL}(q_\phi(z \mid x) \| p(z))}_{\text{regularization}}
 $$
 
-Two terms, two jobs. Let's define the new symbols:
+Two terms, two jobs. The **reconstruction** term contains $\log p_\theta(x \mid z)$,
+the decoder's log-likelihood of the real data point — bigger when the decoder
+finds the true $x$ very plausible, and we negate it so that small loss means good
+reconstruction. The expectation $\mathbb{E}_{q_\phi(z \mid x)}[\cdot]$ is just an
+average over latent codes drawn from the encoder, which in practice we
+approximate by sampling a $z$ and evaluating the term inside. The
+**regularization** term is the Kullback–Leibler divergence
+$\text{KL}(q \| p)$, a number measuring how far the encoder's cloud
+$q_\phi(z \mid x)$ sits from the **prior** $p(z)$ — the distribution we *wish* the
+latent codes followed, almost always the standard normal $\mathcal{N}(0, I)$ (the
+$I$ is the identity matrix). The KL is zero when the two match and grows as they
+diverge.
 
-- $\mathcal{L}$ — the **loss** we minimize (lower is better).
-- $\mathbb{E}_{q_\phi(z \mid x)}[\cdot]$ — an **expectation** (an average) taken
-  over latent codes $z$ drawn from the encoder. In practice we approximate it by
-  sampling a $z$ and evaluating the thing in brackets.
-- $\log p_\theta(x \mid z)$ — the **log-likelihood** of the real data point $x$
-  under the decoder's distribution. Bigger means "the decoder finds the true $x$
-  very plausible." We negate it so that *small loss = good reconstruction*.
-- $p(z)$ — the **prior**: the distribution we *wish* the latent codes followed,
-  before seeing any data. Almost always the standard normal
-  $\mathcal{N}(0, I)$ — centered at zero, unit spread, dimensions independent
-  (the $I$ is the identity matrix).
-- $\text{KL}(q \| p)$ — the **Kullback–Leibler divergence**, a number measuring
-  how far the encoder's cloud $q_\phi(z \mid x)$ is from the prior $p(z)$. It is
-  zero when they match and grows as they diverge.
+So in words: the reconstruction term pushes the model to rebuild the input
+faithfully, while the regularization term pushes the encoder's clouds to stay
+near the prior, keeping the latent space smooth and samplable instead of letting
+each point scatter off to its own private corner. Training is the tug-of-war
+between these two, and that tension is the source of both the VAE's power and its
+most famous failure mode (posterior collapse, which we meet in Chapter 03).
 
-In words:
+A quick worked number makes the KL concrete. Suppose for one cell, in a
+2-dimensional latent space, the encoder outputs $\mu = (0.3, -0.1)$ and
+$\sigma = (0.9, 1.1)$. The Gaussian-versus-standard-normal KL has the closed form
+$\frac{1}{2} \sum_j (\mu_j^2 + \sigma_j^2 - \log \sigma_j^2 - 1)$ (derived in
+[Chapter 03](03-the-training-loop.md)). Work the two dimensions one at a time. The
+first dimension ($j=1$), with $\mu_1 = 0.3$ and $\sigma_1 = 0.9$, contributes
 
-- The **reconstruction** term pushes the model to *rebuild the input faithfully*
-  — the decoder should make the real $x$ look likely.
-- The **regularization** term pushes the encoder's clouds to *stay near the
-  prior* — so the latent space stays smooth and samplable, instead of scattering
-  each point off to its own private corner.
+$$
+\mu_1^2 + \sigma_1^2 - \log \sigma_1^2 - 1 = 0.09 + 0.81 + 0.21 - 1 = 0.11
+$$
 
-Training is the tug-of-war between these two. That tension is the source of both
-the VAE's power and its most famous failure mode (posterior collapse), which we
-meet in Chapter 03.
+and the second ($j=2$), with $\mu_2 = -0.1$ and $\sigma_2 = 1.1$, contributes
+
+$$
+\mu_2^2 + \sigma_2^2 - \log \sigma_2^2 - 1 = 0.01 + 1.21 - 0.19 - 1 = 0.03
+$$
+
+so the KL for this cell is $\frac{1}{2}(0.11 + 0.03) \approx 0.07$ — a small,
+healthy number meaning this cell's cloud sits close to the prior. We'll read
+exactly these quantities off real training logs in
+[Chapter 03](03-the-training-loop.md).
 
 ### Where did $q_\phi(z \mid x)$ come from, and why is it everywhere?
 
-Notice that the encoder distribution $q_\phi(z \mid x)$ appears in *both* terms
-of the loss — we average the reconstruction over it, and we measure the KL *of*
-it. That is not a coincidence; it's the whole trick that makes a VAE trainable.
-It's worth understanding where this object comes from, because it's the single
+Notice that the encoder distribution appears in *both* terms of the loss — we
+average the reconstruction over it, and we measure the KL *of* it. That is no
+coincidence; it's the whole trick that makes a VAE trainable, and it's the single
 cleverest idea in the model.
 
-Here is the problem it solves. What we *truly* want is for the model to assign
-high probability to real data — to make $p_\theta(x)$, the overall likelihood of
-a data point, large. To compute that likelihood you would have to account for
-*every* latent code that could have produced $x$:
+Here is the problem it solves. What we truly want is for the model to assign high
+probability to real data — to make $p_\theta(x)$, the overall likelihood of a
+data point, large. But computing that likelihood means accounting for *every*
+latent code that could have produced $x$, an integral over the entire latent
+space, $p_\theta(x) = \int p_\theta(x \mid z) p(z) \mathrm{d}z$, which for any
+real neural-network decoder has no closed form and is hopeless to compute
+directly. The *true* posterior $p_\theta(z \mid x)$ — "given this $x$, which
+latent codes were plausibly responsible?" — is equally intractable, since by
+Bayes' rule it needs that same impossible integral.
 
-$$
-p_\theta(x) = \int p_\theta(x \mid z) p(z) \mathrm{d}z
-$$
+The variational idea is to stop trying to compute the impossible thing and learn
+a cheap stand-in for it instead. We introduce a second network, the encoder
+$q_\phi(z \mid x)$, whose only job is to *approximate* the true posterior:
+$q_\phi(z \mid x) \approx p_\theta(z \mid x)$. The encoder is a guess at "which
+$z$ explains this $x$" — but a guess we can actually sample from and evaluate,
+because we chose its form (a Gaussian) to be friendly. Once you commit to this
+stand-in, a short derivation (the one in [VAE-02](../VAE-02-elbo.md)) turns the
+impossible likelihood into the ELBO, a genuine *lower bound* on
+$\log p_\theta(x)$. That is exactly the "Bound" in "Evidence Lower Bound": we
+cannot reach the true quantity, so we optimize a floor underneath it, and pushing
+the floor up drags the real thing up with it.
 
-Define the new piece: that $\int \cdots dz$ is an **integral over the entire
-latent space** — a sum over infinitely many possible $z$ values. For any real
-neural-network decoder this integral has no closed form and is hopeless to
-compute directly. Relatedly, the *true* posterior $p_\theta(z \mid x)$ — "given
-this $x$, which latent codes were plausibly responsible?" — is equally
-intractable, because by Bayes' rule it needs that same impossible integral in its
-denominator.
+That is why $q_\phi$ shows up twice — it is doing two jobs at once. In the
+reconstruction term it tells us *which* $z$ to sample and feed the decoder (you
+can't reconstruct from a latent without first proposing one); in the KL term it
+is the thing being kept honest, pulled toward the prior so the approximation
+stays well-behaved and the latent space stays smooth. So the encoder is not a
+bolt-on convenience — it is the device that converts an intractable goal
+("maximize the data likelihood") into a tractable one ("maximize the ELBO"). This
+same move underlies diffusion models and many other latent-variable methods we'll
+meet later; the full mechanics are in [VAE-02](../VAE-02-elbo.md) and
+[VAE-03](../VAE-03-inference.md).
 
-The variational idea is to **stop trying to compute the impossible thing and
-instead learn a cheap stand-in for it**. We introduce a second network, the
-encoder $q_\phi(z \mid x)$, whose only job is to *approximate* that intractable
-true posterior:
+## The five stages of training
 
-$$
-q_\phi(z \mid x) \approx p_\theta(z \mid x)
-$$
-
-The encoder is a guess at "which $z$ explains this $x$" — but a guess we can
-actually evaluate and sample from, because we chose its form (a Gaussian) to be
-friendly. Once you commit to this stand-in, a short derivation (the one in
-[VAE-02](../VAE-02-elbo.md)) turns the impossible likelihood into the ELBO — the
-two-term loss above — which is a genuine *lower bound* on $\log p_\theta(x)$. The
-word "Bound" in "Evidence Lower Bound" is exactly this: we cannot reach the true
-quantity, so we optimize a floor underneath it, and pushing the floor up drags
-the real thing up with it.
-
-That is why $q_\phi$ shows up twice. It is doing two jobs simultaneously:
-
-- in the **reconstruction** term, it tells us *which* $z$ to sample and feed the
-  decoder (you can't reconstruct from a latent code without first proposing one);
-- in the **KL** term, it is the very thing being kept honest — pulled toward the
-  prior $p(z)$ so our approximation stays well-behaved and the latent space stays
-  smooth.
-
-So the encoder is not a bolt-on convenience. It is the device that converts an
-intractable goal ("maximize the data likelihood") into a tractable one
-("maximize the ELBO"). Hold onto this intuition — it's the same move that
-underlies diffusion models and many other latent-variable methods we'll meet
-later in the project. The full mechanics are in [VAE-02](../VAE-02-elbo.md) and
-[VAE-03](../VAE-03-inference.md); here we just want the *why*.
-
-> **A small but important worked detail.** Suppose for one cell, in a
-> 2-dimensional latent space, the encoder outputs mean $\mu = (0.3, -0.1)$ and
-> spread $\sigma = (0.9, 1.1)$. The KL term comparing this Gaussian to the
-> standard normal has a closed form (derived in Chapter 03):
->
-> $$\text{KL} = \frac{1}{2} \sum_{j} \left( \mu_j^2 + \sigma_j^2 - \log \sigma_j^2 - 1 \right)$$
->
-> Work the two latent dimensions one at a time.
->
-> **Dimension $j = 1$**, with $\mu_1 = 0.3$ and $\sigma_1 = 0.9$:
->
-> $$\mu_1^2 + \sigma_1^2 - \log \sigma_1^2 - 1 = 0.09 + 0.81 - \log(0.81) - 1 = 0.09 + 0.81 + 0.21 - 1 = 0.11$$
->
-> **Dimension $j = 2$**, with $\mu_2 = -0.1$ and $\sigma_2 = 1.1$:
->
-> $$\mu_2^2 + \sigma_2^2 - \log \sigma_2^2 - 1 = 0.01 + 1.21 - \log(1.21) - 1 = 0.01 + 1.21 - 0.19 - 1 = 0.03$$
->
-> **Combine** the two dimensions and apply the leading $\frac{1}{2}$:
->
-> $$\text{KL} = \frac{1}{2}(0.11 + 0.03) \approx 0.07$$
->
-> A small, healthy number — meaning this cell's cloud sits close to the prior. We
-> will read exactly these numbers off real training logs in Chapter 03.
-
----
-
-## 3. The five stages of training (the spine of this series)
-
-Now the map. Training a VAE — or honestly almost any model — moves through five
-stages. Each chapter of this series is one of them.
+Now the map. Training a VAE — like almost any model — moves through five stages,
+and each chapter of this series is one of them.
 
 ```mermaid
 flowchart LR
@@ -219,45 +159,38 @@ flowchart LR
     E -.->|iterate| A
 ```
 
-1. **Data.** Decide what $x$ is, and prepare it correctly. For gene-expression
-   counts this is subtle enough to deserve its own chapter — and it's where VAEs,
-   diffusion models, and flow-matching models quietly disagree about what they
-   want. That's **Chapter 02**.
-2. **Model.** Choose the encoder and decoder architectures, the latent size, and
-   crucially the *decoder's distribution* (Gaussian? Negative-Binomial?). We met
-   the pieces above; the count-specific choices come back in Chapter 02.
-3. **Objective.** The negative ELBO from Section 2. The only thing we'll add
-   later is a knob, $\beta$, that reweights the two terms.
-4. **Optimization.** The actual loop: feed batches, compute the loss, backpropagate,
-   update $\phi$ and $\theta$, repeat for many epochs — while watching for
-   trouble. That's **Chapter 03**.
-5. **Evaluation.** The stage people skip and regret. It splits cleanly in two,
-   which is why it gets two chapters.
+The **data** stage decides what $x$ is and prepares it correctly; for
+gene-expression counts this is subtle enough to fill [Chapter 02](02-datasets.md), and it's where
+VAEs, diffusion, and flow-matching models quietly disagree about what they want.
+The **model** stage chooses the encoder and decoder architectures, the latent
+size, and crucially the decoder's distribution — Gaussian, or Negative-Binomial
+for counts. The **objective** is the negative ELBO above, to which Chapter 03
+adds a single knob, $\beta$, that reweights the two terms. The **optimization**
+stage is the actual loop — feed batches, compute the loss, backpropagate, update
+$\phi$ and $\theta$, repeat, while watching for trouble — and that is Chapter 03.
+Finally the **evaluation** stage is the one people skip and regret; it splits in
+two, which is why it gets two chapters. The dashed "iterate" arrow matters:
+evaluation feeds back into data and model choices, so training is a loop, not a
+straight line.
 
-The dashed "iterate" arrow matters: evaluation feeds back into data and model
-choices. Training is a loop, not a straight line.
+## What does success look like? Two very different questions
 
----
+Here is a trap worth naming on day one: a VAE can have a beautiful, smoothly
+decreasing loss curve and still be useless. "Did it work?" is therefore not one
+question but two, and they are genuinely independent.
 
-## 4. What does success look like? Two very different questions
-
-Here's a trap worth naming on day one. A VAE can have a *beautiful, smoothly
-decreasing loss curve and still be useless.* So "did it work?" is not one
-question — it's two, and they are genuinely independent.
-
-**Intrinsic evaluation — is the model good on its own terms?**
-Does it reconstruct held-out data accurately? Does it generate samples whose
-statistics match real data? Is it actually *using* its latent space? These
-questions live entirely inside the model's own world. This is **Chapter 04** —
-and it's where we confront a question you might already be asking: *isn't FID
-the standard generative metric?* (Short answer, unpacked there: FID is built for
-images and does not transfer to gene expression — there's a better toolbox.)
-
-**Extrinsic evaluation — is the representation useful for something else?**
-Take the learned latent codes $z$ and try to do a real downstream job with them:
-classify each cell's type, cluster cells into known groups, predict a
-perturbation response. A representation can reconstruct well yet be useless for
-these — or vice versa. This is **Chapter 05**.
+The first is **intrinsic**: is the model good on its own terms? Does it
+reconstruct held-out data accurately, generate samples whose statistics match
+real data, and actually *use* its latent space? These questions live entirely
+inside the model's own world, and they're [Chapter 04](04-intrinsic-evaluation.md) — which is also where we
+confront a question you might already be asking: isn't FID the standard
+generative metric? (Short answer, unpacked there: FID is built for images and
+does not transfer to gene expression — there's a better toolbox.) The second is
+**extrinsic**: is the learned representation useful for something else? Take the
+latent codes $z$ and try a real downstream job — classify each cell's type,
+cluster cells into known groups, predict a perturbation response. A
+representation can reconstruct well yet be useless for these, or the reverse.
+That's [Chapter 05](05-extrinsic-evaluation.md).
 
 ```mermaid
 flowchart TD
@@ -270,48 +203,54 @@ flowchart TD
 Holding both questions in mind from the start is the single most important habit
 this series tries to build. A loss curve is necessary, never sufficient.
 
----
+## The mission, and our running example
 
-## 5. Our running example, seeded
+This series is pointed at one goal — the project's flagship: **predict how a cell
+responds to a genetic perturbation** (switch a gene on, ask what the cell does)
+without running every experiment at the bench, and, because a VAE is *generative*,
+even ask the counterfactual — what would *this* cell have done under a perturbation
+we never tried? We reach that in Chapters 04–06. To keep the on-ramp gentle, the
+first chapters warm up on something simpler.
 
-Throughout, we train one concrete model so the abstractions always have a body:
+So throughout we train one concrete, *evolving* model. The data $x$ is a cell's
+vector of gene-expression counts (how many RNA molecules of each gene were
+detected). For now it's **PBMC** single-cell RNA-seq — a few thousand immune
+cells over a reduced gene set, the gentle warm-up dataset — and the model is
+**`CVAE_NB`**, a **C**onditional VAE whose decoder uses a
+**N**egative-**B**inomial distribution, the right choice for count data
+(Chapter 02 explains why). "Conditional" means we also feed in a condition $c$
+alongside the latent; here $c$ is a simple covariate like batch, but in the
+flagship it becomes the **perturbation** itself — that is the whole point of the
+"C," and it's how the same architecture turns into a perturbation-response
+predictor. The "C" changes nothing about the encoder/decoder story above. For the
+warm-up we also hold back one thing: each cell's known **cell type**, which the
+model never sees during training, so that in Chapter 05 we can test whether the
+latent codes learned to separate cell types on their own — a rehearsal for the
+harder question of whether they capture perturbation responses.
 
-- **Data ($x$):** PBMC single-cell RNA-seq — each $x$ is one immune cell's
-  vector of gene-expression **counts** (how many times each gene's RNA was
-  detected). A few thousand cells; we'll work with a reduced gene set.
-- **Model:** `CVAE_NB` — a **C**onditional VAE whose decoder uses a
-  **N**egative-**B**inomial distribution, the right choice for count data
-  (Chapter 02 explains why raw counts and NB go together). "Conditional" means we
-  also feed in a covariate, like batch or cell type; the "C" changes nothing
-  about the encoder/decoder story above.
-- **The label we hold back:** each cell's known **cell type**. We do *not* let
-  the model see it during training — we save it to test, in Chapter 05, whether
-  the latent codes $z$ secretly learned to separate cell types on their own.
-
-You'll also be able to *run* this. The series ships size-configurable scripts and
+You'll be able to *run* this too. The series ships size-configurable scripts and
 notebooks (`examples/vae/training/`, `notebooks/vae/training/`) that go from a
 seconds-long laptop smoke test to a full GPU-pod run by changing one config
 value — the mechanics are in Chapter 03.
 
----
-
 ## Recap, and what's next
 
-What we established:
+A VAE is an encoder $q_\phi(z \mid x)$ that maps data to a *cloud* in latent
+space, plus a decoder $p_\theta(x \mid z)$ that maps a latent back to data.
+Training minimizes the negative ELBO — a reconstruction term plus a KL
+regularization term — a tug-of-war between rebuilding the input and keeping the
+latent space smooth; and the encoder $q_\phi$ exists because it converts the
+intractable goal of maximizing the data likelihood into the tractable goal of
+maximizing the ELBO. Training moves through five stages — data, model, objective,
+optimization, evaluation — one per chapter. And "did it work?" is two independent
+questions, intrinsic and extrinsic, neither of which a nice loss curve answers by
+itself.
 
-- A VAE is an **encoder** $q_\phi(z \mid x)$ (data to a *cloud* in latent space)
-  plus a **decoder** $p_\theta(x \mid z)$ (latent back to data).
-- Training minimizes the **negative ELBO** = **reconstruction** loss +
-  **KL regularization**, a tug-of-war between rebuilding the input and keeping
-  the latent space smooth.
-- Training moves through five stages — **data, model, objective, optimization,
-  evaluation** — and this series is one chapter per stage.
-- "Did it work?" is two independent questions: **intrinsic** (good on its own
-  terms) and **extrinsic** (useful downstream). A nice loss curve answers
-  neither by itself.
+*Next: [Chapter 02 — Datasets](02-datasets.md): what the training data actually
+looks like, why count data forces specific choices, and the question you asked at
+the outset — do diffusion and flow-matching models want the same data a VAE does?*
 
-Next, **[Chapter 02 — Datasets](02-datasets.md)**: what the training data
-actually looks like, why count data forces specific choices, and the question you
-asked at the outset — do diffusion and flow-matching models want the *same* data
-a VAE does? (They mostly share the raw material and disagree about the
-preparation, and the reason why is genuinely illuminating.)
+> **Curious tangent:** if the Gaussian posterior felt arbitrary — why not a
+> mixture, a Gamma, something richer? — that's the optional aside
+> [Chapter 01a — Richer posteriors](01a-richer-posteriors.md). It's skippable;
+> Chapter 02 doesn't depend on it.

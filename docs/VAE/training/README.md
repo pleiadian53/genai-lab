@@ -34,22 +34,34 @@ flowchart LR
 | [02](02-datasets.md) | Datasets | What does the training data look like — and do diffusion and flow-matching models want the same data? |
 | [03](03-the-training-loop.md) | The training loop | How does the loop run, and how do I read its output and spot trouble? |
 | [04](04-intrinsic-evaluation.md) | Intrinsic evaluation | Is the model good *on its own terms*? (And is FID the right metric here?) |
+| [04a](04a-evaluation-metrics-worked.md) | Metrics worked *(optional aside)* | Each evaluation metric by hand — CV example, then translated to cells |
 | [05](05-extrinsic-evaluation.md) | Extrinsic evaluation | Is the learned representation *useful for downstream tasks*? |
 | [06](06-evaluation-protocol.md) | Evaluation protocol | Put it all together: a checklist and one fully worked example. |
 
 ---
 
-## The running example
+## The mission, and the running example
 
-To keep things concrete, the whole series follows **one** small model: a
-conditional VAE with a Negative-Binomial decoder (`CVAE_NB`) trained on a subset
-of **PBMC** single-cell RNA-seq data — a few thousand immune cells, each
-described by its gene-expression counts, with a known cell-type label we can use
-later to test the model.
+The whole series is pointed at one goal — the project's flagship application:
+**predict how a cell responds to a genetic perturbation** (switch a gene on and
+ask what the cell does) without running every experiment at the bench. Because a
+VAE is *generative*, the same model can answer counterfactuals — what would *this*
+cell have done under a perturbation we never tried? That mission is what ties the
+notation together (see the [notation reference](notation.md)), and it's why we use
+a *conditional* VAE: the condition is the perturbation.
 
-Don't worry if "Negative-Binomial decoder" or "PBMC" mean nothing yet — both are
-introduced gently in chapters 01 and 02. The point is that every abstract idea
-in this series is also shown happening to this one real model.
+We get there in two stages, so the on-ramp stays gentle. Chapters 01–03 **warm up
+on PBMC** — a simpler dataset of immune cells with known *types* and no
+perturbation — using a conditional VAE with a Negative-Binomial decoder
+(`CVAE_NB`) to learn the training mechanics on something forgiving. Chapters 04–06
+**graduate to Norman 2019 Perturb-seq**, where the condition becomes the
+perturbation and evaluation asks the real question: did we predict held-out
+responses?
+
+Don't worry if "Negative-Binomial decoder," "PBMC," or "Perturb-seq" mean nothing
+yet — each is introduced gently when it first matters. The point is that every
+abstract idea in this series is also shown happening to one concrete, evolving
+example.
 
 ---
 
@@ -64,7 +76,7 @@ follow the same parallel layout used across the project:
 Everything is **size-configurable**. The exact same code runs as a fast
 `smoke` test on your laptop (seconds, CPU — just to prove the workflow is
 wired correctly) or as a `realistic` training run on a GPU pod (via `ops/`).
-You change a config value, not the code. Chapter 03 explains this pattern in
+You change a config value, not the code. [Chapter 03](03-the-training-loop.md) explains this pattern in
 full.
 
 ---
