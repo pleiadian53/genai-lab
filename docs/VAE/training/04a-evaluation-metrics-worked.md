@@ -99,6 +99,59 @@ images — same center, same spread — without borrowing an image network. (Swa
 PCs for a single-cell foundation-model embedding and you get a richer, more
 semantic version of the same metric.)
 
+## The general pattern: a feature space (and a distribution) per modality
+
+Step back and FID dissolves into a two-slot recipe: pick a **feature space** to look
+at the data through, summarize each side (real and generated) as a **distribution**
+in that space, and measure the distance between them. FID fills the first slot with
+InceptionV3 and the second with a Gaussian — but both are modality-dependent choices,
+and every data type that does generative modeling has quietly made its own. The
+NB-versus-Gaussian point from [Chapter 04](04-intrinsic-evaluation.md) was only the
+gene-count instance of a much broader idea.
+
+The feature-space slot is where the modality shows up most visibly. The extractor has
+to be pretrained *on that kind of data*, so that closeness in its feature space tracks
+*meaningful* similarity rather than raw sample-by-sample difference — which is exactly
+why InceptionV3 can't be reused on a waveform or a molecule. So each field grew its own
+Fréchet metric on its own "Inception":
+
+| Modality | Feature extractor (the "Inception") | Named metric |
+|----------|-------------------------------------|--------------|
+| Images | InceptionV3 (ImageNet) | FID — Fréchet Inception Distance |
+| Audio | VGGish / PANNs (AudioSet) | FAD — Fréchet Audio Distance |
+| Video | I3D (Kinetics) | FVD — Fréchet Video Distance |
+| Molecules (SMILES) | ChemNet | FCD — Fréchet ChemNet Distance |
+| Text | BERT-style embeddings | Fréchet BERT Distance; MAUVE (related) |
+| Time series | TS2Vec / a pretrained sequence encoder | Context-FID |
+| Single-cell counts | PCA, or an scRNA foundation model | Fréchet-in-PCA (our analog) |
+
+These are all the *same metric* wearing a modality-appropriate lens — FID, FAD, FVD,
+and FCD are literally the same Fréchet-distance formula computed on different
+pretrained features. (FCD, the molecular one, is worth flagging for us: it's standard
+in drug discovery for scoring generated molecules, a close cousin of the
+gene-expression generation problem.)
+
+The distribution slot is the subtler one, and it's where your gene-count instinct
+generalizes. When you compare *inside a learned embedding* — InceptionV3's
+activations, VGGish's, ChemNet's — a Gaussian fit is usually fine, because deep
+embeddings tend to come out roughly bell-shaped no matter what the raw data looked
+like; the network has, in effect, Gaussianized it. But if you compare in the *raw
+data space*, with no embedding to launder the geometry, then the data's own shape
+dictates the right family: gene counts want a **Negative-Binomial**, strictly
+positive continuous quantities a **Gamma** or **log-normal**, bounded fractions a
+**Beta**. And if you'd rather assume nothing at all about the shape, you drop the
+parametric family entirely for a non-parametric distance like **MMD** (next section),
+which compares the two distributions through a kernel without ever fitting a Gaussian
+— or an NB, or anything else.
+
+So the lesson is bigger than "NB instead of Gaussian for counts." An FID-like metric
+is a *template* with modality-shaped holes — a feature space and a distribution — and
+good evaluation means filling both to match the data in front of you, whether that's
+pixels, waveforms, molecules, or cells. Text pushes the point one slot further: MAUVE
+compares two text distributions in embedding space but through a KL-divergence
+frontier rather than a Fréchet distance, a reminder that even the *third* slot — how
+you measure the gap once you've chosen a space and a shape — is negotiable too.
+
 ## MMD and KID: comparing distributions without a model of them
 
 FID assumed both feature clouds were Gaussian. **Maximum Mean Discrepancy (MMD)**
@@ -214,14 +267,17 @@ imported from another.
 ## Recap, and back to the main path
 
 Walking each metric by hand surfaces the same lesson five times. A generative metric
-is really a choice of *what to measure* (fidelity, coverage, or likelihood) and *in
-what space* to measure it. The computer-vision instances bake in an image-specific
-space — almost always InceptionV3 — and that, not the underlying idea, is what fails
-to transfer. Strip the image network away and the ideas survive: Fréchet distance
-and MMD move to PCA or embedding space, precision/recall move unchanged as pure
-geometry, likelihood becomes the held-out IWAE, and per-gene statistics were native
-to cells all along. The Inception Score is the one genuine casualty, because its
-appeal *was* the shared classifier biology doesn't have.
+is really a choice of *what to measure* (fidelity, coverage, or likelihood), *in what
+space* to measure it, and *with what distribution or distance* — and a Fréchet-style
+metric exposes all three as modality-shaped slots. The computer-vision instances bake
+in an image-specific space (InceptionV3) and a Gaussian, and *those* fillings, not
+the underlying idea, are what fail to transfer; other modalities simply chose
+differently (VGGish for audio, ChemNet for molecules, an NB instead of a Gaussian for
+counts). Strip the image-specific choices away and the ideas survive: Fréchet
+distance and MMD move to PCA, an embedding, or count space; precision/recall move
+unchanged as pure geometry; likelihood becomes the held-out IWAE; and per-gene
+statistics were native to cells all along. The Inception Score is the one genuine
+casualty, because its appeal *was* the shared classifier biology doesn't have.
 
 *Next: back to the main spine, [Chapter 05 — Extrinsic Evaluation](05-extrinsic-evaluation.md),
 where we stop asking whether the model is good on its own terms and start asking

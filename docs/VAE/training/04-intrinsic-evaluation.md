@@ -84,23 +84,38 @@ diagonal); and $(\Sigma_r \Sigma_g)^{1/2}$ is the matrix square root of the prod
 of the two covariances. Low FID means the generated features sit on top of the real
 ones — same center, same spread.
 
-Now look at where this breaks for cells. The entire metric is anchored to
-**InceptionV3**, and InceptionV3 only knows how to look at images — it was trained
-on photographs and expects pixels laid out in a grid. A cell is a vector of gene
-counts; there is no grid, no canonical pretrained "cell network" playing
-InceptionV3's role, and no agreed-upon feature layer to read out. Push a cell
-through InceptionV3 and you get a meaningless number. So FID isn't *wrong* for
-biology so much as *undefined* for it: its feature extractor doesn't exist here.
+Obviously we wouldn't push a vector of gene counts through an ImageNet network, so
+FID isn't *wrong* for biology so much as *undefined* for it — its feature extractor
+simply doesn't exist here. The interesting part is what we'd reach for instead, and
+it splits into two separate questions hiding inside FID.
 
-But notice what *does* survive the translation. The clever part of FID was never
-InceptionV3 specifically — it was the idea of comparing two distributions *in a
-sensible feature space* using the Fréchet distance. Keep that idea and swap the
-feature space for one that suits biology — the top principal components of the
-expression data, say, or the embedding from a single-cell foundation model — and
-you get a perfectly good "Fréchet distance in PCA space" that means for cells what
-FID means for images. The machinery generalizes; the image-specific instantiation
-does not. That reframing is the real lesson, and it points us straight at the
-toolbox we actually use.
+The first: do we need a pretrained *cell* network to play InceptionV3's role? FID's
+real idea was never InceptionV3 specifically — it was *comparing two distributions
+in a sensible feature space*. So you *could* slot in a single-cell foundation-model
+embedding as the cell-world Inception and apply the same Fréchet distance. But you
+don't have to: a cheap, dependency-free proxy is simply the top principal components
+of the expression matrix, giving a perfectly good "Fréchet distance in PCA space"
+that means for cells what FID means for images. The feature space is a *choice*, not
+a fixed part of the metric.
+
+The second, and more interesting, question is whether the distributions should be
+**Gaussians** at all. FID fits a Gaussian to each feature cloud because
+InceptionV3's continuous activations are roughly bell-shaped — but raw gene counts
+are nothing of the sort. They're non-negative integers, overdispersed, often
+zero-inflated; a Gaussian is exactly the wrong shape, for the same reason we gave
+the *decoder* an NB instead of a Gaussian back in [Chapter 02](02-datasets.md). So
+the biology-faithful version of "compare a real and a generated distribution" is to
+compare them as the **count distributions they actually are** — for instance, per
+gene, fit a Negative-Binomial to the real cells and another to the generated cells
+and measure the gap between those NB distributions (in their mean and dispersion, or
+via a divergence between them). That keeps the elegant FID skeleton — summarize each
+side as a distribution, then measure the distance — while swapping the
+image-appropriate Gaussian for the count-appropriate NB.
+
+So FID doesn't transfer, but neither of the things it's made of is wasted: the
+"feature space" slot takes PCA or a cell foundation model, and the "distribution"
+slot takes an NB instead of a Gaussian. That reframing is the real lesson, and it
+points straight at the toolbox we actually use.
 
 ## The intrinsic toolbox for expression VAEs
 

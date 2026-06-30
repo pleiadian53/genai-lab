@@ -53,8 +53,10 @@ cloud, not a dot."
 
 ## The objective: one equation the whole thing rests on
 
-Training means adjusting $\phi$ and $\theta$ so the model gets better at explaining the observed data. We therefore need a numerical objective that tells us how "good" the model is, and that objective should be something we can minimize.
-For a VAE that number is the negative **ELBO (Evidence Lower Bound)**. We won't
+Training means adjusting $\phi$ and $\theta$ so the model gets better at explaining
+the observed data. We therefore need a numerical objective that tells us how "good"
+the model is, and that objective should be something we can minimize. For a VAE that
+number is the negative **ELBO (Evidence Lower Bound)**. We won't
 re-derive it here; that is [VAE-02](../VAE-02-elbo.md)'s job. But we need to
 recognize its two pieces, because every training log you'll ever read reports
 them separately:
